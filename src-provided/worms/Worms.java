@@ -16,7 +16,7 @@ public class Worms {
 		for (int i = 0; i < args.length; i++) {
 			String arg = args[i];
 			if ("-window".equals(arg)) {
-				options.disableFullScreen = true;
+	2			options.disableFullScreen = true;
 			} else if ("-seed".equals(arg)) {
 				long randomSeed = Long.parseLong(args[++i]);
 				options.randomSeed = randomSeed;
