@@ -23,21 +23,34 @@ public class Worm {
 		setOrientation(direction);
 		setActionPoints(getMaxActionPoints());
 		setName(name);
+		updateJumpData();
 	}
 	
 	private double posX;
-
+	private double posY;
+	private double radius;
+	private int ActionPoints;
+	private double orientation;
+	private String name;
+	
+	private double jumpX;
+	private double jumpY;
+	private double jumpTime;
+	private boolean jumpLegal;
+	private double jumpSpeedX;
+	private double jumpSpeedY;
+	
 	//all position stuff Defensively
 	@Basic
+
 	public double getPosX() {
 		return this.posX;
 	}
 	
 	public void setPosX(double position) {
 		this.posX = position;
+		updateJumpData();
 	}
-
-	private double posY;
 
 	@Basic
 	public double getPosY() {
@@ -46,9 +59,8 @@ public class Worm {
 	
 	public void setPosY(double position) {
 		this.posY = position;
+		updateJumpData();
 	}
-
-	private double radius;
 
 	@Basic
 	public double getRadius() {
@@ -77,8 +89,6 @@ public class Worm {
 		return (int)Math.round(getMass());
 	}
 
-	private int ActionPoints;
-
 	@Basic
 	public int getActionPoints() {
 		return ActionPoints;
@@ -89,13 +99,13 @@ public class Worm {
 		this.ActionPoints = points;
 	}
 
+	//Make private?
 	public boolean isValidPoints(int points) {
 		return (points >= 0) && (points <= getMaxActionPoints());
 	}
 	//end total
 
 	//direction nominally
-	private double orientation;
 
 	@Basic
 	public double getOrientation() {
@@ -109,11 +119,10 @@ public class Worm {
 	 */
 	public void setOrientation(double orientation) {
 		this.orientation = orientation;
+		updateJumpData();
 	}
 	//end nominally
-	
-	private String name;
-	
+		
 	public String getName() {
 		return this.name;
 	}
@@ -124,7 +133,8 @@ public class Worm {
 		this.name = name;
 	}
 	
-	public boolean isValidName(String name) {
+
+	private boolean isValidName(String name) {
 		return true; //TODO: Figure out how to work w/ Strings
 	}
 	
@@ -150,9 +160,11 @@ public class Worm {
 					- Math.abs(Math.cos(currentOrientation))
 					- Math.abs(4 * Math.sin(currentOrientation))));
 		}
+		updateJumpData();
 	}
 	
-	public boolean canMove(int steps) {
+	
+	private boolean canMove(int steps) {
 		double currentOrientation = getOrientation();
 		int stepPoints = roundUp(getActionPoints()
 				- Math.abs(Math.cos(currentOrientation))
@@ -181,5 +193,69 @@ public class Worm {
 		if (active)
 			setActionPoints(roundUp(getActionPoints()
 					- (amount / (2 * Math.PI)) * 60));
+		updateJumpData();
 	}
+	
+	private void updateJumpData() {
+		if (! canJump() ) {
+			jumpLegal = false;
+			return;
+		}
+		else {
+			jumpLegal = true;
+			calculateJump();
+		}
+	}
+	
+	private boolean canJump() {
+		return (isValidOrientation() && (getActionPoints() > 0) );
+	}
+		
+	private boolean isValidOrientation() {
+		return ((getOrientation() > Math.PI ) && (getOrientation() < (2 * Math.PI)));
+	}
+	
+	private void calculateJump() {
+		double mass, gravity, speed, force, distance;
+		mass = getMass();  //don't forget to change if we end up giving mass a dedicated field
+		gravity = 9.80665;
+		force = (( 5 * ActionPoints ) / ( mass * gravity ));
+		speed = ( force / ( mass * 2));
+		jumpSpeedX = speed * Math.cos(orientation);
+		jumpSpeedY = speed * Math.sin(orientation);
+		jumpTime = (( 2 *jumpSpeedY ) / gravity );
+		distance = jumpTime * jumpSpeedX;
+		jumpX = posX + distance;
+		jumpY = posY;
+		}
+	
+	public void jump() throws IllegalArgumentException, ExhaustionException {
+		if (! jumpLegal) {
+			if (! isValidOrientation()) {
+				throw new ExhaustionException();
+			}
+			else {
+				throw new IllegalArgumentException();
+			}
+		}
+		else {
+			posX = jumpX;
+			posY = jumpY;
+			ActionPoints = 0;
+		}
+	}
+	
+		
+	public double jumpTime() {
+		return jumpTime;
+	}
+	
+	public double[] jumpStep(double time) {
+		double x, y;
+		x = posX + (time * jumpSpeedX);
+		y = posY + (time * ( jumpSpeedY - ((time * 9.80665)/2)));
+		double coordinates[] = {x, y};
+		return coordinates;
+	}
+	
 }
