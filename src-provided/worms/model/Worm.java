@@ -12,6 +12,7 @@ import be.kuleuven.cs.som.annotate.*;
  * 			| getRadius() >= 0.25
  * @author Milan Sanders
  * @author Joren Vaes
+ * @date 2/03/2014
  * 
  */
 public class Worm {
