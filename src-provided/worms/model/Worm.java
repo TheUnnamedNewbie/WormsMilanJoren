@@ -212,7 +212,7 @@ public class Worm {
 	}
 		
 	private boolean isValidOrientation() {
-		return ((getOrientation() > Math.PI ) && (getOrientation() < (2 * Math.PI)));
+		return ((getOrientation() < Math.PI ) && (getOrientation() > (2 * Math.PI)));
 	}
 	
 	private void calculateJump() {
