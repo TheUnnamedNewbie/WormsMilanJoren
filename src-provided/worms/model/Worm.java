@@ -7,7 +7,7 @@ import be.kuleuven.cs.som.annotate.*;
  * WORMS!! The class Worm contains all information and methods related to the actual worms and their movements.
  * 
  * @invar	The current (at stable point) action points must remain above 0 and under max action points.
- * 			| (getActionPoints() >= 0) && (getActionPoints() <= getMaxActionPoints())
+ * 			| isValidPoints(getActionPoints())
  * @invar	The radius is always at least 0.25m
  * 			| getRadius() >= 0.25
  * @author Milan Sanders
