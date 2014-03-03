@@ -41,6 +41,8 @@ public class Worm {
 	private double jumpSpeedX;
 	private double jumpSpeedY;
 	
+	private String validchar = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\'\" ";
+	
 	//all position stuff Defensively
 	@Basic
 
@@ -134,9 +136,30 @@ public class Worm {
 		this.name = name;
 	}
 	
-
+	/**
+	 * 
+	 * @param name
+	 * @return ...
+	 * 		| (name.length() >= 2) && containsLegalChars() )
+	 */
 	private boolean isValidName(String name) {
-		return true; //TODO: Figure out how to work w/ Strings
+		if ( name.length() >= 2) {
+			return containsLegalChars(name);
+		}
+		else {
+			return false;
+		}
+	}
+	
+	
+	private boolean containsLegalChars(String name) {
+		int length = name.length();
+		for (int i = 0; i < length; i++) {
+			if ( ! validchar.contains( name.subSequence( i , i+1 ) ) ) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	@Immutable
@@ -232,7 +255,7 @@ public class Worm {
 	
 	public void jump() throws IllegalArgumentException, ExhaustionException {
 		if (! jumpLegal) {
-			if (isValidOrientation()) { //Have to be reversed?
+			if (isValidOrientation()) { 
 				throw new ExhaustionException();
 			}
 			else {
