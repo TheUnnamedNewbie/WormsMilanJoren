@@ -1,4 +1,6 @@
 package worms.model;
+import java.awt.Desktop.Action;
+
 import worms.ExhaustionException;
 import be.kuleuven.cs.som.annotate.*;
 
@@ -97,7 +99,7 @@ public class Worm {
 		return ActionPoints;
 	}
 
-	public void setActionPoints(int points) {
+	private void setActionPoints(int points) {
 		assert isValidPoints(points);
 		this.ActionPoints = points;
 	}
@@ -253,19 +255,21 @@ public class Worm {
 		jumpY = posY;
 		}
 	
-	public void jump() throws IllegalArgumentException, ExhaustionException {
+	public void jump() throws ExhaustionException {
 		if (! jumpLegal) {
 			if (isValidOrientation()) { 
 				throw new ExhaustionException();
 			}
 			else {
-				throw new IllegalArgumentException();
+				ActionPoints = 0;
+				return;
 			}
 		}
 		else {
 			posX = jumpX;
 			posY = jumpY;
 			ActionPoints = 0;
+			return;
 		}
 	}
 	
