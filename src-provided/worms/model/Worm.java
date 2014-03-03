@@ -232,7 +232,7 @@ public class Worm {
 	
 	public void jump() throws IllegalArgumentException, ExhaustionException {
 		if (! jumpLegal) {
-			if (isValidOrientation()) { //Have to be reversed?
+			if (! isValidOrientation()) {
 				throw new ExhaustionException();
 			}
 			else {
