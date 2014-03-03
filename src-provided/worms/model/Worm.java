@@ -232,7 +232,7 @@ public class Worm {
 	
 	public void jump() throws IllegalArgumentException, ExhaustionException {
 		if (! jumpLegal) {
-			if (! isValidOrientation()) {
+			if (isValidOrientation()) { //Have to be reversed?
 				throw new ExhaustionException();
 			}
 			else {
@@ -252,7 +252,7 @@ public class Worm {
 	}
 	
 	public double[] jumpStep(double time) {
-		double x, y;
+		double x, y; 
 		x = posX + (time * jumpSpeedX);
 		y = posY + (time * ( jumpSpeedY - ((time * 9.80665)/2)));
 		double coordinates[] = {x, y};
