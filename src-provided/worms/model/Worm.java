@@ -358,7 +358,7 @@ public class Worm {
 	
 		
 	public double jumpTime() {
-		return jumpTime;
+		return getJumpTime();
 	}
 	
 	public double[] jumpStep(double time) {
