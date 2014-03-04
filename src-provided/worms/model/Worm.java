@@ -142,11 +142,11 @@ public class Worm {
 		this.name = name;
 	}
 	
-	public double getJumpX() {
+	private double getJumpX() {
 		return jumpX;
 	}
 
-	public void setJumpX(double jumpX) {
+	private void setJumpX(double jumpX) {
 		this.jumpX = jumpX;
 	}
 	
@@ -307,11 +307,11 @@ public class Worm {
 	
 	private void updateJumpData() {
 		if (! canJump() ) {
-			jumpLegal = false;
+			setJumpLegal(false);
 			return;
 		}
 		else {
-			jumpLegal = true;
+			setJumpLegal(true);
 			calculateJump();
 		}
 	}
@@ -339,7 +339,7 @@ public class Worm {
 		}
 	
 	public void jump() throws ExhaustionException {
-		if (! jumpLegal) {
+		if (! isJumpLegal()) {
 			if (isValidOrientation()) { 
 				throw new ExhaustionException();
 			}
