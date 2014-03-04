@@ -1,6 +1,5 @@
 package worms.model;
 import java.awt.Desktop.Action;
-
 import worms.ExhaustionException;
 import be.kuleuven.cs.som.annotate.*;
 
@@ -73,11 +72,16 @@ public class Worm {
 	}
 	
 	public void setRadius(double radius) throws IllegalArgumentException {
-		if (radius < 0.25)
+		if (radius < 0.25) {
 			throw new IllegalArgumentException();
-		this.radius = radius;
+		}
+		else {
+			this.radius = radius;
+	
+		}
 	}
-
+	
+	
 	/**
 	 * Note: If mass is frequently used, store in variable and edit whenever you
 	 * alter radius
@@ -137,6 +141,85 @@ public class Worm {
 			throw new IllegalArgumentException();
 		this.name = name;
 	}
+	
+	public double getJumpX() {
+		return jumpX;
+	}
+
+	public void setJumpX(double jumpX) {
+		this.jumpX = jumpX;
+	}
+	
+	/**
+	 * @return the jumpY
+	 */
+	private double getJumpY() {
+		return jumpY;
+	}
+
+	/**
+	 * @param jumpY the jumpY to set
+	 */
+	private void setJumpY(double jumpY) {
+		this.jumpY = jumpY;
+	}
+
+	/**
+	 * @return the jumpTime
+	 */
+	private double getJumpTime() {
+		return jumpTime;
+	}
+
+	/**
+	 * @param jumpTime the jumpTime to set
+	 */
+	private void setJumpTime(double jumpTime) {
+		this.jumpTime = jumpTime;
+	}
+
+	/**
+	 * @return the jumpLegal
+	 */
+	private boolean isJumpLegal() {
+		return jumpLegal;
+	}
+
+	/**
+	 * @param jumpLegal the jumpLegal to set
+	 */
+	private void setJumpLegal(boolean jumpLegal) {
+		this.jumpLegal = jumpLegal;
+	}
+
+	/**
+	 * @return the jumpSpeedX
+	 */
+	private double getJumpSpeedX() {
+		return jumpSpeedX;
+	}
+
+	/**
+	 * @param jumpSpeedX the jumpSpeedX to set
+	 */
+	private void setJumpSpeedX(double jumpSpeedX) {
+		this.jumpSpeedX = jumpSpeedX;
+	}
+
+	/**
+	 * @return the jumpSpeedY
+	 */
+	private double getJumpSpeedY() {
+		return jumpSpeedY;
+	}
+
+	/**
+	 * @param jumpSpeedY the jumpSpeedY to set
+	 */
+	private void setJumpSpeedY(double jumpSpeedY) {
+		this.jumpSpeedY = jumpSpeedY;
+	}
+	
 	
 	/**
 	 * 
@@ -245,14 +328,14 @@ public class Worm {
 		double mass, gravity, speed, force, distance;
 		mass = getMass();  //don't forget to change if we end up giving mass a dedicated field
 		gravity = 9.80665;
-		force = (( 5 * ActionPoints ) / ( mass * gravity ));
+		force = (( 5 * getActionPoints() ) / ( mass * gravity ));
 		speed = ( force / ( mass * 2));
-		jumpSpeedX = speed * Math.cos(orientation);
-		jumpSpeedY = speed * Math.sin(orientation);
-		jumpTime = (( 2 *jumpSpeedY ) / gravity );
-		distance = jumpTime * jumpSpeedX;
-		jumpX = posX + distance;
-		jumpY = posY;
+		setJumpSpeedX(speed * Math.cos(getOrientation()));
+		setJumpSpeedY(speed * Math.sin(getOrientation()));
+		setJumpTime((( 2 * getJumpSpeedY() ) / gravity ));
+		distance = getJumpTime() * getJumpSpeedX();
+		setJumpX(getPosX() + distance);
+		setJumpY(getPosY());
 		}
 	
 	public void jump() throws ExhaustionException {
@@ -261,14 +344,14 @@ public class Worm {
 				throw new ExhaustionException();
 			}
 			else {
-				ActionPoints = 0;
+				setActionPoints(0);
 				return;
 			}
 		}
 		else {
-			posX = jumpX;
-			posY = jumpY;
-			ActionPoints = 0;
+			setPosX(getJumpX());
+			//posY = jumpY;
+			setActionPoints(0);
 			return;
 		}
 	}
@@ -280,10 +363,9 @@ public class Worm {
 	
 	public double[] jumpStep(double time) {
 		double x, y; 
-		x = posX + (time * jumpSpeedX);
-		y = posY + (time * ( jumpSpeedY - ((time * 9.80665)/2)));
+		x = getPosX() + (time * getJumpSpeedX());
+		y = getPosY() + (time * ( getJumpSpeedY() - ((time * 9.80665)/2)));
 		double coordinates[] = {x, y};
 		return coordinates;
 	}
-	//forcecommit
 }
