@@ -1,0 +1,11 @@
+Add documentation to Worm.java
+		-Add to all setters and getters
+		-Add invariants?
+		-Add pre and posts to jump and step (and children)
+Fix Facade.java
+	-reinsert text
+	-make sure its not a java but a interface class?
+	-add documentation where needed
+Write TestSuite
+	-Do everything
+	
