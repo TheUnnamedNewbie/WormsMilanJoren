@@ -273,7 +273,7 @@ public class Worm {
 	}
 	
 	
-	private boolean canMove(int steps) {
+	public boolean canMove(int steps) {
 		double currentOrientation = getOrientation();
 		int stepPoints = roundUp(getActionPoints()
 				- Math.abs(Math.cos(currentOrientation))
@@ -316,7 +316,7 @@ public class Worm {
 		}
 	}
 	
-	private boolean canJump() {
+	public boolean canJump() {
 		return (isValidOrientation() && (getActionPoints() > 0) );
 	}
 		
