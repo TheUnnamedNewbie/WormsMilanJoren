@@ -12,4 +12,5 @@ Write TestSuite
 	
 Issues with jump:
 
+
 Although the update values now seem to work, it would appear that the distances travled are so small, that they are not noticable (the are often 8 orders of magnitude smaller as actual coordinates). Will check if coordinates change during a jump, if so, the movement might just be so tiny that the shift is sub-pixel. 
