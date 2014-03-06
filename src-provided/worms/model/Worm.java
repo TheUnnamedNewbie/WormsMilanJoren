@@ -300,7 +300,7 @@ public class Worm {
 			newOrientation -= 2*Math.PI;
 		setOrientation(newOrientation);
 		if (active){
-			setActionPoints(roundUp(getActionPoints() - (amount / (2 * Math.PI)) * 60));
+			setActionPoints(roundUp(getActionPoints() - (Math.abs(amount) / (2 * Math.PI)) * 60));
 		}
 		updateJumpData();
 	}
@@ -332,10 +332,14 @@ public class Worm {
 		speed = ( force / ( mass * 2));
 		setJumpSpeedX(speed * Math.cos(getOrientation()));
 		setJumpSpeedY(speed * Math.sin(getOrientation()));
-		setJumpTime((( 2 * getJumpSpeedY() ) / gravity ));
+		setJumpTime((Math.abs(( 2 * getJumpSpeedY() )) / gravity ));
 		distance = getJumpTime() * getJumpSpeedX();
 		setJumpX(getPosX() + distance);
 		setJumpY(getPosY());
+//		System.out.print(getJumpX());
+//		System.out.print(getJumpY());
+//		System.out.print(getPosX()); 
+//		System.out.print(getPosY());
 		}
 	
 	public void jump() throws ExhaustionException {
