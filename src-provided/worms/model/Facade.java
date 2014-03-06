@@ -32,8 +32,9 @@ public class Facade implements IFacade {
 	}
 	
 	public void turn(Worm worm, double angle) {
-		if (canTurn(worm, angle))
+		if (canTurn(worm, angle)) {
 			worm.turn(angle, true);
+		}
 	}
 	
 	public void jump(Worm worm) throws ModelException {

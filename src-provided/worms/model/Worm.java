@@ -21,7 +21,7 @@ public class Worm {
 	public Worm(String name, double posX, double posY, double radius, double direction) {
 		setPosX(posX);
 		setPosY(posY);
-		setRadius(radius);
+		setRadius(radius);  //Need to add a isvalidradius? (radius should not be set under 0.25)
 		setOrientation(direction);
 		setActionPoints(getMaxActionPoints());
 		setName(name);
@@ -105,12 +105,12 @@ public class Worm {
 
 	private void setActionPoints(int points) {
 		assert isValidPoints(points);
-		this.ActionPoints = points;
+		ActionPoints = points;
 	}
 
 	//Make private?
 	public boolean isValidPoints(int points) {
-		return (points >= 0) && (points <= getMaxActionPoints());
+		return ((points >= 0) && (points <= getMaxActionPoints()));
 	}
 	//end total
 
@@ -299,9 +299,9 @@ public class Worm {
 		if (newOrientation > 2*Math.PI)
 			newOrientation -= 2*Math.PI;
 		setOrientation(newOrientation);
-		if (active)
-			setActionPoints(roundUp(getActionPoints()
-					- (amount / (2 * Math.PI)) * 60));
+		if (active){
+			setActionPoints(roundUp(getActionPoints() - (amount / (2 * Math.PI)) * 60));
+		}
 		updateJumpData();
 	}
 	
@@ -321,7 +321,7 @@ public class Worm {
 	}
 		
 	private boolean isValidOrientation() {
-		return ((getOrientation() < Math.PI ) && (getOrientation() > (2 * Math.PI)));
+		return ((getOrientation() > Math.PI ) && (getOrientation() < (2 * Math.PI)));
 	}
 	
 	private void calculateJump() {
