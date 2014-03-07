@@ -328,7 +328,7 @@ public class Worm {
 		double mass, gravity, speed, force, distance;
 		mass = getMass();  //don't forget to change if we end up giving mass a dedicated field
 		gravity = 9.80665;
-		force = (( 5 * getActionPoints() ) / ( mass * gravity ));
+		force = (( 5 * getActionPoints() ) + ( mass * gravity ));
 		speed = ( force / ( mass * 2));
 		setJumpSpeedX(speed * Math.cos(getOrientation()));
 		setJumpSpeedY(speed * Math.sin(getOrientation()));
