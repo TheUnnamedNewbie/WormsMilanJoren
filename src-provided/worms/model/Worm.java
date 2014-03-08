@@ -433,7 +433,6 @@ public class Worm {
 	/**
 	 * 
 	 * @throws ExhaustionException
-	 * 
 	 * @post if jump is not legal, none of the coordinates should have changed
 	 * 		| if (! isJumpLegal() ) {
 	 * 		|		new.getPosX == old.getPosX
