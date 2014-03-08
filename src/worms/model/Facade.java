@@ -29,8 +29,9 @@ public class Facade implements IFacade {
 	}
 	
 	public boolean canTurn(Worm worm, double angle) {
-		return ((angle + worm.getOrientation()) <= 4 * Math.PI)
-				&& (((angle / (2 * Math.PI)) * 60) <= worm.getActionPoints());
+		//(-Math.PI <= (amount + getOrientation())) && ((amount + getOrientation()) <= Math.PI)
+		return (-4*Math.PI <= (angle + worm.getOrientation())) && ((angle + worm.getOrientation()) <= 4*Math.PI)
+				&& (((Math.abs(angle) / (2 * Math.PI)) * 60) <= worm.getActionPoints());
 	}
 	
 	public void turn(Worm worm, double angle) {
