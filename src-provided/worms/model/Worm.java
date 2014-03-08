@@ -355,19 +355,17 @@ public class Worm {
 	 * Adds a given angle to the current orientation of the worm.
 	 * 
 	 * Nominally, because part of orientation
-	 * @pre	amount may not be too high. New angle (== current angle + amount) must remain smaller than 4*Pi
-	 * 		| (amount + getOrientation()) <= 4*Math.PI
+	 * @pre	amount may not be too high or too low. New angle (== current angle + amount) must remain smaller than Pi and larger than -Pi
+	 * 		| (-Math.PI <= (amount + getOrientation())) && ((amount + getOrientation()) <= Math.PI)
 	 * @pre	If the turning is active, you must have sufficient action points to turn.
 	 * 		| if (active)
-	 * 		| 	((amount / (2 * Math.PI)) * 60) <= getActionPoints()
+	 * 		| 	((Math.abs(amount) / (2 * Math.PI)) * 60) <= getActionPoints()
 	 * @param amount
 	 * @param active
-	 * Is true if turning was active and thus substracts action points.
+	 * Is true if turning was active and thus subtracts action points.
 	 */
 	public void turn(double amount, boolean active) {
 		double newOrientation = getOrientation() + amount;
-		if (newOrientation > 2*Math.PI)
-			newOrientation -= 2*Math.PI;
 		setOrientation(newOrientation);
 		if (active){
 			setActionPoints(roundUp(getActionPoints() - (Math.abs(amount) / (2 * Math.PI)) * 60));
