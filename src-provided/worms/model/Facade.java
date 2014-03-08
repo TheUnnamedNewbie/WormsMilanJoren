@@ -46,7 +46,7 @@ public class Facade implements IFacade {
 	}
 	
 	public double getJumpTime(Worm worm) {
-		return worm.jumpTime();
+		return worm.getJumpTime();
 	}
 	
 	public double[] getJumpStep(Worm worm, double t) {

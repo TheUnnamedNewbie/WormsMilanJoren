@@ -32,6 +32,7 @@ public abstract class FacadeTest {
 		assertEquals(0.25, instance.getMinimalRadius(worm1), 0.00001);
 		assertEquals(worm1.getActionPoints(), instance.getActionPoints(worm1));
 		assertEquals(worm1.getMaxActionPoints(), instance.getMaxActionPoints(worm1));
+		assertEquals(worm1.getJumpTime(), instance.getJumpTime(worm1), 0.00001);
 	}
 	
 	@Test
@@ -59,10 +60,14 @@ public abstract class FacadeTest {
 	}
 	
 	@Test
-	public void testJumpData() {
+	public void testJump() {
 		Worm worm1 = new Worm("James May", 0, 0, 0, 1);
-		instance.move(worm1, 1);
 		instance.turn(worm1, Math.PI/4.0);
+		instance.jump(worm1);
+		assertEquals(0,worm1.getActionPoints());
+		double targetJumpX = Math.cos(Math.PI/4.0)*(1+1/9.80665)*((5*worm1.getMaxActionPoints()+9.80665*worm1.getMass())/worm1.getMass());
+		assertEquals(targetJumpX, worm1.getPosX(), 0.00001);
+		assertEquals(0.0, worm1.getPosY(), 0.00001);
 	}
 
 }

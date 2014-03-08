@@ -233,7 +233,7 @@ public class Worm {
 	/**
 	 * @return the jumpTime
 	 */
-	private double getJumpTime() {
+	public double getJumpTime() {
 		return jumpTime;
 	}
 
@@ -442,7 +442,7 @@ public class Worm {
 	 * 		| if (isValidOrienations()) {
 	 * 		|		new.getActionPoints() == 0
 	 * 		| }
-	 * @post if the jump was legal the new coordinates should be set the the jumpcoordinates
+	 * @post if the jump was legal the new coordinates should be set to the jumpcoordinates
 	 * 		| if (isJumpLegal() ) {
 	 * 		| 		new.getPosX() == this.getJumpX()
 	 * 		|		new.getPosY() == this.getJumpY()
