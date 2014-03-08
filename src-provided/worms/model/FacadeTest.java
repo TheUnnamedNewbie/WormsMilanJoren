@@ -19,7 +19,7 @@ public class FacadeTest {
 
 	@Test
 	public void testCreation() {
-		Worm worm1 = new Worm("James May", 0, 0, 0, 1);
+		Worm worm1 = new Worm("James May", 0, 0, 1, 0);
 		Worm worm2 = facade.createWorm(0, 0, 0, 1, "James May");
 		assertEquals(worm1.getPosX(), worm2.getPosX(), EPS);
 		assertEquals(worm1.getPosY(), worm2.getPosY(),EPS);
@@ -47,8 +47,8 @@ public class FacadeTest {
 	@Test
 	public void testMoveLegal() {
 		Worm worm1 = facade.createWorm(0, 0, 0, 1, "James May");
-		facade.move(worm1, 2);
-		assertEquals(worm1.getPosX(), 2.0, 0.00001);
+		facade.move(worm1, 1);
+		assertEquals(worm1.getPosX(), 1.0, 0.00001);
 		int targetAP = Worm.roundUp(worm1.getActionPoints() - Math.abs(Math.cos(0)) - Math.abs(4 * Math.sin(0)));
 		assertEquals(targetAP, worm1.getActionPoints());
 	}
@@ -62,20 +62,23 @@ public class FacadeTest {
 	@Test
 	public void testTurnLegal() {
 		Worm worm1 = facade.createWorm(0, 0, 0, 1, "James May");
+		Worm worm2 = new Worm("James May", 0, 0, 1, 0);
 		facade.turn(worm1, Math.PI);
+		worm2.turn(Math.PI, true);
 		assertEquals(Math.PI, worm1.getOrientation(), 0.00001);
-		int targetAP = Worm.roundUp(worm1.getActionPoints() - (Math.abs(Math.PI) / (2 * Math.PI)) * 60);
-		assertEquals(targetAP, worm1.getActionPoints());
+		assertEquals(worm2.getActionPoints(), worm1.getActionPoints());
 	}
 	
 	@Test
 	public void testJump() {
 		Worm worm1 = facade.createWorm(0, 0, 0, 1, "James May");
+		Worm worm2 = new Worm("James May", 0, 0, 1, 0);
 		facade.turn(worm1, Math.PI/4.0);
 		facade.jump(worm1);
+		worm2.turn(Math.PI/4.0, true);
+		worm2.jump();
 		assertEquals(0,worm1.getActionPoints());
-		double targetJumpX = Math.cos(Math.PI/4.0)*(1+1/9.80665)*((5*worm1.getMaxActionPoints()+9.80665*worm1.getMass())/worm1.getMass());
-		assertEquals(targetJumpX, worm1.getPosX(), EPS);
+		assertEquals(worm2.getPosX(), worm1.getPosX(), EPS);
 		assertEquals(0.0, worm1.getPosY(), EPS);
 	}
 	

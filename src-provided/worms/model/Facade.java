@@ -23,6 +23,8 @@ public class Facade implements IFacade {
 			worm.step(nbSteps);
 		} catch (ExhaustionException e) {
 			throw new ModelException("Insufficient ActionPoints");
+		} catch (IllegalArgumentException e) {
+			throw new ModelException("nbSteps must be positive");
 		}
 	}
 	
