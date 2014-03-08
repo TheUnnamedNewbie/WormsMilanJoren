@@ -112,6 +112,7 @@ public class FacadeTest {
 	@Test(expected = ModelException.class)
 	public void testExhaustedMove() {
 		Worm worm1 = facade.createWorm(0, 0, 0, 1, "James May");
+		facade.turn(worm1, Math.PI/4.0);
 		facade.jump(worm1);
 		facade.move(worm1, 1);
 	}
@@ -119,6 +120,7 @@ public class FacadeTest {
 	@Test(expected = ModelException.class)
 	public void testExhaustedJump() {
 		Worm worm1 = facade.createWorm(0, 0, 0, 1, "James May");
+		facade.turn(worm1, Math.PI/4.0);
 		facade.jump(worm1);
 		facade.jump(worm1);
 	}

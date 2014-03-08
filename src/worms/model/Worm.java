@@ -346,9 +346,9 @@ public class Worm {
 	public boolean canMove(int steps) {
 		double currentOrientation = getOrientation();
 		int stepPoints = roundUp(getActionPoints()
-				- Math.abs(Math.cos(currentOrientation))
-				- Math.abs(4 * Math.sin(currentOrientation)));
-		return (getActionPoints() >= steps*stepPoints);
+				- getRadius()*Math.abs(Math.cos(currentOrientation))
+				- getRadius()*Math.abs(4 * Math.sin(currentOrientation)));
+		return (getActionPoints() >= steps*stepPoints) && (getActionPoints()>0);
 	}
 	
 	/**
