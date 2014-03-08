@@ -455,6 +455,7 @@ public class Worm {
 			}
 			else {
 				setActionPoints(0);
+				setJumpLegal(false);
 				return;
 			}
 		}
@@ -462,6 +463,7 @@ public class Worm {
 			setPosX(getJumpX());
 			//posY = jumpY;
 			setActionPoints(0);
+			setJumpLegal(false);
 			return;
 		}
 	}
