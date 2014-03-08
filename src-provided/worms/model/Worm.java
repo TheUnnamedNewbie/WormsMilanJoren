@@ -47,32 +47,70 @@ public class Worm {
 	//all position stuff Defensively
 	@Basic
 
+	/**
+	 * @return 
+	 * 		| result == this.posX
+	 */
 	public double getPosX() {
 		return this.posX;
 	}
 	
+	
+	/**
+	 * 
+	 * @param position
+	 * @post 
+	 * 		| new.getPosX() == position
+	 */
 	public void setPosX(double position) {
 		this.posX = position;
 		updateJumpData();
 	}
 
 	@Basic
+	/**
+	 * 
+	 * @return
+	 * 		| result == this.posY
+	 */
 	public double getPosY() {
 		return this.posY;
 	}
 	
+	/**
+	 * 
+	 * @param position
+	 * @post 
+	 * 		| new.getPosY() == position
+	 */
 	public void setPosY(double position) {
 		this.posY = position;
 		updateJumpData();
 	}
 
 	@Basic
+	/**
+	 * 
+	 * @return
+	 * 		| result == this.radius
+	 */
 	public double getRadius() {
 		return radius;
 	}
 	
+	
+	/**
+	 * 
+	 * @param radius
+	 * 			The new radius for the worm
+	 * @post The radius of the worm is now set the the given value radius
+	 * 		| new.getRadius() == radius
+	 * @throws IllegalArgumentException
+	 * 		the given radius is not a legal radius
+	 * 		| ! isValidRadius(radius)
+	 */
 	public void setRadius(double radius) throws IllegalArgumentException {
-		if (radius < 0.25) {
+		if (! isValidRadius(radius)) {
 			throw new IllegalArgumentException();
 		}
 		else {
@@ -86,7 +124,8 @@ public class Worm {
 	 * Note: If mass is frequently used, store in variable and edit whenever you
 	 * alter radius
 	 * 
-	 * @return
+	 * @return the mass calculated from radius
+	 * 		| result == 1062 * ((4 / 3) * Math.PI * Math.pow(getRadius() , 3)
 	 */
 	public double getMass() {
 		return 1062 * ((4 / 3) * Math.PI * Math.pow(getRadius() , 3));
@@ -94,21 +133,48 @@ public class Worm {
 	//end defensive
 
 	//all actionpoint stuff total
+	
+	/**
+	 * 
+	 * @return the maximum amount of actionpoints this worm can have
+	 * 		| result == (int)Math.round(getMass())
+	 */
 	public int getMaxActionPoints() {
 		return (int)Math.round(getMass());
 	}
 
 	@Basic
+	
+	/**
+	 * 
+	 * @return the current amount of actionpoints of the worm.
+	 * 		| result == this.ActionPoints
+	 */
 	public int getActionPoints() {
 		return ActionPoints;
 	}
 
+	/**
+	 * 
+	 * @param points
+	 * 		the amount of points you want to set the worms actionpoints to
+	 * @post if the amount of actionpoints was a valid amount, the new value of actionpoints of this worm shall be equal to it
+	 * 		| if (isValidActionPoints(points)) { new.getActionPoints() == points}
+	 */
 	private void setActionPoints(int points) {
 		assert isValidPoints(points);
 		ActionPoints = points;
 	}
 
 	//Make private?
+	
+	/**
+	 * 
+	 * @param points
+	 * 		the amount of points of which you want to know if it is a valid amount
+	 * @return true if the given value is greater or equal to zero and less than or equal to the max value of AP for this worm
+	 * 		| result == ((points >= 0) && (points <= getMaxActionPoints())
+	 */
 	public boolean isValidPoints(int points) {
 		return ((points >= 0) && (points <= getMaxActionPoints()));
 	}
@@ -221,6 +287,10 @@ public class Worm {
 	}
 	
 	
+	private boolean isValidRadius(double radius) {
+		return (radius >= 0.25);
+	}
+	
 	/**
 	 * 
 	 * @param name
@@ -307,7 +377,12 @@ public class Worm {
 	
 	
 	
-	
+	/**
+	 * 
+	 * @post if the worm is not allowed to jump, the value of JumpLegal gets set to false
+	 * 		| if (! canJump() ) {new.getJumpLegal() == false}
+	 * @post if the worm is allowed to jump, the values of jump will be 
+	 */
 	private void updateJumpData() {
 		if (! canJump() ) {
 			setJumpLegal(false);
@@ -319,14 +394,27 @@ public class Worm {
 		}
 	}
 	
+	
+	/**
+	 * 
+	 * @return true when the orientation of the worm is valid (between 0 and pi) and the worm has actionpoints remaining
+	 * 		| result == (isValidOrientation() && getActionPoints() > 0)
+	 */
 	public boolean canJump() {
 		return (isValidOrientation() && (getActionPoints() > 0) );
 	}
-		
+	
+	/**
+	 * 
+	 * @return true when the orientation of the worm is smaller than pi.
+	 * 		| result == (getOrientations < Math.PI)
+	 */
 	private boolean isValidOrientation() {
-		return ((getOrientation() < Math.PI ));
+		return ((getOrientation() < Math.PI ));	//does getOrientations() > 0 have to be added?
 	}
 	
+	
+
 	private void calculateJump() {
 		double mass, gravity, speed, force, distance;
 		mass = getMass();  //don't forget to change if we end up giving mass a dedicated field
@@ -345,6 +433,21 @@ public class Worm {
 	/**
 	 * 
 	 * @throws ExhaustionException
+	 * 
+	 * @post if jump is not legal, none of the coordinates should have changed
+	 * 		| if (! isJumpLegal() ) {
+	 * 		|		new.getPosX == old.getPosX
+	 * 		|		new.getPosY == old.getPosY
+	 * 		| }
+	 * @post if the orientation was valid, the actionpoints should be set to 0
+	 * 		| if (isValidOrienations()) {
+	 * 		|		new.getActionPoints() == 0
+	 * 		| }
+	 * @post if the jump was legal the new coordinates should be set the the jumpcoordinates
+	 * 		| if (isJumpLegal() ) {
+	 * 		| 		new.getPosX() == this.getJumpX()
+	 * 		|		new.getPosY() == this.getJumpY()
+	 * 		| }
 	 */
 	public void jump() throws ExhaustionException {
 		if (! isJumpLegal()) {
@@ -364,11 +467,24 @@ public class Worm {
 		}
 	}
 	
-		
+	/**
+	 * 	
+	 * @return the value of jumptime
+	 * 		| result == getJumpTime()
+	 */
 	public double jumpTime() {
 		return getJumpTime();
 	}
 	
+	
+	/**
+	 *
+	 * @param time
+	 * @pre the requested time shall be within the range of the jumptime, in other words
+	 * 		| time >= 0 && time <= jumpTime()
+	 * @return the coordinates of the worm at the requested time
+	 *		| result = {(getPosX() + (time * getJumpSpeedX())), (getPosY() + (time * (getJumpSpeedY() - time * 9.80665)/2))}
+	 */
 	public double[] jumpStep(double time) {
 		double x, y; 
 		x = getPosX() + (time * getJumpSpeedX());
