@@ -54,7 +54,7 @@ public class FacadeTest {
 		assertEquals(targetAP, worm1.getActionPoints());
 	}
 	
-	@Test(expected = IllegalArgumentException.class)
+	@Test(expected = ModelException.class)
 	public void testMoveIllegalArg() {
 		Worm worm1 = facade.createWorm(0, 0, 0, 1, "James May");
 		facade.move(worm1, -2);
@@ -88,7 +88,7 @@ public class FacadeTest {
 		assertEquals(1062 * ((4 / 3) * Math.PI * Math.pow(2.0 , 3)), worm1.getMass(), EPS);
 	}
 	
-	@Test(expected = IllegalArgumentException.class)
+	@Test(expected = ModelException.class)
 	public void testSetRadiusIllegal() {
 		Worm worm1 = facade.createWorm(0, 0, 0, 1, "James May");
 		facade.setRadius(worm1, -1.0);
@@ -101,20 +101,20 @@ public class FacadeTest {
 		assertEquals(worm1.getName(), "Captain Slow");
 	}
 	
-	@Test(expected = IllegalArgumentException.class)
+	@Test(expected = ModelException.class)
 	public void testRenameIllegal() {
 		Worm worm1 = facade.createWorm(0, 0, 0, 1, "James May");
 		facade.rename(worm1, "James & Jeremy");
 	}
 	
-	@Test(expected = ExhaustionException.class)
+	@Test(expected = ModelException.class)
 	public void testExhaustedMove() {
 		Worm worm1 = facade.createWorm(0, 0, 0, 1, "James May");
 		facade.jump(worm1);
 		facade.move(worm1, 1);
 	}
 	
-	@Test(expected = ExhaustionException.class)
+	@Test(expected = ModelException.class)
 	public void testExhaustedJump() {
 		Worm worm1 = facade.createWorm(0, 0, 0, 1, "James May");
 		facade.jump(worm1);
