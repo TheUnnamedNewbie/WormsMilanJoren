@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import worms.ExhaustionException;
+
 public abstract class FacadeTest {
 	public abstract Facade createFacade();
 	Facade instance = createFacade();
@@ -51,7 +53,7 @@ public abstract class FacadeTest {
 	}
 	
 	@Test
-	public void testTurnLegalCase() {
+	public void testTurnLegal() {
 		Worm worm1 = new Worm("James May", 0, 0, 0, 1);
 		instance.turn(worm1, Math.PI);
 		assertEquals(Math.PI, worm1.getOrientation(), 0.00001);
@@ -68,6 +70,47 @@ public abstract class FacadeTest {
 		double targetJumpX = Math.cos(Math.PI/4.0)*(1+1/9.80665)*((5*worm1.getMaxActionPoints()+9.80665*worm1.getMass())/worm1.getMass());
 		assertEquals(targetJumpX, worm1.getPosX(), 0.00001);
 		assertEquals(0.0, worm1.getPosY(), 0.00001);
+	}
+	
+	@Test
+	public void testSetRadiusLegal() {
+		Worm worm1 = new Worm("James May", 0, 0, 0, 1);
+		instance.setRadius(worm1, 2.0);
+		assertEquals(2.0, worm1.getRadius(), 0.00001);
+		assertEquals(1062 * ((4 / 3) * Math.PI * Math.pow(2.0 , 3)), worm1.getMass(), 0.00001);
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testSetRadiusIllegal() {
+		Worm worm1 = new Worm("James May", 0, 0, 0, 1);
+		instance.setRadius(worm1, -1.0);
+	}
+	
+	@Test
+	public void testRenameLegal() {
+		Worm worm1 = new Worm("James May", 0, 0, 0, 1);
+		instance.rename(worm1, "Captain Slow");
+		assertEquals(worm1.getName(), "Captain Slow");
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testRenameIllegal() {
+		Worm worm1 = new Worm("James May", 0, 0, 0, 1);
+		instance.rename(worm1, "James & Jeremy");
+	}
+	
+	@Test(expected = ExhaustionException.class)
+	public void testExhaustedMove() {
+		Worm worm1 = new Worm("James May", 0, 0, 0, 1);
+		instance.jump(worm1);
+		instance.move(worm1, 1);
+	}
+	
+	@Test(expected = ExhaustionException.class)
+	public void testExhaustedJump() {
+		Worm worm1 = new Worm("James May", 0, 0, 0, 1);
+		instance.jump(worm1);
+		instance.jump(worm1);
 	}
 
 }

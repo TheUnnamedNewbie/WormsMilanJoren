@@ -162,8 +162,8 @@ public class Worm {
 	 * 		| if (isValidActionPoints(points)) { new.getActionPoints() == points}
 	 */
 	private void setActionPoints(int points) {
-		assert isValidPoints(points);
-		ActionPoints = points;
+		if (isValidPoints(points))
+			ActionPoints = points;
 	}
 
 	//Make private?
