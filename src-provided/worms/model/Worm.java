@@ -366,6 +366,8 @@ public class Worm {
 	 */
 	public void turn(double amount, boolean active) {
 		double newOrientation = getOrientation() + amount;
+		if (newOrientation > 2*Math.PI)
+			newOrientation -= 2*Math.PI;
 		setOrientation(newOrientation);
 		if (active){
 			setActionPoints(roundUp(getActionPoints() - (Math.abs(amount) / (2 * Math.PI)) * 60));
