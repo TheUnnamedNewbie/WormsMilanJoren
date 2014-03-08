@@ -305,6 +305,9 @@ public class Worm {
 		updateJumpData();
 	}
 	
+	
+	
+	
 	private void updateJumpData() {
 		if (! canJump() ) {
 			setJumpLegal(false);
@@ -321,7 +324,7 @@ public class Worm {
 	}
 		
 	private boolean isValidOrientation() {
-		return ((getOrientation() > Math.PI ) && (getOrientation() < (2 * Math.PI)));
+		return ((getOrientation() < Math.PI ));
 	}
 	
 	private void calculateJump() {
@@ -336,12 +339,13 @@ public class Worm {
 		distance = getJumpTime() * getJumpSpeedX();
 		setJumpX(getPosX() + distance);
 		setJumpY(getPosY());
-//		System.out.print(getJumpX());
-//		System.out.print(getJumpY());
-//		System.out.print(getPosX()); 
-//		System.out.print(getPosY());
 		}
 	
+	
+	/**
+	 * 
+	 * @throws ExhaustionException
+	 */
 	public void jump() throws ExhaustionException {
 		if (! isJumpLegal()) {
 			if (isValidOrientation()) { 
