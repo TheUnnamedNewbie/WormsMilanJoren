@@ -345,9 +345,9 @@ public class Worm {
 	
 	public boolean canMove(int steps) {
 		double currentOrientation = getOrientation();
-		int stepPoints = roundUp(getActionPoints()
+		double stepPoints = getActionPoints()
 				- getRadius()*Math.abs(Math.cos(currentOrientation))
-				- getRadius()*Math.abs(4 * Math.sin(currentOrientation)));
+				- getRadius()*Math.abs(4 * Math.sin(currentOrientation));
 		return (getActionPoints() >= steps*stepPoints) && (getActionPoints()>0);
 	}
 	
@@ -388,7 +388,8 @@ public class Worm {
 	private void updateJumpData() {
 		if (! canJump() ) {
 			setJumpLegal(false);
-			return;
+			calculateJump();
+			//return; What's the point?
 		}
 		else {
 			setJumpLegal(true);
@@ -412,23 +413,30 @@ public class Worm {
 	 * 		| result == (getOrientations < Math.PI)
 	 */
 	private boolean isValidOrientation() {
-		return ((getOrientation() < Math.PI ));	//does getOrientations() > 0 have to be added?
+		return ((getOrientation() < Math.PI ) && (getOrientation() > 0));	//does getOrientations() > 0 have to be added? Yes!
 	}
 	
 	
 
 	private void calculateJump() {
-		double mass, gravity, speed, force, distance;
-		mass = getMass();  //don't forget to change if we end up giving mass a dedicated field
-		gravity = 9.80665;
-		force = (( 5 * getActionPoints() ) + ( mass * gravity ));
-		speed = ( force / ( mass * 2));
-		setJumpSpeedX(speed * Math.cos(getOrientation()));
-		setJumpSpeedY(speed * Math.sin(getOrientation()));
-		setJumpTime((Math.abs(( 2 * getJumpSpeedY() )) / gravity ));
-		distance = getJumpTime() * getJumpSpeedX();
-		setJumpX(getPosX() + distance);
-		setJumpY(getPosY());
+		if (isJumpLegal()) {
+			double mass, gravity, speed, force, distance;
+			mass = getMass();
+			gravity = 9.80665;
+			force = ((5 * getActionPoints()) + (mass * gravity));
+			speed = (force / (mass * 2));
+			setJumpSpeedX(speed * Math.cos(getOrientation()));
+			setJumpSpeedY(speed * Math.sin(getOrientation()));
+			setJumpTime((Math.abs((2 * getJumpSpeedY())) / gravity));
+			distance = getJumpTime() * getJumpSpeedX();
+			setJumpX(getPosX() + distance);
+			setJumpY(getPosY());
+		}
+		else {
+			setJumpTime(0);
+			setJumpX(getPosX());
+			setJumpY(getPosY());
+		}
 		}
 	
 	
@@ -450,34 +458,43 @@ public class Worm {
 	 * 		|		new.getPosY() == this.getJumpY()
 	 * 		| }
 	 */
-	public void jump() throws ExhaustionException {
+	public void jump() throws ExhaustionException, IllegalStateException {
+//		PREVIOUS:
+//		if (! isJumpLegal()) {
+//			throw new ExhaustionException();
+//		}
+//		else {
+//			if (! isValidOrientation()) {
+//				setActionPoints(0);
+//			} else {
+//				setPosX(getJumpX());
+//				//posY = jumpY;
+//				setActionPoints(0);
+//				//setJumpLegal(false);
+//				//return;
+//			}
+//		}
+		updateJumpData();
 		if (! isJumpLegal()) {
-			if (isValidOrientation()) { 
+			if (isValidOrientation())
+				throw new IllegalStateException();
+			else
 				throw new ExhaustionException();
-			}
-			else {
-				setActionPoints(0);
-				setJumpLegal(false);
-				return;
-			}
-		}
-		else {
+		} else {
 			setPosX(getJumpX());
-			//posY = jumpY;
 			setActionPoints(0);
-			setJumpLegal(false);
-			return;
 		}
+		updateJumpData();
 	}
 	
-	/**
-	 * 	
-	 * @return the value of jumptime
-	 * 		| result == getJumpTime()
-	 */
-	public double jumpTime() {
-		return getJumpTime();
-	}
+//	/**
+//	 * 	Does this function have a point?
+//	 * @return the value of jumptime
+//	 * 		| result == getJumpTime()
+//	 */
+//	public double jumpTime() {
+//		return getJumpTime();
+//	}
 	
 	
 	/**

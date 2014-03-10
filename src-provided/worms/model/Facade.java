@@ -45,6 +45,8 @@ public class Facade implements IFacade {
 			worm.jump();
 		} catch (ExhaustionException e) {
 			throw new ModelException("No more actionpoints");
+		} catch (IllegalStateException e) {
+			throw new ModelException("Worm must face up");
 		}
 	}
 	
