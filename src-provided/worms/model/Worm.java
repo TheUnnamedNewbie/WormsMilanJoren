@@ -500,14 +500,14 @@ public class Worm {
 		updateJumpData();
 	}
 
-	// /**
-	// * Does this function have a point?
-	// * @return the value of jumptime
-	// * | result == getJumpTime()
-	// */
-	// public double jumpTime() {
-	// return getJumpTime();
-	// }
+	 /**
+	 * Does this function have a point?
+	 * @return the value of jumptime
+	 * | result == getJumpTime()
+	 */
+	 public double jumpTime() {
+	 return getJumpTime();
+	 }
 
 	/**
 	 * 
