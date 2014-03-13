@@ -455,6 +455,7 @@ public class Worm {
 			setJumpTime(0);
 			setJumpX(getPosX());
 			setJumpY(getPosY());
+			setJumpSpeedX(0);
 			return;
 		}
 	}
