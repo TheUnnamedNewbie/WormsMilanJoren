@@ -324,8 +324,9 @@ public class Worm {
 	@Immutable
 	public static int roundUp(double a) {
 		int b = (int) Math.round(a);
-		if (a - b < 0)
+		if (a - b < 0){
 			return b;
+		}
 		return (b + 1);
 	}
 
@@ -456,6 +457,7 @@ public class Worm {
 			setJumpTime(0);
 			setJumpX(getPosX());
 			setJumpY(getPosY());
+			setJumpSpeedX(0);
 			return;
 		}
 	}
