@@ -332,6 +332,7 @@ public class Worm {
 	// defensively because position
 	/**
 	 * Defensive because part of position
+	 * TODO: Documentation
 	 * @param steps
 	 * @throws IllegalArgumentException
 	 * @throws ExhaustionException
@@ -360,6 +361,11 @@ public class Worm {
 		updateJumpData();
 	}
 
+	/**
+	 * TODO: Documentation
+	 * @param steps
+	 * @return
+	 */
 	public boolean canMove(int steps) {
 		double currentOrientation = getOrientation();
 		double stepPoints = (getActionPoints()
