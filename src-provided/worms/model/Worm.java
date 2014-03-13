@@ -350,9 +350,10 @@ public class Worm {
 							* getRadius());
 					setPosY(getPosY() + Math.sin(currentOrientation)
 							* getRadius());
-					setActionPoints((int) Math.round(getActionPoints()
+					double targetAP = getActionPoints()
 							- Math.abs(Math.cos(currentOrientation))
-							- Math.abs(4 * Math.sin(currentOrientation))));
+							- Math.abs(4 * Math.sin(currentOrientation));
+					setActionPoints((int) Math.round(targetAP));
 				}
 			}
 		}
@@ -361,9 +362,9 @@ public class Worm {
 
 	public boolean canMove(int steps) {
 		double currentOrientation = getOrientation();
-		double stepPoints = (getActionPoints() - getRadius()
-				* Math.abs(Math.cos(currentOrientation)) - getRadius()
-				* Math.abs(Math.sin(currentOrientation)) * 4);
+		double stepPoints = (getActionPoints()
+				- Math.abs(Math.cos(currentOrientation))
+				- Math.abs(Math.sin(currentOrientation)) * 4);
 		return (getActionPoints() >= steps * stepPoints)
 				&& (getActionPoints() > 0);
 	}
@@ -393,8 +394,9 @@ public class Worm {
 		//newOrientation %= 2*Math.PI; ? does modulo work with double? Does it work with negatives the way we want to?
 		setOrientation(newOrientation);
 		if (active) {
-			setActionPoints((int) Math.round((getActionPoints() - (Math
-					.abs(amount) / (2 * Math.PI)) * 60)));
+			double targetAP = getActionPoints() - (Math
+					.abs(amount) / (2 * Math.PI)) * 60;
+			setActionPoints((int) Math.round(targetAP));
 		}
 		updateJumpData();
 	}
