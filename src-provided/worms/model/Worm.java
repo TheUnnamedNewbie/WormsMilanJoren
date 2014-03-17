@@ -195,6 +195,7 @@ public class Worm {
 	public void setOrientation(double orientation) {
 		this.orientation = orientation;
 		updateJumpData();
+		System.out.println(this.orientation);
 	}
 
 	// end nominally
@@ -393,10 +394,10 @@ public class Worm {
 	 */
 	public void turn(double amount, boolean active) {
 		double newOrientation = getOrientation() + amount;
-		if (newOrientation > 2 * Math.PI)
-			newOrientation -= 2 * Math.PI;
-		if (newOrientation < -2 * Math.PI)
-			newOrientation += 2 * Math.PI;
+		if (newOrientation > Math.PI)
+			newOrientation -= 2*Math.PI;
+		if (newOrientation < -Math.PI)
+			newOrientation += 2*Math.PI;
 		//newOrientation %= 2*Math.PI; ? does modulo work with double? Does it work with negatives the way we want to?
 		setOrientation(newOrientation);
 		if (active) {
