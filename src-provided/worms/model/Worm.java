@@ -125,7 +125,8 @@ public class Worm {
 	 * 			| result == 1062 * ((4 / 3) * Math.PI * Math.pow(getRadius() , 3)
 	 */
 	public double getMass() {
-		return 1062 * ((4 / 3) * Math.PI * Math.pow(getRadius(), 3));
+		//return 1062 * ((4 / 3) * Math.PI * Math.pow(getRadius(), 3));
+		return (double)1062 * (double)(4.0/3.0) *(Math.PI) * (Math.pow(getRadius(), 3));
 	}
 
 	// end defensive
@@ -335,10 +336,8 @@ public class Worm {
 	 */
 	public boolean canMove(int steps) {
 		double currentOrientation = getOrientation();
-		double stepPoints = (getActionPoints()
-				- Math.abs(Math.cos(currentOrientation))
-				- Math.abs(Math.sin(currentOrientation)) * 4);
-		return (getActionPoints() >= steps * stepPoints)
+		double stepPoints = (getActionPoints() - (Math.abs(Math.cos(currentOrientation)) + Math.abs(Math.sin(currentOrientation)) * 4 * steps));
+		return (getActionPoints() >= stepPoints)
 				&& (getActionPoints() > 0);
 	}
 

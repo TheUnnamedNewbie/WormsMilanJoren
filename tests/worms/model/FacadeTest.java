@@ -45,18 +45,18 @@ public class FacadeTest {
 	}
 	
 	@Test
-	public void testMoveLegal() {
+	public void testMove_Legal() {
 		Worm worm1 = facade.createWorm(0, 0, 0, 1, "James May");
-		facade.move(worm1, 1);
-		assertEquals(worm1.getPosX(), 1.0, 0.00001);
 		double targetAP = worm1.getActionPoints()
 				- Math.abs(Math.cos(worm1.getOrientation()))
 				- Math.abs(4 * Math.sin(worm1.getOrientation()));
+		facade.move(worm1, 1);
+		assertEquals(worm1.getPosX(), 1.0, 0.00001);
 		assertEquals((int)Math.ceil(targetAP), worm1.getActionPoints());
 	}
 	
 	@Test(expected = ModelException.class)
-	public void testMoveIllegalArg() {
+	public void testMove_IllegalArg() {
 		Worm worm1 = facade.createWorm(0, 0, 0, 1, "James May");
 		facade.move(worm1, -2);
 	}
@@ -89,7 +89,7 @@ public class FacadeTest {
 		Worm worm1 = facade.createWorm(0, 0, 0, 1, "James May");
 		facade.setRadius(worm1, 2.0);
 		assertEquals(2.0, worm1.getRadius(), EPS);
-		assertEquals(1062 * ((4 / 3) * Math.PI * Math.pow(2.0 , 3)), worm1.getMass(), EPS);
+		assertEquals(1062 * ((4.0 / 3.0) * Math.PI * Math.pow(2.0 , 3)), worm1.getMass(), EPS);
 	}
 	
 	@Test(expected = ModelException.class)

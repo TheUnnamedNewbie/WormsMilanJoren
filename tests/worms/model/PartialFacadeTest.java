@@ -22,8 +22,9 @@ public class PartialFacadeTest {
 
 	@Test
 	public void testMaximumActionPoints() {
-		Worm worm = facade.createWorm(0, 0, 0, 1, "Test");
-		assertEquals(4448, facade.getMaxActionPoints(worm));
+		Worm worm = facade.createWorm(0, 0, 0, 2, "Test");
+		assertEquals(35588, facade.getMaxActionPoints(worm));
+		
 	}
 
 	@Test
@@ -37,9 +38,9 @@ public class PartialFacadeTest {
 	@Test
 	public void testMoveVertical() {
 		Worm worm = facade.createWorm(0, 0, Math.PI / 2,  1, "Test");
-		facade.move(worm, 5);
+		facade.move(worm, 2);
 		assertEquals(0, facade.getX(worm), EPS);
-		assertEquals(5, facade.getY(worm), EPS);
+		assertEquals(2, facade.getY(worm), EPS);
 	}
 
 	@Test(expected = ModelException.class)
