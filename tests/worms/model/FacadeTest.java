@@ -49,8 +49,10 @@ public class FacadeTest {
 		Worm worm1 = facade.createWorm(0, 0, 0, 1, "James May");
 		facade.move(worm1, 1);
 		assertEquals(worm1.getPosX(), 1.0, 0.00001);
-		int targetAP = Worm.roundUp(worm1.getActionPoints() - Math.abs(Math.cos(0)) - Math.abs(4 * Math.sin(0)));
-		assertEquals(targetAP, worm1.getActionPoints());
+		double targetAP = worm1.getActionPoints()
+				- Math.abs(Math.cos(worm1.getOrientation()))
+				- Math.abs(4 * Math.sin(worm1.getOrientation()));
+		assertEquals((int)Math.ceil(targetAP), worm1.getActionPoints());
 	}
 	
 	@Test(expected = ModelException.class)

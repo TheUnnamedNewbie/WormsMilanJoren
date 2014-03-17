@@ -164,20 +164,6 @@ public class Worm {
 			ActionPoints = points;
 	}
 
-	// Make private?
-
-	/**
-	 * 
-	 * @param points
-	 *            the amount of points of which you want to know if it is a
-	 *            valid amount
-	 * @return true if the given value is greater or equal to zero and less than
-	 *         or equal to the max value of AP for this worm
-	 *         | result == ((points >= 0) && (points <= getMaxActionPoints())
-	 */
-	public boolean isValidPoints(int points) {
-		return ((points >= 0) && (points <= getMaxActionPoints()));
-	}
 
 	// end total
 
@@ -195,7 +181,6 @@ public class Worm {
 	public void setOrientation(double orientation) {
 		this.orientation = orientation;
 		updateJumpData();
-		System.out.println(this.orientation);
 	}
 
 	// end nominally
@@ -296,6 +281,19 @@ public class Worm {
 	private boolean isValidRadius(double radius) {
 		return (radius >= 0.25);
 	}
+	
+	/**
+	 * 
+	 * @param points
+	 *            the amount of points of which you want to know if it is a
+	 *            valid amount
+	 * @return true if the given value is greater or equal to zero and less than
+	 *         or equal to the max value of AP for this worm
+	 *         | result == ((points >= 0) && (points <= getMaxActionPoints())
+	 */
+	public boolean isValidPoints(int points) {
+		return ((points >= 0) && (points <= getMaxActionPoints()));
+	}
 
 	/**
 	 * 
@@ -310,6 +308,15 @@ public class Worm {
 			return false;
 		}
 	}
+	
+	/**
+	 * 
+	 * @return true when the orientation of the worm is smaller than pi.
+	 *         | result == (getOrientations < Math.PI)
+	 */
+	private boolean isValidOrientation() {
+		return ((getOrientation() < Math.PI) && (getOrientation() > 0));
+	}
 
 	private boolean containsLegalChars(String name) {
 		int length = name.length();
@@ -320,14 +327,19 @@ public class Worm {
 		}
 		return true;
 	}
-
-	@Immutable
-	public static int roundUp(double a) {
-		int b = (int) Math.round(a);
-		if (a - b < 0){
-			return b;
-		}
-		return (b + 1);
+	
+	/**
+	 * TODO: Documentation
+	 * @param steps
+	 * @return
+	 */
+	public boolean canMove(int steps) {
+		double currentOrientation = getOrientation();
+		double stepPoints = (getActionPoints()
+				- Math.abs(Math.cos(currentOrientation))
+				- Math.abs(Math.sin(currentOrientation)) * 4);
+		return (getActionPoints() >= steps * stepPoints)
+				&& (getActionPoints() > 0);
 	}
 
 	// defensively because position
@@ -355,25 +367,11 @@ public class Worm {
 					double targetAP = getActionPoints()
 							- Math.abs(Math.cos(currentOrientation))
 							- Math.abs(4 * Math.sin(currentOrientation));
-					setActionPoints((int) Math.round(targetAP));
+					setActionPoints((int) Math.ceil(targetAP));
 				}
 			}
 		}
 		updateJumpData();
-	}
-
-	/**
-	 * TODO: Documentation
-	 * @param steps
-	 * @return
-	 */
-	public boolean canMove(int steps) {
-		double currentOrientation = getOrientation();
-		double stepPoints = (getActionPoints()
-				- Math.abs(Math.cos(currentOrientation))
-				- Math.abs(Math.sin(currentOrientation)) * 4);
-		return (getActionPoints() >= steps * stepPoints)
-				&& (getActionPoints() > 0);
 	}
 
 	/**
@@ -403,7 +401,7 @@ public class Worm {
 		if (active) {
 			double targetAP = getActionPoints() - (Math
 					.abs(amount) / (2 * Math.PI)) * 60;
-			setActionPoints((int) Math.round(targetAP));
+			setActionPoints((int) Math.ceil(targetAP));
 		}
 		updateJumpData();
 	}
@@ -434,15 +432,6 @@ public class Worm {
 	 */
 	public boolean canJump() {
 		return (isValidOrientation() && (getActionPoints() > 0));
-	}
-
-	/**
-	 * 
-	 * @return true when the orientation of the worm is smaller than pi.
-	 *         | result == (getOrientations < Math.PI)
-	 */
-	private boolean isValidOrientation() {
-		return ((getOrientation() < Math.PI) && (getOrientation() > 0));
 	}
 
 	private void calculateJump() {
@@ -502,7 +491,7 @@ public class Worm {
 	}
 
 	 /**
-	 * Does this function have a point?
+	 * Mandatory 'jumpTime' function as mentioned in the assignment.
 	 * @return the value of jumptime
 	 * | result == getJumpTime()
 	 */
