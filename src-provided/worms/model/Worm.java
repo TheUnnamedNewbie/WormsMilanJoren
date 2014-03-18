@@ -15,7 +15,7 @@ import be.kuleuven.cs.som.annotate.*;
  * 		  | getRadius() >= 0.25
  * @author Milan Sanders
  * @author Joren Vaes
- * @date 2/03/2014
+ * @date 18/03/2014
  * 
  */
 public class Worm {
@@ -48,12 +48,11 @@ public class Worm {
 
 	private String validchar = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\'\" ";
 
-	// all position stuff Defensively
-	@Basic
 	/**
-	 * @return 
+	 * @return The worm's X coordinate
 	 * 		| result == this.posX
 	 */
+	@Basic
 	public double getPosX() {
 		return this.posX;
 	}
@@ -61,19 +60,21 @@ public class Worm {
 	/**
 	 * 
 	 * @param position
-	 * @post | new.getPosX() == position
+	 * 		The new value the X coordinate of the worm is to be set to.
+	 * @post ... 
+	 * 		| new.getPosX() == position
 	 */
 	public void setPosX(double position) {
 		this.posX = position;
 		updateJumpData();
 	}
 
-	@Basic
 	/**
 	 * 
-	 * @return
+	 * @return The value of the Y coordinate of the worm.
 	 * 		| result == this.posY
 	 */
+	@Basic
 	public double getPosY() {
 		return this.posY;
 	}
@@ -81,19 +82,21 @@ public class Worm {
 	/**
 	 * 
 	 * @param position
-	 * @post | new.getPosY() == position
+	 * 			The new value the Y coordinate of the worm is to be set to.
+	 * @post ...
+	 * 		| new.getPosY() == position
 	 */
 	public void setPosY(double position) {
 		this.posY = position;
 		updateJumpData();
 	}
 
-	@Basic
 	/**
 	 * 
-	 * @return
+	 * @return the radius of the worm.
 	 * 		| result == this.radius
 	 */
+	@Basic
 	public double getRadius() {
 		return radius;
 	}
@@ -105,7 +108,7 @@ public class Worm {
 	 * @post The radius of the worm is now set the the given value radius
 	 * 			   | new.getRadius() == radius
 	 * @throws IllegalArgumentException
-	 *             the given radius is not a legal radius
+	 *             the given radius is not a legal radius.
 	 *             | ! isValidRadius(radius)
 	 */
 	public void setRadius(double radius) throws IllegalArgumentException {
@@ -117,21 +120,17 @@ public class Worm {
 		}
 	}
 
+//	 Note: If mass is frequently used, store in variable and edit whenever you
+//	 alter radius
+	
 	/**
-	 * Note: If mass is frequently used, store in variable and edit whenever you
-	 * alter radius
 	 * 
 	 * @return	the mass calculated from radius
-	 * 			| result == 1062 * ((4 / 3) * Math.PI * Math.pow(getRadius() , 3)
+	 * 			| result == 1062 * ((4.0 / 3.0) * Math.PI * Math.pow(getRadius() , 3)
 	 */
 	public double getMass() {
-		//return 1062 * ((4 / 3) * Math.PI * Math.pow(getRadius(), 3));
 		return (double)1062 * (double)(4.0/3.0) *(Math.PI) * (Math.pow(getRadius(), 3));
 	}
-
-	// end defensive
-
-	// all actionpoint stuff total
 
 	/**
 	 * 
@@ -142,12 +141,12 @@ public class Worm {
 		return (int) Math.round(getMass());
 	}
 
-	@Basic
 	/**
 	 * 
 	 * @return the current amount of actionpoints of the worm.
 	 * 		| result == this.ActionPoints
 	 */
+	@Basic
 	public int getActionPoints() {
 		return ActionPoints;
 	}
@@ -165,31 +164,38 @@ public class Worm {
 			ActionPoints = points;
 	}
 
-
-	// end total
-
-	// direction nominally
-
 	@Basic
 	public double getOrientation() {
 		return this.orientation;
 	}
 
 	/**
-	 * @pre .. | (0 <= orientation) && (orientation <= 2*Math.PI)
+	 * @pre the value of orientation should be between -pi (exclusive) and pi (inclusive).
+	 * 		| (-Math.PI <= orientation) && (orientation <= Math.PI)
 	 * @param orientation
+	 * 		The value the orientation of the worm is to be set to.
 	 */
 	public void setOrientation(double orientation) {
 		this.orientation = orientation;
 		updateJumpData();
 	}
 
-	// end nominally
-
+	/**
+	 * 
+	 * @return the name of the worm.
+	 * 		| result == this.name
+	 */
 	public String getName() {
 		return this.name;
 	}
 
+	/**
+	 * 
+	 * @param name
+	 * 		The new string the name of the worm is to be set to
+	 * @throws IllegalArgumentException
+	 * 		the new name contains Illegal charecters or is to short.
+	 */
 	public void setName(String name) throws IllegalArgumentException {
 		if (!isValidName(name))
 			throw new IllegalArgumentException();
@@ -279,6 +285,13 @@ public class Worm {
 		this.jumpSpeedY = jumpSpeedY;
 	}
 
+	/**
+	 * 
+	 * @param radius
+	 * 		the radius of which the validity is to be checked
+	 * @return true is the radius is greater or equal to 0.25
+	 * 		| result == (radius >= 0.25)
+	 */
 	private boolean isValidRadius(double radius) {
 		return (radius >= 0.25);
 	}
@@ -330,15 +343,17 @@ public class Worm {
 	}
 	
 	/**
-	 * TODO: Documentation
 	 * @param steps
+	 * 		The amount of steps the worm should move
 	 * @return
+	 * 		True if the worm can move that much steps. 
+	 * 		This means that the worm has enough actionpoints, every step takes (cos(getOrientation())) + 4*sin(getOrientation()).
+	 *  	| result == (Math.abs(Math.cos(getOrientation())) + Math.abs(Math.sin(getOrientation())) * 4 * steps)
 	 */
 	public boolean canMove(int steps) {
 		double currentOrientation = getOrientation();
-		double stepPoints = (getActionPoints() - (Math.abs(Math.cos(currentOrientation)) + Math.abs(Math.sin(currentOrientation)) * 4 * steps));
-		return (getActionPoints() >= stepPoints)
-				&& (getActionPoints() > 0);
+		double stepPoints = (Math.abs(Math.cos(currentOrientation)) + Math.abs(Math.sin(currentOrientation)) * 4 * steps);
+		return (getActionPoints() >= stepPoints);
 	}
 
 	// defensively because position
@@ -395,7 +410,6 @@ public class Worm {
 			newOrientation -= 2*Math.PI;
 		if (newOrientation < -Math.PI)
 			newOrientation += 2*Math.PI;
-		//newOrientation %= 2*Math.PI; ? does modulo work with double? Does it work with negatives the way we want to?
 		setOrientation(newOrientation);
 		if (active) {
 			double targetAP = getActionPoints() - (Math
@@ -409,14 +423,16 @@ public class Worm {
 	 * 
 	 * @post if the worm is not allowed to jump, the value of JumpLegal gets set
 	 *       to false
-	 *       | if (! canJump() ) {new.getJumpLegal() == false}
-	 * @post if the worm is allowed to jump, the values of jump will be
+	 *       | if (! canJump() )
+	 *       | {
+	 *       |	new.getJumpLegal() == false
+	 *       | }
+	 * @post if the worm is allowed
 	 */
 	private void updateJumpData() {
 		if (!canJump()) {
 			setJumpLegal(false);
 			calculateJump();
-			// return; What's the point?
 		} else {
 			setJumpLegal(true);
 			calculateJump();
@@ -459,24 +475,22 @@ public class Worm {
 	/**
 	 * 
 	 * @throws ExhaustionException
-	 * @post if jump is not legal, none of the coordinates should have changed
+	 * 		if the worm no longer has any actionpoitns.
+	 * @post if jump is not legal, none of the coordinates should have changed. The worms actionpoints should be 0.
 	 *       | if (! isJumpLegal() ) {
 	 *       | 	new.getPosX == old.getPosX
 	 *       | 	new.getPosY == old.getPosY
-	 *       | }
-	 * @post if the orientation was valid, the actionpoints should be set to 0
-	 *       | if (isValidOrienations()) {
-	 *       | 	new.getActionPoints() == 0
+	 *       |  new.getActionPoints() == 0
 	 *       | }
 	 * @post if the jump was legal the new coordinates should be set to the
-	 *       jumpcoordinates
+	 *       jumpcoordinates, and the actionpoints should be 0
 	 *       | if (isJumpLegal() ) {
 	 *       | 	new.getPosX() == this.getJumpX()
 	 *       | 	new.getPosY() == this.getJumpY()
+	 *       |  new.getActionPoints() == 0
 	 *       | }
 	 */
 	public void jump() throws ExhaustionException, IllegalStateException {
-		updateJumpData();
 		if (!isJumpLegal()) {
 			if (isValidOrientation())
 				throw new IllegalStateException();
@@ -492,7 +506,7 @@ public class Worm {
 	 /**
 	 * Mandatory 'jumpTime' function as mentioned in the assignment.
 	 * @return the value of jumptime
-	 * | result == getJumpTime()
+	 * 		| result == getJumpTime()
 	 */
 	 public double jumpTime() {
 	 return getJumpTime();
@@ -501,8 +515,8 @@ public class Worm {
 	/**
 	 * 
 	 * @param time
-	 * @pre the requested time shall be within the range of the jumptime, in
-	 *      other words
+	 * 		the timestamp for which the coordinates of the worm is wanted
+	 * @pre the requested time shall be within the range of the jumptime, thus between 0 and jumpTime().
 	 *      | time >= 0 && time <= jumpTime()
 	 * @return	the coordinates of the worm at the requested time
 	 * 			| result = {(getPosX() + (time * getJumpSpeedX())),
