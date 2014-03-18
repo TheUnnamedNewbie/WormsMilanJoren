@@ -356,13 +356,15 @@ public class Worm {
 		return (getActionPoints() >= stepPoints);
 	}
 
-	// defensively because position
 	/**
-	 * Defensive because part of position
-	 * TODO: Documentation
 	 * @param steps
+	 * 		The amount of steps to be moved.
 	 * @throws IllegalArgumentException
+	 * 		If the amount of steps is smaller than 0.
+	 * 		| (steps <= 0)
 	 * @throws ExhaustionException
+	 * 		If the worm does not have enought actionpoints.
+	 * 		| (!canMove(steps))
 	 */
 	public void step(int steps) throws IllegalArgumentException,
 	ExhaustionException {
