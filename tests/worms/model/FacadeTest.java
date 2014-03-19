@@ -62,6 +62,13 @@ public class FacadeTest {
 	}
 	
 	@Test
+	public void testCanMove_Illegal() {
+		Worm worm1 = facade.createWorm(0, 0, 0, 1, "James May");
+		boolean Target = worm1.canMove(-2);
+		assertEquals(false, Target);
+	}
+	
+	@Test
 	public void testTurnLegal() {
 		Worm worm1 = facade.createWorm(0, 0, 0, 1, "James May");
 		Worm worm2 = new Worm("James May", 0, 0, 1, 0);

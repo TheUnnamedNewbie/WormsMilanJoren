@@ -346,14 +346,14 @@ public class Worm {
 	 * @param steps
 	 * 		The amount of steps the worm should move
 	 * @return
-	 * 		True if the worm can move that much steps. 
+	 * 		True if the worm can move that much steps if they are positive. 
 	 * 		This means that the worm has enough actionpoints, every step takes (cos(getOrientation())) + 4*sin(getOrientation()).
-	 *  	| result == (Math.abs(Math.cos(getOrientation())) + Math.abs(Math.sin(getOrientation())) * 4 * steps)
+	 *  	| result == (getActionPoints() >= (Math.abs(Math.cos(getOrientation())) + Math.abs(Math.sin(getOrientation())) * 4 * steps)) && (steps > 0)
 	 */
 	public boolean canMove(int steps) {
 		double currentOrientation = getOrientation();
 		double stepPoints = (Math.abs(Math.cos(currentOrientation)) + Math.abs(Math.sin(currentOrientation)) * 4 * steps);
-		return (getActionPoints() >= stepPoints);
+		return (getActionPoints() >= stepPoints) && (steps > 0);
 	}
 
 	/**
