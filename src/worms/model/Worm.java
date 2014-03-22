@@ -363,7 +363,7 @@ public class Worm {
 	 * 		If the amount of steps is smaller than 0.
 	 * 		| (steps <= 0)
 	 * @throws ExhaustionException
-	 * 		If the worm does not have enought actionpoints.
+	 * 		If the worm does not have enough actionpoints.
 	 * 		| (!canMove(steps))
 	 */
 	public void step(int steps) throws IllegalArgumentException,
