@@ -1,4 +1,4 @@
-package worms.model;
+package worms.containment;
 
 public class World {
 
