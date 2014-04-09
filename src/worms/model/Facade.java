@@ -89,12 +89,13 @@ public class Facade implements IFacade {
 		return 0.25;
 	}
 	
+	//We would have liked to avoid the typecast, but IFacade won't let us.
 	public int getActionPoints(Worm worm) {
-		return worm.getActionPoints();
+		return (int)worm.getActionPoints();
 	}
 	
 	public int getMaxActionPoints(Worm worm) {
-		return worm.getMaxActionPoints();
+		return (int)worm.getMaxActionPoints();
 	}
 	
 	public String getName(Worm worm) {
@@ -139,8 +140,7 @@ public class Facade implements IFacade {
 
 	@Override
 	public boolean canMove(Worm worm) {
-		// TODO Auto-generated method stub
-		return false;
+		return canMove(worm, 1);
 	}
 
 	@Override
@@ -189,8 +189,7 @@ public class Facade implements IFacade {
 
 	@Override
 	public int getHitPoints(Worm worm) {
-		// TODO Auto-generated method stub
-		return 0;
+		return (int)worm.getHitPoints();
 	}
 
 	@Override
@@ -213,14 +212,12 @@ public class Facade implements IFacade {
 
 	@Override
 	public int getMaxHitPoints(Worm worm) {
-		// TODO Auto-generated method stub
-		return 0;
+		return (int)worm.getMaxHitPoints();
 	}
 
 	@Override
 	public double getRadius(Food food) {
-		// TODO Auto-generated method stub
-		return 0;
+		return 0.2;
 	}
 
 	@Override
@@ -231,8 +228,7 @@ public class Facade implements IFacade {
 
 	@Override
 	public String getSelectedWeapon(Worm worm) {
-		// TODO Auto-generated method stub
-		return null;
+		return worm.getEquipped().getName();
 	}
 
 	@Override
@@ -255,26 +251,22 @@ public class Facade implements IFacade {
 
 	@Override
 	public double getX(Food food) {
-		// TODO Auto-generated method stub
-		return 0;
+		return food.getPosX();
 	}
 
 	@Override
 	public double getX(Projectile projectile) {
-		// TODO Auto-generated method stub
-		return 0;
+		return projectile.getPosX();
 	}
 
 	@Override
 	public double getY(Food food) {
-		// TODO Auto-generated method stub
-		return 0;
+		return food.getPosY();
 	}
 
 	@Override
 	public double getY(Projectile projectile) {
-		// TODO Auto-generated method stub
-		return 0;
+		return projectile.getPosY();
 	}
 
 	@Override
@@ -327,8 +319,7 @@ public class Facade implements IFacade {
 
 	@Override
 	public void move(Worm worm) {
-		// TODO Auto-generated method stub
-		
+		move(worm, 1);
 	}
 
 	@Override

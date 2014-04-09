@@ -1,7 +1,25 @@
 package worms.model;
 
 import worms.ExhaustionException;
+import worms.weapons.*;
 import be.kuleuven.cs.som.annotate.*;
+
+/**
+ * CHANGELOG (or, the temp commit text)
+ * 
+ * Made AP and HP work with long instead of int (only the typecast in math.ceil remains)
+ * 
+ * Implemented HP
+ * 
+ * Fixed the AP out of bounds bug on resize. Waiting on working GUI to fully test
+ * Also went ahead and made the HP ratio remain constant (do you agree?)
+ * 
+ * Implemented the grow() function (please read doc for unanswered Qs)
+ * 
+ * Implemented weapons (Equipped with set and get)
+ * 
+ * dummy implemented cycling through weapons (python code to work with arrays)
+ */
 
 /**
  * 
@@ -24,8 +42,8 @@ public class Worm {
 			double direction) {
 		setPosX(posX);
 		setPosY(posY);
-		setRadius(radius); // Need to add a isvalidradius? (radius should not be
-		// set under 0.25)
+		setRadius(radius); //Q: Need to add a isvalidradius? (radius should not be set under 0.25)
+						   //A: no, setRadius does this already
 		setOrientation(direction);
 		setActionPoints(getMaxActionPoints());
 		setName(name);
@@ -35,7 +53,8 @@ public class Worm {
 	private double posX;
 	private double posY;
 	private double radius;
-	private int ActionPoints;
+	private long ActionPoints;
+	private long HitPoints;
 	private double orientation;
 	private String name;
 
@@ -45,6 +64,8 @@ public class Worm {
 	private boolean jumpLegal;
 	private double jumpSpeedX;
 	private double jumpSpeedY;
+	private Weapon equipped;
+	private Weapon[] inventory; //TODO set array getters and setters
 
 	private String validchar = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\'\" ";
 
@@ -61,7 +82,7 @@ public class Worm {
 	 * 
 	 * @param position
 	 * 		The new value the X coordinate of the worm is to be set to.
-	 * @post ... 
+	 * @post the worm's X coordinate will be the given value
 	 * 		| new.getPosX() == position
 	 */
 	public void setPosX(double position) {
@@ -83,7 +104,7 @@ public class Worm {
 	 * 
 	 * @param position
 	 * 			The new value the Y coordinate of the worm is to be set to.
-	 * @post ...
+	 * @post the worm's Y coordinate will be the given value
 	 * 		| new.getPosY() == position
 	 */
 	public void setPosY(double position) {
@@ -107,6 +128,10 @@ public class Worm {
 	 *            The new radius for the worm
 	 * @post The radius of the worm is now set the the given value radius
 	 * 			   | new.getRadius() == radius
+	 * @post The ratio of AP to maxAP remains the same.
+	 * 			   | this.getActionPoints() // this.getMaxActionPoints() == new.getActionPoints() // new.getMaxActionPoints()
+	 * @post The ratio of HP to maxHP remains the same.
+	 * 			   | this.getHitPoints() // this.getMaxHitPoints() == new.getHitPoints() // new.getMaxHitPoints()
 	 * @throws IllegalArgumentException
 	 *             the given radius is not a legal radius.
 	 *             | ! isValidRadius(radius)
@@ -115,8 +140,11 @@ public class Worm {
 		if (!isValidRadius(radius)) {
 			throw new IllegalArgumentException();
 		} else {
+			double APratio = (double) getActionPoints()/getMaxActionPoints();
+			double HPratio = (double) getHitPoints()/getMaxHitPoints();
 			this.radius = radius;
-
+			setActionPoints(Math.round(getMaxActionPoints() * APratio));
+			setHitPoints(Math.round(getMaxHitPoints() * HPratio));
 		}
 	}
 
@@ -135,10 +163,19 @@ public class Worm {
 	/**
 	 * 
 	 * @return	the maximum amount of actionpoints this worm can have
-	 * 			| result == (int)Math.round(getMass())
+	 * 			| result == Math.round(getMass())
 	 */
-	public int getMaxActionPoints() {
-		return (int) Math.round(getMass());
+	public long getMaxActionPoints() {
+		return Math.round(getMass());
+	}
+	
+	/**
+	 * 
+	 * @return	the maximum amount of hitpoints this worm can have
+	 * 			| result == Math.round(getMass())
+	 */
+	public long getMaxHitPoints() {
+		return Math.round(getMass());
 	}
 
 	/**
@@ -147,8 +184,31 @@ public class Worm {
 	 * 		| result == this.ActionPoints
 	 */
 	@Basic
-	public int getActionPoints() {
+	public long getActionPoints() {
 		return ActionPoints;
+	}
+
+	/**
+	 * 
+	 * @param points
+	 *            the amount of points you want to set the worms hitpoints to
+	 * @post if the amount of hitpoints was a valid amount, the new value of
+	 *       hitpoints of this worm shall be equal to it
+	 *       | if (isValidHitPoints(points)) {new.getHitPoints() == points}
+	 */
+	private void setHitPoints(long points) {
+		if (isValidHitPoints(points))
+			HitPoints = points;
+	}
+	
+	/**
+	 * 
+	 * @return the current amount of hitpoints of the worm.
+	 * 		| result == this.HitPoints
+	 */
+	@Basic
+	public long getHitPoints() {
+		return HitPoints;
 	}
 
 	/**
@@ -159,8 +219,8 @@ public class Worm {
 	 *       actionpoints of this worm shall be equal to it
 	 *       | if (isValidActionPoints(points)) {new.getActionPoints() == points}
 	 */
-	private void setActionPoints(int points) {
-		if (isValidPoints(points))
+	private void setActionPoints(long points) {
+		if (isValidActionPoints(points))
 			ActionPoints = points;
 	}
 
@@ -284,6 +344,20 @@ public class Worm {
 	private void setJumpSpeedY(double jumpSpeedY) {
 		this.jumpSpeedY = jumpSpeedY;
 	}
+	
+	/**
+	 * @return the currently equipped weapon
+	 */
+	public Weapon getEquipped() {
+		return equipped;
+	}
+	
+	/**
+	 * @post The currently equipped weapon is set the given.
+	 */
+	public void setEquipped(Weapon weapon) {
+		this.equipped = weapon;
+	}
 
 	/**
 	 * 
@@ -299,14 +373,28 @@ public class Worm {
 	/**
 	 * 
 	 * @param points
-	 *            the amount of points of which you want to know if it is a
+	 *            the amount of actionpoints of which you want to know if it is a
 	 *            valid amount
 	 * @return true if the given value is greater or equal to zero and less than
-	 *         or equal to the max value of AP for this worm
+	 *         or equal to the max value of actionpoints for this worm
 	 *         | result == ((points >= 0) && (points <= getMaxActionPoints())
 	 */
-	public boolean isValidPoints(int points) {
+	public boolean isValidActionPoints(long points) {
 		return ((points >= 0) && (points <= getMaxActionPoints()));
+	}
+	
+	/**
+	 * This method is functionally equal to isValidActionPoints,
+	 * 	but this is adaptable if criteria would change to the validity of either AP or HP.
+	 * @param points
+	 *            the amount of hitpoints of which you want to know if it is a
+	 *            valid amount
+	 * @return true if the given value is greater or equal to zero and less than
+	 *         or equal to the max value of hitpoints for this worm
+	 *         | result == ((points >= 0) && (points <= getMaxHitPoints())
+	 */
+	public boolean isValidHitPoints(long points) {
+		return ((points >= 0) && (points <= getMaxHitPoints()));
 	}
 
 	/**
@@ -383,7 +471,7 @@ public class Worm {
 					double targetAP = getActionPoints()
 							- Math.abs(Math.cos(currentOrientation))
 							- Math.abs(4 * Math.sin(currentOrientation));
-					setActionPoints((int) Math.ceil(targetAP));
+					setActionPoints((long) Math.ceil(targetAP));
 				}
 			}
 		}
@@ -416,7 +504,7 @@ public class Worm {
 		if (active) {
 			double targetAP = getActionPoints() - (Math
 					.abs(amount) / (2 * Math.PI)) * 60;
-			setActionPoints((int) Math.ceil(targetAP));
+			setActionPoints((long) Math.ceil(targetAP));
 		}
 		updateJumpData();
 	}
@@ -530,5 +618,58 @@ public class Worm {
 		y = getPosY() + (time * (getJumpSpeedY() - ((time * 9.80665) / 2)));
 		double coordinates[] = { x, y };
 		return coordinates;
+	}
+	
+	/**
+	 * The grow function increases the radius of the worm by 10%.
+	 * 
+	 * Q: We need to destroy the food at some point, how do we do this?
+	 * 		Do we tell the worm to tell the food to destroy itself.
+	 * 		Thus making the food tell the world that it is destroyed.
+	 * 		If so, have grow() be grow(Food meal) and end with meal.eat() or smth like that.
+	 * TODO answer Q
+	 * @post The radius will be 1.1 times it's original size.
+	 * 		| new.getRadius() == 1.1*this.getRadius()
+	 *
+	 * Q: Do we need to explicitly say by how much AP, HP, maxAP and maxHP have gone up? I think this suffices.
+	 * TODO answer Q
+	 * @post The ratio of AP to maxAP remains the same.
+	 * 			   | this.getActionPoints() // this.getMaxActionPoints() == new.getActionPoints() // new.getMaxActionPoints()
+	 * @post The ratio of HP to maxHP remains the same.
+	 * 			   | this.getHitPoints() // this.getMaxHitPoints() == new.getHitPoints() // new.getMaxHitPoints()
+	 * 
+	 */
+	public void grow() {
+		setRadius(getRadius()*1.1);
+	}
+	
+	/**
+	 * or:
+	 * public void grow() {
+	 * 		setRadius(getRadius()*1.1);
+	 * 		meal.eat();
+	 * }
+	 */
+	
+	 /**
+	  * The cycle function makes the worm equip the next weapon in its inventory
+	  * @post the new equipped weapon is the next one in the inventory array
+	  * 	(or the first if the previously equipped weapon was the last)
+	  * 	  | if(inventory.length() > 1) {
+	  * 	  |	 	if (inventory.getIndex(this.getEquipped()) != len(inventory)-1)
+	  * 	  |	 		inventory.getIndex(this.getEquipped()) + 1 == inventory.getIndex(new.getEquipped())
+	  * 	  |	 	else
+	  * 	  |	 		inventory.getIndex(new.getEquipped()) == 0
+	  * 	  | }
+	  */
+	public void cycle() {
+		int nbWeapons = inventory.length();
+		if (nbWeapons > 1) {
+			int currentIndex = inventory.getIndex(getEquipped());
+			if (currentIndex != inventory.length()-1)
+				setEquipped(inventory[currentIndex+1]);
+			else
+				setEquipped(inventory[0]);
+		}
 	}
 }
