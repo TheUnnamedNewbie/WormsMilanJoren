@@ -1,8 +1,13 @@
 package worms.entities;
 
+import worms.CoordinateOutOfBoundsException;
+import worms.containment.World;
+
 public abstract class Entity {
 
-	private double PosX, PosY, Radius;
+	private double posX, posY, Radius;
+	private World world;
+	private boolean terminated;
 	
 	
 	/**
@@ -11,11 +16,13 @@ public abstract class Entity {
 	 * @param target
 	 * 		the target coordinate
 	 * @throws CoordinateOutOfBoundsException
-	 * 		thrown if the new coordinate would put the entity in an illigal position (in other words
+	 * 		thrown if the new coordinate would put the entity in an illegal position (in other words
 	 * 		outside of the legal bounds of the map)
 	 */
 	public void setPosX(double target) throws CoordinateOutOfBoundsException {
-		return;
+		if (!getWorld().isValidX(target))
+			throw new CoordinateOutOfBoundsException();
+		this.posX = target;
 	}
 	
 	/**
@@ -25,7 +32,7 @@ public abstract class Entity {
 	 * 		| result == this.PosX
 	 */
 	public double getPosX() {
-		return -1;
+		return this.posX;
 	}
 	
 	/**
@@ -34,11 +41,13 @@ public abstract class Entity {
 	 * @param target
 	 * 		The new coordinate PosY is to be set too
 	 * @throws CoordinateOutOfBoundsException
-	 * 		thrown if the new coordinate would put the entity in an illigal position (in other words
+	 * 		thrown if the new coordinate would put the entity in an illegal position (in other words
 	 * 		outside of the legal bounds of the map)
 	 */
 	public void setPosY(double target) throws CoordinateOutOfBoundsException {
-		return;
+		if (!getWorld().isValidY(target))
+			throw new CoordinateOutOfBoundsException();
+		this.posY = target;
 	}
 	
 	/**
@@ -48,7 +57,19 @@ public abstract class Entity {
 	 * 		| result == this.PosY
 	 */
 	public double getPosY() {
-		return -1;
+		return this.posY;
+	}
+	
+	public double getRadius() {
+		return this.Radius;
+	}
+	
+	public void setRadius(double target) {
+		this.Radius = target;
+	}
+	
+	public World getWorld() {
+		return this.world;
 	}
 	
 	/**
@@ -58,13 +79,19 @@ public abstract class Entity {
 	 * @param targetY
 	 * 		Coordinate Y you wish to check
 	 * @return
-	 * 		true if and only if both targetX and targetY are withing the legal bounds of the X and Y coordinates resp.
+	 * 		true if and only if both targetX and targetY are within the legal bounds of the X and Y coordinates resp.
 	 * 		false in all other cases
 	 */
 	public boolean isValidPosition(double targetX, double targetY) {
-		return false;
+		return getWorld().isValidX(targetX) && getWorld().isValidY(targetY);
+	}
+
+	public boolean isTerminated() {
+		return this.terminated;
 	}
 	
-
+	public void terminate() {
+		this.terminated = true;
+	}
 	
 }

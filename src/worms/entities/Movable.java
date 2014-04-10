@@ -1,9 +1,11 @@
 package worms.entities;
 
+import be.kuleuven.cs.som.annotate.*;
+
 public abstract class Movable extends Entity {
 	
 	private double Orientation;
-	private final int Density;
+	protected long density;
 	
 	/**
 	 * 
@@ -12,10 +14,10 @@ public abstract class Movable extends Entity {
 	 * @throws IlligalOrientationException
 	 * 		If the orientation is not of a legal type, that is, not greater than pi (inclusive) and not smaller or equal to -pi 
 	 */
-	public void setOrientation(double target) throws IlligalOrientationException {
-		return;
+	public void setOrientation(double target) {
+		assert isValidOrientation(target);
+		this.Orientation = target;
 	}
-	
 	
 	/**
 	 * 
@@ -23,7 +25,7 @@ public abstract class Movable extends Entity {
 	 * 		The value of the variable orientation
 	 */
 	public double getOrientation() {
-		return -1;
+		return this.Orientation;
 	}
 	
 	/**
@@ -33,9 +35,16 @@ public abstract class Movable extends Entity {
 	 */
 	@Immutable
 	public double getDensity() {
-		return -1;
+		return this.density;
 	}
 	
+	protected void setDensity(long target) {
+		this.density = target;
+	}
+	
+	public boolean isValidOrientation(double target) {
+		return Math.abs(target) <= Math.PI;
+	}
 	
 	/**
 	 * MATHS GO HERE
@@ -69,16 +78,4 @@ public abstract class Movable extends Entity {
 	public boolean CanJump() {
 		return false;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 }

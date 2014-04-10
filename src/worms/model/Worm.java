@@ -1,8 +1,11 @@
 package worms.model;
 
 import worms.ExhaustionException;
+import worms.entities.*;
 import worms.weapons.*;
+import worms.containment.*;
 import be.kuleuven.cs.som.annotate.*;
+
 import java.util.ArrayList;
 
 /**
@@ -26,10 +29,13 @@ import java.util.ArrayList;
  * 
  * Changed the weapons array to an arraylist
  * Simplified the cycle method a lot
- * changed the storing of the current equiped weapon to storing just the index.
- * added neccisary setters and getters.
+ * changed the storing of the current equipped weapon to storing just the index.
+ * added necessary setters and getters.
  * 
- * 
+ * fixed typos (in the code and the documentation);
+ * Implemented setEquipped;
+ * Implemented the eat() method;
+ * Implemented position things in world and entity.
  * 
  */
 
@@ -48,10 +54,10 @@ import java.util.ArrayList;
  * @date 18/03/2014
  * 
  */
-public class Worm {
+public class Worm extends Movable {
 
 	public Worm(String name, double posX, double posY, double radius,
-			double direction) {
+			double direction, World world) {
 		setPosX(posX);
 		setPosY(posY);
 		setRadius(radius); //Q: Need to add a isvalidradius? (radius should not be set under 0.25)
@@ -60,9 +66,11 @@ public class Worm {
 		setActionPoints(getMaxActionPoints());
 		setName(name);
 		updateJumpData();
+		this.world = world;
+		setDensity(1062);
 	}
 
-	private double posX, posY, radius, orientation;
+	private double radius,orientation;
 	private long ActionPoints, HitPoints;
 	private String name;
 
@@ -74,61 +82,9 @@ public class Worm {
 	private double jumpSpeedY;
 	private int currentWeapon;
 	private ArrayList<Weapon> inventory; //TODO set array getters and setters, arraylist has to be added to constructor
+	private final World world;
 
 	private String validchar = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\'\" ";
-
-	/**
-	 * @return The worm's X coordinate
-	 * 		| result == this.posX
-	 */
-	@Basic
-	public double getPosX() {
-		return this.posX;
-	}
-
-	/**
-	 * 
-	 * @param position
-	 * 		The new value the X coordinate of the worm is to be set to.
-	 * @post the worm's X coordinate will be the given value
-	 * 		| new.getPosX() == position
-	 */
-	public void setPosX(double position) {
-		this.posX = position;
-		updateJumpData();
-	}
-
-	/**
-	 * 
-	 * @return The value of the Y coordinate of the worm.
-	 * 		| result == this.posY
-	 */
-	@Basic
-	public double getPosY() {
-		return this.posY;
-	}
-
-	/**
-	 * 
-	 * @param position
-	 * 			The new value the Y coordinate of the worm is to be set to.
-	 * @post the worm's Y coordinate will be the given value
-	 * 		| new.getPosY() == position
-	 */
-	public void setPosY(double position) {
-		this.posY = position;
-		updateJumpData();
-	}
-
-	/**
-	 * 
-	 * @return the radius of the worm.
-	 * 		| result == this.radius
-	 */
-	@Basic
-	public double getRadius() {
-		return radius;
-	}
 
 	/**
 	 * 
@@ -155,9 +111,6 @@ public class Worm {
 			setHitPoints(Math.round(getMaxHitPoints() * HPratio));
 		}
 	}
-
-//	 Note: If mass is frequently used, store in variable and edit whenever you
-//	 alter radius
 	
 	/**
 	 * 
@@ -165,7 +118,7 @@ public class Worm {
 	 * 			| result == 1062 * ((4.0 / 3.0) * Math.PI * Math.pow(getRadius() , 3)
 	 */
 	public double getMass() {
-		return (double)1062 * (double)(4.0/3.0) *(Math.PI) * (Math.pow(getRadius(), 3));
+		return getDensity() * (double)(4.0/3.0) * Math.PI * (Math.pow(getRadius(), 3));
 	}
 
 	/**
@@ -230,22 +183,6 @@ public class Worm {
 	private void setActionPoints(long points) {
 		if (isValidActionPoints(points))
 			ActionPoints = points;
-	}
-
-	@Basic
-	public double getOrientation() {
-		return this.orientation;
-	}
-
-	/**
-	 * @pre the value of orientation should be between -pi (exclusive) and pi (inclusive).
-	 * 		| (-Math.PI <= orientation) && (orientation <= Math.PI)
-	 * @param orientation
-	 * 		The value the orientation of the worm is to be set to.
-	 */
-	public void setOrientation(double orientation) {
-		this.orientation = orientation;
-		updateJumpData();
 	}
 
 	/**
@@ -354,20 +291,23 @@ public class Worm {
 	}
 	
 	/**
+	 * This the actual weapon in inventory.
 	 * @return the currently equipped weapon
 	 */
 	public Weapon getEquipped() {
-		return inventory(currentWeapon);
+		return inventory.get(currentWeapon);
 	}
 	
 	/**
-	 * @post The currently equipped weapon is set the given.
+	 * @post The currently equipped weapon is set to the given.
 	 */
 	public void setEquipped(Weapon weapon) {
-		return; 
-		//TODO have to add this stuffs and make it work.
+		setCurrentWeapon(inventory.indexOf(weapon));
 	}
 
+	/**
+	 * This is the index of Equipped in inventory.
+	 */
 	public int getCurrentWeapon(){
 		return this.currentWeapon;
 	}
@@ -375,6 +315,11 @@ public class Worm {
 	public void setCurrentWeapon(int index) {
 		currentWeapon = index;
 	}
+	
+	public World getWorld() {
+		return this.world;
+	}
+	
 	/**
 	 * 
 	 * @param radius
@@ -425,15 +370,6 @@ public class Worm {
 		} else {
 			return false;
 		}
-	}
-	
-	/**
-	 * 
-	 * @return true when the orientation of the worm is smaller than pi.
-	 *         | result == (getOrientations < Math.PI)
-	 */
-	private boolean isValidOrientation() {
-		return ((getOrientation() < Math.PI) && (getOrientation() > 0));
 	}
 
 	private boolean containsLegalChars(String name) {
@@ -552,7 +488,7 @@ public class Worm {
 	 *         | result == (isValidOrientation() && getActionPoints() > 0)
 	 */
 	public boolean canJump() {
-		return (isValidOrientation() && (getActionPoints() > 0));
+		return (isValidOrientation(getOrientation()) && (getActionPoints() > 0));
 	}
 
 	private void calculateJump() {
@@ -598,7 +534,7 @@ public class Worm {
 	 */
 	public void jump() throws ExhaustionException, IllegalStateException {
 		if (!isJumpLegal()) {
-			if (isValidOrientation())
+			if (isValidOrientation(getOrientation()))
 				throw new IllegalStateException();
 			else
 				throw new ExhaustionException();
@@ -661,7 +597,7 @@ public class Worm {
 	
 	/**
 	 * or:
-	 * public void grow() {
+	 * public void grow(Food meal) {
 	 * 		setRadius(getRadius()*1.1);
 	 * 		meal.eat();
 	 * }
@@ -671,15 +607,23 @@ public class Worm {
 	  * The cycle function makes the worm equip the next weapon in its inventory
 	  * @post the new equipped weapon is the next one in the inventory array
 	  * 	(or the first if the previously equipped weapon was the last)
-	  * 	  | if(inventory.length() > 1) {
-	  * 	  |	 	if (inventory.getIndex(this.getEquipped()) != len(inventory)-1)
-	  * 	  |	 		inventory.getIndex(this.getEquipped()) + 1 == inventory.getIndex(new.getEquipped())
-	  * 	  |	 	else
-	  * 	  |	 		inventory.getIndex(new.getEquipped()) == 0
-	  * 	  | }
+	  * 	  | new.getCurrentWeapon == (this.getCurrentWeapon() + 1) % inventory.size()
 	  */
 	public void cycle() {
-		int index = inverntory.size();
-		setCurrentWeapon((index + 1)%index);
+		int maxIndex = inventory.size();
+		setCurrentWeapon((getCurrentWeapon() + 1)%maxIndex);
+	}
+	
+	/**
+	 * The eat method queries the foods in the world whether the worm can eat any and, if so, does.
+	 */
+	public void eat() {
+		Food[] foods = getWorld().allFood();
+		for (Food food : foods) {
+			if (getWorld().distance(this, food) < (0.2 + getRadius())) {
+				food.eat(); //or, grow(food);
+				grow();
+			}
+		}
 	}
 }
