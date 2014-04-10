@@ -1,11 +1,11 @@
-package worms.gui.messages;
+package worms.gui.game.messages;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.util.StringTokenizer;
 
-import worms.gui.AbstractPainter;
+import worms.gui.game.AbstractPainter;
 import worms.gui.GUIUtils;
 import worms.gui.Screen;
 

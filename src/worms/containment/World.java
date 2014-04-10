@@ -33,11 +33,17 @@ public class World {
 		return Math.abs(posY) <= getHeight()/2.0;
 	}
 	
-	public double distance(Entity a, Entity b) {
-		return Math.sqrt(Math.pow(a.getPosX() - b.getPosX(), 2) + Math.pow(a.getPosY() - b.getPosY(), 2));
-	}
-	
 	public Projectile getProjectile() {
 		return this.projectile;
+	}
+	
+	public void setProjectile(Projectile target) throws IllegalArgumentException{
+		if (target != null && getProjectile() != null)
+			throw new IllegalArgumentException();
+		this.projectile = target;
+	}
+	
+	public double distance(Entity a, Entity b) {
+		return Math.sqrt(Math.pow(a.getPosX() - b.getPosX(), 2) + Math.pow(a.getPosY() - b.getPosY(), 2));
 	}
 }

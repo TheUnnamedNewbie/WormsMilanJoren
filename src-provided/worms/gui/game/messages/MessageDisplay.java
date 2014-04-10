@@ -1,4 +1,4 @@
-package worms.gui.messages;
+package worms.gui.game.messages;
 
 import java.util.LinkedList;
 

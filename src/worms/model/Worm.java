@@ -60,8 +60,7 @@ public class Worm extends Movable {
 			double direction, World world) {
 		setPosX(posX);
 		setPosY(posY);
-		setRadius(radius); //Q: Need to add a isvalidradius? (radius should not be set under 0.25)
-						   //A: no, setRadius does this already
+		setRadius(radius);
 		setOrientation(direction);
 		setActionPoints(getMaxActionPoints());
 		setName(name);
@@ -70,7 +69,7 @@ public class Worm extends Movable {
 		setDensity(1062);
 	}
 
-	private double radius,orientation;
+	private double radius;
 	private long ActionPoints, HitPoints;
 	private String name;
 
@@ -625,5 +624,9 @@ public class Worm extends Movable {
 				grow();
 			}
 		}
+	}
+	
+	public void shoot(int yield) {
+		getEquipped().shoot(yield);
 	}
 }

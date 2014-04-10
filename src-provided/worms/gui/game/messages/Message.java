@@ -1,4 +1,4 @@
-package worms.gui.messages;
+package worms.gui.game.messages;
 
 public class Message {
 	private final String message;
