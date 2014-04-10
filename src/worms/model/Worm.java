@@ -3,6 +3,7 @@ package worms.model;
 import worms.ExhaustionException;
 import worms.weapons.*;
 import be.kuleuven.cs.som.annotate.*;
+import java.util.ArrayList;
 
 /**
  * CHANGELOG (or, the temp commit text)
@@ -18,7 +19,18 @@ import be.kuleuven.cs.som.annotate.*;
  * 
  * Implemented weapons (Equipped with set and get)
  * 
+ * 
  * dummy implemented cycling through weapons (python code to work with arrays)
+ * 
+ * 10/04
+ * 
+ * Changed the weapons array to an arraylist
+ * Simplified the cycle method a lot
+ * changed the storing of the current equiped weapon to storing just the index.
+ * added neccisary setters and getters.
+ * 
+ * 
+ * 
  */
 
 /**
@@ -50,12 +62,8 @@ public class Worm {
 		updateJumpData();
 	}
 
-	private double posX;
-	private double posY;
-	private double radius;
-	private long ActionPoints;
-	private long HitPoints;
-	private double orientation;
+	private double posX, posY, radius, orientation;
+	private long ActionPoints, HitPoints;
 	private String name;
 
 	private double jumpX;
@@ -64,8 +72,8 @@ public class Worm {
 	private boolean jumpLegal;
 	private double jumpSpeedX;
 	private double jumpSpeedY;
-	private Weapon equipped;
-	private Weapon[] inventory; //TODO set array getters and setters
+	private int currentWeapon;
+	private ArrayList<Weapon> inventory; //TODO set array getters and setters, arraylist has to be added to constructor
 
 	private String validchar = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\'\" ";
 
@@ -349,16 +357,24 @@ public class Worm {
 	 * @return the currently equipped weapon
 	 */
 	public Weapon getEquipped() {
-		return equipped;
+		return inventory(currentWeapon);
 	}
 	
 	/**
 	 * @post The currently equipped weapon is set the given.
 	 */
 	public void setEquipped(Weapon weapon) {
-		this.equipped = weapon;
+		return; 
+		//TODO have to add this stuffs and make it work.
 	}
 
+	public int getCurrentWeapon(){
+		return this.currentWeapon;
+	}
+	
+	public void setCurrentWeapon(int index) {
+		currentWeapon = index;
+	}
 	/**
 	 * 
 	 * @param radius
@@ -663,13 +679,7 @@ public class Worm {
 	  * 	  | }
 	  */
 	public void cycle() {
-		int nbWeapons = inventory.length();
-		if (nbWeapons > 1) {
-			int currentIndex = inventory.getIndex(getEquipped());
-			if (currentIndex != inventory.length()-1)
-				setEquipped(inventory[currentIndex+1]);
-			else
-				setEquipped(inventory[0]);
-		}
+		int index = inverntory.size();
+		setCurrentWeapon((index + 1)%index);
 	}
 }
