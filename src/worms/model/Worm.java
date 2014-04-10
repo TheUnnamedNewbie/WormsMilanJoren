@@ -627,6 +627,13 @@ public class Worm extends Movable {
 	}
 	
 	public void shoot(int yield) {
-		getEquipped().shoot(yield);
+		long APcost = 999999999;
+		if (getEquipped().getName() == "Rifle")
+			APcost = 10;
+		if (getEquipped().getName() == "Bazooka")
+			APcost = 50;
+		if (isValidActionPoints(getActionPoints()-APcost))
+			getEquipped().shoot(yield);
+			setActionPoints(getActionPoints()-APcost);
 	}
 }

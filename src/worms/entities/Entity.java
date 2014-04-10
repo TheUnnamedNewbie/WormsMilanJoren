@@ -85,6 +85,10 @@ public abstract class Entity {
 	public boolean isValidPosition(double targetX, double targetY) {
 		return getWorld().isValidX(targetX) && getWorld().isValidY(targetY);
 	}
+	
+	public boolean isValidRadius(double target) {
+		return target > 0.0;
+	}
 
 	public boolean isTerminated() {
 		return this.terminated;

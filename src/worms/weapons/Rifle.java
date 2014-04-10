@@ -11,9 +11,10 @@ public class Rifle extends Weapon {
 	private final Worm owner;
 	
 	public void shoot(int yield) {
-		//TODO do shooting maths
-		Projectile projectile = new Projectile(/*param*/);
-		owner.getWorld().setProjectile(projectile);
+		double projRadius = Math.pow(((double)(3/4) * (0.01/7800)),(double)(1/3));
+		double projX = owner.getPosX()+(owner.getRadius()*projRadius)*Math.cos(owner.getOrientation());
+		double projY = owner.getPosY()+(owner.getRadius()*projRadius)*Math.sin(owner.getOrientation());
+		Projectile projectile = new Projectile(owner.getWorld(), projX, projY, projRadius, 7800, owner.getOrientation(), 1.5, 20);
 		projectile.jump();
 	}
 	
