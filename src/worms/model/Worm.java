@@ -82,7 +82,7 @@ public class Worm extends Movable {
 	private int currentWeapon;
 	private ArrayList<Weapon> inventory; //TODO set array getters and setters, arraylist has to be added to constructor
 	private final World world;
-	private String regex_pattern = "[a-zA-Z\\s'\"]*";
+	private String regex_pattern = "[A-Z][a-zA-Z0-9\\s'\"]+";
 
 	/**
 	 * 
