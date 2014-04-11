@@ -82,7 +82,6 @@ public class Worm extends Movable {
 	private int currentWeapon;
 	private ArrayList<Weapon> inventory; //TODO set array getters and setters, arraylist has to be added to constructor
 	private final World world;
-	private String regex_pattern = "[A-Z][a-zA-Z0-9\\s'\"]+";
 
 	/**
 	 * 
@@ -197,7 +196,7 @@ public class Worm extends Movable {
 	 * @param name
 	 * 		The new string the name of the worm is to be set to
 	 * @throws IllegalArgumentException
-	 * 		the new name contains Illegal charecters or is to short.
+	 * 		the new name contains Illegal characters or is to short.
 	 */
 	public void setName(String name) throws IllegalArgumentException {
 		if (!isValidName(name))
@@ -363,17 +362,9 @@ public class Worm extends Movable {
 	 * 			| (name.length() >= 2) && containsLegalChars() )
 	 */
 	private boolean isValidName(String name) {
-		if (name.length() >= 2) {
-			return containsLegalChars(name);
-		} else {
-			return false;
-		}
+		return name.matches("[A-Z][a-zA-Z0-9\\s'\"]+");
 	}
 
-	private boolean containsLegalChars(String name) {
-		return name.matches(regex_pattern);
-	}
-	
 	/**
 	 * @param steps
 	 * 		The amount of steps the worm should move
