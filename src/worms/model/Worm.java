@@ -82,8 +82,7 @@ public class Worm extends Movable {
 	private int currentWeapon;
 	private ArrayList<Weapon> inventory; //TODO set array getters and setters, arraylist has to be added to constructor
 	private final World world;
-
-	private String validchar = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\'\" ";
+	private String regex_pattern = "[a-zA-Z\\s'\"]*";
 
 	/**
 	 * 
@@ -326,7 +325,7 @@ public class Worm extends Movable {
 	 * @return true is the radius is greater or equal to 0.25
 	 * 		| result == (radius >= 0.25)
 	 */
-	private boolean isValidRadius(double radius) {
+	public boolean isValidRadius(double radius) {
 		return (radius >= 0.25);
 	}
 	
@@ -372,13 +371,7 @@ public class Worm extends Movable {
 	}
 
 	private boolean containsLegalChars(String name) {
-		int length = name.length();
-		for (int i = 0; i < length; i++) {
-			if (!validchar.contains(name.subSequence(i, i + 1))) {
-				return false;
-			}
-		}
-		return true;
+		return name.matches(regex_pattern);
 	}
 	
 	/**
