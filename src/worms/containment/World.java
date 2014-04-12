@@ -1,13 +1,15 @@
 package worms.containment;
 
 import java.util.ArrayList;
+import java.util.Random;
+
 import worms.entities.*;
 import worms.model.Worm;
 import worms.weapons.*;
 
 //TODO add documentation and shizzle
 public class World {
-	public World(double width, double height) throws IllegalSizeException{
+	public World(double width, double height, boolean[][] map, Random random) throws IllegalMapException,IllegalSizeException{
 		if(!isLegalSize(width, height)) {
 			throw new IllegalSizeException();
 		}
@@ -16,6 +18,10 @@ public class World {
 		this.projectile = null;
 		foods = new ArrayList<Food>();//Do these have to be in the constructor?
 		worms = new ArrayList<Worm>();//
+		if(!isLegalMap(map)){
+			throw new IllegalMapException;
+		}
+		this.passableMap = map;
 		
 	}
 	
@@ -27,11 +33,14 @@ public class World {
 		worms = new ArrayList<Worm>();
 	}
 	
+	
 	private final double width, height;
 	private ArrayList<Food> foods;
 	private ArrayList<Worm> worms;
 	private Projectile projectile;
 	public final double GRAVITY = 9.80665;
+	private double[][] passableMap;
+	
 	
 	public double getWidth() {
 		return this.width;
@@ -64,8 +73,26 @@ public class World {
 		return Math.sqrt(Math.pow(a.getPosX() - b.getPosX(), 2) + Math.pow(a.getPosY() - b.getPosY(), 2));
 	}
 	
+	public static boolean isLegalMap(double[][] map) {
+		int length = map[0].lenght();
+			for(Double[] collum:map){
+				if(collum.length() != length){
+					return false
+				}
+			}
+		return true;
+	}
+	
 	//TODO: Stuffs
 	public static boolean isLegalSize(double x, double y) {
-		return false;
-	}
+		if(x == Double.NaN) {
+			return false;
+		}
+		if(x == Double.MAX_VALUE) {
+			return false;
+		}
+		if(x <=0){
+			return false;
+		}
+		}
 }
