@@ -36,7 +36,14 @@ public class Projectile extends Movable {
 	}
 	
 	public void jump() {
-		//TODO Copy the maths and the things.
-		getWorld().setProjectile(null); //We end with this because at this point, the projectile will have hit/collided/exited
+		if(canFire()){
+			super.jump(force);
+			getWorld().setProjectile(null); //We end with this because at this point, the projectile will have hit/collided/exited
+		}
+	}
+	
+	//TODO finish this stuff
+	public boolean canFire() {
+		return false;
 	}
 }

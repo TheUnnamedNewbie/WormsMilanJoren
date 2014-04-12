@@ -1,11 +1,14 @@
 package worms.entities;
 
+import worms.util.Util;
 import be.kuleuven.cs.som.annotate.*;
 
 public abstract class Movable extends Entity {
 	
-	private double Orientation;
-	protected long density;
+	private double orientation, jumpTime;
+	protected long density; //Q: why not a private?
+	//[0] = x, [1] = y.
+	private double[] jumpSpeed = new double[2];
 	
 	/**
 	 * 
@@ -16,7 +19,7 @@ public abstract class Movable extends Entity {
 	 */
 	public void setOrientation(double target) {
 		assert isValidOrientation(target);
-		this.Orientation = target;
+		this.orientation = target;
 	}
 	
 	/**
@@ -25,7 +28,7 @@ public abstract class Movable extends Entity {
 	 * 		The value of the variable orientation
 	 */
 	public double getOrientation() {
-		return this.Orientation;
+		return this.orientation;
 	}
 	
 	/**
@@ -46,10 +49,27 @@ public abstract class Movable extends Entity {
 		return Math.abs(target) <= Math.PI;
 	}
 	
+	public double getMass() {
+		return -1;
+	}
+	
+	public abstract double jumpTime(); //TODO see if we can make one main method for both worms and projectiles of if separate methods are needed.
+	
+	
+	
+	//TODO check how we should implement constants 
 	/**
 	 * MATHS GO HERE
 	 */
-	public void Jump(){
+	public void jump(long AP){
+		double force, speed;	
+		force = (5 * AP) + (getMass() * this.getWorld().GRAVITY);
+		speed = (force/getMass())*(((double)1)/2);
+		jumpSpeed[0] = speed * Math.cos(getOrientation()); 
+		jumpSpeed[1] = speed * Math.sin(getOrientation());
+		
+		
+		
 		return;
 	}
 	
@@ -57,7 +77,7 @@ public abstract class Movable extends Entity {
 	 * MATHS GO HERE
 	 * @return
 	 */
-	public double JumpTime() {
+	public double jumpTime() {
 		return -1;
 	}
 	
@@ -67,15 +87,46 @@ public abstract class Movable extends Entity {
 	 * @param time
 	 * @return
 	 */
-	public double JumpStep(double time) {
-		return -1;
+	public double jumpStep(double time) {
+		if(!isLegalTime(time)){
+			time = endOfJump();
+		}
+		double[] returnCoordinates = new double[2];
+		returnCoordinates[0] = (jumpSpeed[0]*time) + getPosX();
+		returnCoordinates[1] = ((jumpSpeed[1]*time) - ((1.0/2.0) * this.getWorld().GRAVITY * time * time)) + getPosY();
+		return returnCoordinates;
 	}
+	
+	
+	/**
+	 * TODO boolean shizzle
+	 * @return true if the object cannot jump, and time = 0 or if the object can jump and time > 0 and time <= JumpTime(), false all other times
+	 * 		| if ((canJump() == false) && (time > -EPS) && (time < EPS)) 
+	 * 		|	result = true
+	 * 		| if ((canJump() == true) && (time > 0) && (time <= jumpTime()))
+	 * 		|	result = true
+	 * 		| else
+	 * 		|	result = false
+	 * @param time
+	 * 		time you want to check
+	 *  
+	 */
+	public boolean isLegalTime(double time) {
+		if ((canJump() == false) && (time > -EPS) && (time < EPS)){
+			return true;
+		}
+		if ((canJump() == true) && (time > 0) && (time <= jumpTime())) {
+			return true;
+		}
+		return false;
+	}
+	
 	
 	/**
 	 * STUFF GOES HERE
 	 * @return
 	 */
-	public boolean CanJump() {
+	public boolean canJump() { //TODO Milan, work your magic!
 		return false;
 	}
 }

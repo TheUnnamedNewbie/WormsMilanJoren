@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 /**
  * CHANGELOG (or, the temp commit text)
- * 
+ *  
  * Made AP and HP work with long instead of int (only the typecast in math.ceil remains)
  * 
  * Implemented HP
@@ -25,20 +25,65 @@ import java.util.ArrayList;
  * 
  * dummy implemented cycling through weapons (python code to work with arrays)
  * 
- * 10/04
+ * #
+ * #10/04 JOREN
+ * #
  * 
  * Changed the weapons array to an arraylist
  * Simplified the cycle method a lot
  * changed the storing of the current equipped weapon to storing just the index.
  * added necessary setters and getters.
  * 
+ * 
+ * #
+ * #10/04 MILAN
+ * #
+ * 
+ * 
  * fixed typos (in the code and the documentation);
  * Implemented setEquipped;
  * Implemented the eat() method;
  * Implemented position things in world and entity.
  * 
+ * #
+ * #12/04 JOREN
+ * #
+ * 
+ * Added:
+ *  F/UF	addition      		Class
+ * 	
+ * 	UF		jump() 				movable
+ * 			jump()				worm
+ * 			jump()				projectile
+ * 			isLegalTime() 		movable
+ * 	UF		canJump()			movable
+ * 	UF		jumpStep()			movable
+ * 			CONSTRUCTOR(2nd)	World
+ * 			isLegalSize()		World
+ * 	UF		exception			IllegalSizeException --- MILAN: work your magic please
+ * 	UF		exception			TooManyProjectilesException --- MILAN: work your magic please
+ * 
+ * 
+ * World:
+ * 		worked some stuff on the constructor
+ * 			Added this.projectile = null
+ * 			arraylistrelated stuff
+ * 
+ * 		added a second constructor that calls with default values
+ * 	    world now stores the gravity constant for that world.	
+ * 
  */
 
+
+
+/**
+ * TA QUESTIONS
+ * 
+ * thought this might not be to bad an idea, you think of something we should ask the TA, just type it down here
+ * 
+ * JOREN: does the construction of an arraylist have to happen in the constructor of the object that stores that arraylist
+ * 
+ */
 /**
  * 
  * WORMS!! The class Worm contains all information and methods related to the
@@ -69,16 +114,10 @@ public class Worm extends Movable {
 		setDensity(1062);
 	}
 
-	private double radius;
 	private long ActionPoints, HitPoints;
 	private String name;
 
-	private double jumpX;
-	private double jumpY;
-	private double jumpTime;
-	private boolean jumpLegal;
-	private double jumpSpeedX;
-	private double jumpSpeedY;
+	
 	private int currentWeapon;
 	private ArrayList<Weapon> inventory; //TODO set array getters and setters, arraylist has to be added to constructor
 	private final World world;
@@ -118,7 +157,7 @@ public class Worm extends Movable {
 		return getDensity() * (double)(4.0/3.0) * Math.PI * (Math.pow(getRadius(), 3));
 	}
 
-	/**
+	/**	
 	 * 
 	 * @return	the maximum amount of actionpoints this worm can have
 	 * 			| result == Math.round(getMass())
@@ -455,15 +494,7 @@ public class Worm extends Movable {
 	 * @post if the worm is allowed
 	 */
 	private void updateJumpData() {
-		if (!canJump()) {
-			setJumpLegal(false);
-			calculateJump();
-		} else {
-			setJumpLegal(true);
-			calculateJump();
-		}
 	}
-
 	/**
 	 * 
 	 * @return true when the orientation of the worm is valid (between 0 and pi)
@@ -471,30 +502,9 @@ public class Worm extends Movable {
 	 *         | result == (isValidOrientation() && getActionPoints() > 0)
 	 */
 	public boolean canJump() {
-		return (isValidOrientation(getOrientation()) && (getActionPoints() > 0));
-	}
+		}
 
 	private void calculateJump() {
-		if (isJumpLegal()) {
-			double mass, gravity, speed, force, distance;
-			mass = getMass();
-			gravity = 9.80665;
-			force = ((5 * getActionPoints()) + (mass * gravity));
-			speed = (force / (mass * 2));
-			setJumpSpeedX(speed * Math.cos(getOrientation()));
-			setJumpSpeedY(speed * Math.sin(getOrientation()));
-			setJumpTime((Math.abs((2 * getJumpSpeedY())) / gravity));
-			distance = getJumpTime() * getJumpSpeedX();
-			setJumpX(getPosX() + distance);
-			setJumpY(getPosY());
-			return;
-		} else { /*I left JumpSpeed unaltered because it is not used if jump is illegal.*/
-			setJumpTime(0);
-			setJumpX(getPosX());
-			setJumpY(getPosY());
-			setJumpSpeedX(0);
-			return;
-		}
 	}
 
 	/**
@@ -516,16 +526,10 @@ public class Worm extends Movable {
 	 *       | }
 	 */
 	public void jump() throws ExhaustionException, IllegalStateException {
-		if (!isJumpLegal()) {
-			if (isValidOrientation(getOrientation()))
-				throw new IllegalStateException();
-			else
-				throw new ExhaustionException();
-		} else {
-			setPosX(getJumpX());
+		if(canJump()) {
+			super.Jump(getActionPoints());
 			setActionPoints(0);
 		}
-		updateJumpData();
 	}
 
 	 /**
@@ -534,7 +538,6 @@ public class Worm extends Movable {
 	 * 		| result == getJumpTime()
 	 */
 	 public double jumpTime() {
-	 return getJumpTime();
 	 }
 
 	/**
@@ -548,11 +551,6 @@ public class Worm extends Movable {
 	 * 			|	(getPosY() + (time * (getJumpSpeedY() - time * 9.80665)/2))}
 	 */
 	public double[] jumpStep(double time) {
-		double x, y;
-		x = getPosX() + (time * getJumpSpeedX());
-		y = getPosY() + (time * (getJumpSpeedY() - ((time * 9.80665) / 2)));
-		double coordinates[] = { x, y };
-		return coordinates;
 	}
 	
 	/**

@@ -2,13 +2,14 @@ package worms.entities;
 
 import worms.CoordinateOutOfBoundsException;
 import worms.containment.World;
+import worms.util.Util;
 
 public abstract class Entity {
 
 	private double posX, posY, Radius;
 	private World world;
 	private boolean terminated;
-	
+	private static final double EPS = Util.DEFAULT_EPSILON;
 	
 	/**
 	 * @post
