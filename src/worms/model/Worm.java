@@ -63,6 +63,8 @@ import java.util.ArrayList;
  * 	UF		exception			IllegalSizeException --- MILAN: work your magic please
  * 	UF		exception			TooManyProjectilesException --- MILAN: work your magic please
  * 			isLegalMap()		World
+ * 	UF		canExist			World
+ * 
  * 
  * World:
  * 		worked some stuff on the constructor
@@ -72,6 +74,8 @@ import java.util.ArrayList;
  * 		added a second constructor that calls with default values
  * 	    world now stores the gravity constant for that world.	
  * 		have started adding the basic stuffs for the map and checking if maps are legal or not
+ * 		edited isValidX and isValidY
+ * 	
  */
 
 
