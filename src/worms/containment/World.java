@@ -5,6 +5,7 @@ import java.util.Random;
 
 import worms.entities.*;
 import worms.model.Worm;
+import worms.util.Util;
 import worms.weapons.*;
 
 //TODO add documentation and shizzle
@@ -43,9 +44,11 @@ public class World {
 	private ArrayList<Food> foods;
 	private ArrayList<Worm> worms;
 	private Projectile projectile;
-	public final double GRAVITY = 9.80665;
 	private final double[][] passableMap;
+
+	public final double GRAVITY = 9.80665;
 	
+	private static final double EPS = Util.DEFAULT_EPSILON;
 	
 	public double getWidth() {
 		return this.width;
@@ -62,6 +65,15 @@ public class World {
 	public double getCellHeight() {
 		return this.cellHeight;
 	}
+	
+	public boolean isPassableAt(int x, int y){
+		assert(x<passableMap.length);
+		assert(y<passableMap[0].length);
+		return passableMap[x][y];
+	}	
+	
+	
+	
 	
 	public boolean isValidX(double posX) { 
 		return (posX <= getWidth()) && (posX >= 0);
@@ -113,7 +125,6 @@ public class World {
 		//vardec
 		double[] upperLeft = new double[2];
 		double[] lowerRight = new double[2];
-		boolean[][] submap;
 		int[] upperLeftCell = new int[2];
 		int[] lowerRightCell = new int[2];
 		
@@ -130,12 +141,42 @@ public class World {
 		lowerRightCell[0] = (int)Math.floor(lowerRight[0]/getCellWidth());
 		lowerRightCell[1] = (int)Math.floor(lowerRight[1]/getCellHeight());
 		
-		//makesubmap
-		submap = new boolean[lowerRightCell[0] - upperLeftCell[0]][lowerRightCell[1] - upperLeftCell[1]];
 		
 		
-		//some forstuffs comes here, will do this later, have to prepare for airsoft now
+		//some forstuffs comes here to populate the submap with usefull things
+		for(int j = upperLeftCell[0]; j < lowerRightCell[0]; j++) { //TODO check if it this is 100% correct, didn't have enought coffee yet to propperly think about that
+			for(int i = upperLeftCell[1]); i < lowerRightCell[1]; i++){
+				//Vardec
+				double[] absoluteCoordinate = new double[2];
+				double distanceToEntity;
+				
+				absoluteCoordinate[0] = (j * getCellWidth());
+				absoluteCoordinate[1] = (i * getCellHeight());
+				
+				//prepare your but for #mathClusterFuck
+				distanceToEntity = Math.sqrt(	Math.pow( entity.getPosX() - absoluteCoordinate[0], 2) + 
+												Math.pow( entity.getPosY() - absoluteCoordinate[1], 2));
+				
+				//Need to think long and hard about this one in relation to it checking all 4 adjacant cells to the absolutecoordinate
+				if(distanceToEntity <= (entity.getRadius() + EPS)){
+					//TODO check if it is -1 or +1 and if there is a more efficient way to check these 4 cases
+					if(isPassableAt(j-1, i-1)){
+						if(isPassableAt(j, i-1)){
+							if(isPassableAt(j, i)){
+								if(! isPassableAt(j-1, i)){
+									return false;
+								}
+							}else{return false;};	
+						}else{ return false;};
+					} else{return false;};
+				}
+			}	
+		}
+
 		
+			//TODO: Stuffs. need to check here for each point except the leftmost, upmost, rightmost, and downmost edges if the entity will conver it with the radius
+			//and if so, that the 4 adjacent are empty. might acutally simply be easier to not store a submap for this.
+		return true;	
 		}
 	
 	

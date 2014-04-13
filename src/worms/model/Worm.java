@@ -76,8 +76,23 @@ import java.util.ArrayList;
  * 		have started adding the basic stuffs for the map and checking if maps are legal or not
  * 		edited isValidX and isValidY
  * 	
+ * #
+ * #11/04 JOREN
+ * #
+ * 
+ * Added isPassableAt method to world
+ * 
+ * Finished (I think, but will have to check later since it's 6am and I don't trust my brain at this time of day) canExist
+ * 
+ * 
  */
 
+
+/**
+ * MAIN TODO
+ * 
+ * World: Make cellWidth and cellHeight constants?
+ */
 
 
 /**
@@ -88,7 +103,7 @@ import java.util.ArrayList;
  * JOREN: does the construction of an arraylist have to happen in the constructor of the object that stores that arraylist
  * JOREN: can we "assume" that the passablemap is a square, IE for every double[] in passablemap can we assume that it is the same length?
  * 				NOTE: writing checker anyways, becuase why the hell not.
- * 
+ * JOREN: Maybe it's not a bad Idea to turn cellWidth and cellHeight in world into constants?
  * 
  */
 /**
