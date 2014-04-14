@@ -1,5 +1,9 @@
 package worms;
 
-public class IllegalSizeException extends IllegalArgumentException {
-	//TODO Milan, Work your magic.
+public class IllegalSizeException extends RuntimeException {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 }

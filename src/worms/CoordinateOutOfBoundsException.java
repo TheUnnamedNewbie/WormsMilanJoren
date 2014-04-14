@@ -1,6 +1,6 @@
 package worms;
 
-public class CoordinateOutOfBoundsException extends IllegalArgumentException {
+public class CoordinateOutOfBoundsException extends RuntimeException {
 
 	/**
 	 * 

@@ -60,8 +60,8 @@ import java.util.ArrayList;
  * 	UF		jumpStep()			movable
  * 			CONSTRUCTOR(2nd)	World
  * 			isLegalSize()		World
- * 	UF		exception			IllegalSizeException --- MILAN: work your magic please
- * 	UF		exception			TooManyProjectilesException --- MILAN: work your magic please
+ * 	F		exception			IllegalSizeException --- MILAN: work your magic please
+ * 	F		exception			TooManyProjectilesException --- MILAN: work your magic please
  * 			isLegalMap()		World
  * 	UF		canExist			World
  * 
@@ -83,6 +83,7 @@ import java.util.ArrayList;
  * Added isPassableAt method to world
  * 
  * Finished (I think, but will have to check later since it's 6am and I don't trust my brain at this time of day) canExist
+ * Good call, there were blatant errors in the code (eclipse gave me red flags)
  * 
  * 
  */
@@ -136,6 +137,7 @@ public class Worm extends Movable {
 		setDensity(1062);
 	}
 
+	private double radius;
 	private long ActionPoints, HitPoints;
 	private String name;
 
@@ -621,18 +623,18 @@ public class Worm extends Movable {
 	 * The eat method queries the foods in the world whether the worm can eat any and, if so, does.
 	 */
 	public void eat() {
-		Food[] foods = getWorld().allFood();
+		ArrayList<Food> foods = getWorld().getAllFoods();
 		for (Food food : foods) {
 			if (getWorld().distance(this, food) < (0.2 + getRadius())) {
-				food.eat(); //or, grow(food);
 				grow();
+				getWorld().removeAsFood(food);
 			}
 		}
 	}
 	
 	public void shoot(int yield) {
-		long APcost = 999999999;
-		if (getEquipped().getName() == "Rifle")
+		long APcost = 999999999; //What's the max positive integer again?
+		if (getEquipped().getName() == "Rifle") //work with getClass() things
 			APcost = 10;
 		if (getEquipped().getName() == "Bazooka")
 			APcost = 50;
