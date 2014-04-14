@@ -18,7 +18,7 @@ public class Bazooka extends Weapon {
 				* Math.sin(owner.getOrientation());
 		Projectile projectile = new Projectile(owner.getWorld(), projX, projY, projRadius,
 				7800, owner.getOrientation(), 2.5 + (7 * (yield / 100.0)), 80);
-		projectile.jump();
+		projectile.shoot(0.01);
 	}
 	
 	public String getName() {

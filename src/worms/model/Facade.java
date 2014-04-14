@@ -48,22 +48,22 @@ public class Facade implements IFacade {
 		}
 	}
 	
-	public void jump(Worm worm) throws ModelException {
-		try {
-			worm.jump();
-		} catch (ExhaustionException e) {
-			throw new ModelException("No more actionpoints");
-		} catch (IllegalStateException e) {
-			throw new ModelException("Worm must face up");
-		}
-	}
+//	public void jump(Worm worm) throws ModelException {
+//		try {
+//			worm.jump();
+//		} catch (ExhaustionException e) {
+//			throw new ModelException("No more actionpoints");
+//		} catch (IllegalStateException e) {
+//			throw new ModelException("Worm must face up");
+//		}
+//	}
 	
-	public double getJumpTime(Worm worm) {
-		return worm.getJumpTime();
-	}
+//	public double getJumpTime(Worm worm) {
+//		return worm.getJumpTime();
+//	}
 	
 	public double[] getJumpStep(Worm worm, double t) {
-		return worm.jumpStep(t);
+		return worm.jumpStep(0.01, t);
 	}
 	
 	public double getX(Worm worm) {

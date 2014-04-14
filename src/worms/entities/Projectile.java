@@ -2,6 +2,8 @@ package worms.entities;
 
 import be.kuleuven.cs.som.annotate.*;
 import worms.containment.*;
+import worms.entities.*;
+import worms.model.Worm;
 
 public class Projectile extends Movable {
 	
@@ -35,10 +37,15 @@ public class Projectile extends Movable {
 		return this.world;
 	}
 	
-	public void jump() {
+	public void shoot(double timestep) {
 		if(canFire()){
-			super.jump(force);
+			double[] target = jumpStep(force, jumpTime(force, timestep)+timestep); // + timestep because we need to be in the worm in order for distance < value to work
+			setPosX(target[0]); setPosY(target[1]);
+			for (Worm worm: getWorld().getAllWorms())
+				if (getWorld().distance(this, worm) < this.getRadius()+worm.getRadius())
+					worm.damage(damage);
 			getWorld().setProjectile(null); //We end with this because at this point, the projectile will have hit/collided/exited
+			terminate();
 		}
 	}
 	

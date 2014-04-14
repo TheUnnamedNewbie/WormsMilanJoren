@@ -9,7 +9,7 @@ public abstract class Entity {
 	private double posX, posY, Radius;
 	private World world;
 	private boolean terminated;
-	private static final double EPS = Util.DEFAULT_EPSILON;
+	protected static final double EPS = Util.DEFAULT_EPSILON;
 	
 	/**
 	 * @post
@@ -85,6 +85,10 @@ public abstract class Entity {
 	 */
 	public boolean isValidPosition(double targetX, double targetY) {
 		return getWorld().isValidX(targetX) && getWorld().isValidY(targetY);
+	}
+	
+	public boolean isValidPosition(double[] coordinates) {
+		return getWorld().isValidX(coordinates[0]) && getWorld().isValidY(coordinates[1]);
 	}
 	
 	public boolean isValidRadius(double target) {

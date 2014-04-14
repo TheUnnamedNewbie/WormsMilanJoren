@@ -85,7 +85,10 @@ import java.util.ArrayList;
  * Finished (I think, but will have to check later since it's 6am and I don't trust my brain at this time of day) canExist
  * Good call, there were blatant errors in the code (eclipse gave me red flags)
  * 
- * 
+ * on 14-4-2014 Milan wrote:
+ * Made getters/setter for World.worms, World.foods and Worms.inventory
+ * fixed exceptions
+ * implemented jump (it should work, but tell me if you see anything)
  */
 
 
@@ -132,7 +135,6 @@ public class Worm extends Movable {
 		setOrientation(direction);
 		setActionPoints(getMaxActionPoints());
 		setName(name);
-		updateJumpData();
 		this.world = world;
 		setDensity(1062);
 	}
@@ -143,7 +145,7 @@ public class Worm extends Movable {
 
 	
 	private int currentWeapon;
-	private ArrayList<Weapon> inventory; //TODO set array getters and setters, arraylist has to be added to constructor
+	private ArrayList<Weapon> inventory;
 	private final World world;
 
 	/**
@@ -170,15 +172,6 @@ public class Worm extends Movable {
 			setActionPoints(Math.round(getMaxActionPoints() * APratio));
 			setHitPoints(Math.round(getMaxHitPoints() * HPratio));
 		}
-	}
-	
-	/**
-	 * 
-	 * @return	the mass calculated from radius
-	 * 			| result == 1062 * ((4.0 / 3.0) * Math.PI * Math.pow(getRadius() , 3)
-	 */
-	public double getMass() {
-		return getDensity() * (double)(4.0/3.0) * Math.PI * (Math.pow(getRadius(), 3));
 	}
 
 	/**	
@@ -266,89 +259,6 @@ public class Worm extends Movable {
 			throw new IllegalArgumentException();
 		this.name = name;
 	}
-
-	private double getJumpX() {
-		return jumpX;
-	}
-
-	private void setJumpX(double jumpX) {
-		this.jumpX = jumpX;
-	}
-
-	/**
-	 * @return the jumpY
-	 */
-	private double getJumpY() {
-		return jumpY;
-	}
-
-	/**
-	 * @param jumpY
-	 *            the jumpY to set
-	 */
-	private void setJumpY(double jumpY) {
-		this.jumpY = jumpY;
-	}
-
-	/**
-	 * @return the jumpTime
-	 */
-	public double getJumpTime() {
-		return jumpTime;
-	}
-
-	/**
-	 * @param jumpTime
-	 *            the jumpTime to set
-	 */
-	private void setJumpTime(double jumpTime) {
-		this.jumpTime = jumpTime;
-	}
-
-	/**
-	 * @return the jumpLegal
-	 */
-	private boolean isJumpLegal() {
-		return jumpLegal;
-	}
-
-	/**
-	 * @param jumpLegal
-	 *            the jumpLegal to set
-	 */
-	private void setJumpLegal(boolean jumpLegal) {
-		this.jumpLegal = jumpLegal;
-	}
-
-	/**
-	 * @return the jumpSpeedX
-	 */
-	private double getJumpSpeedX() {
-		return jumpSpeedX;
-	}
-
-	/**
-	 * @param jumpSpeedX
-	 *            the jumpSpeedX to set
-	 */
-	private void setJumpSpeedX(double jumpSpeedX) {
-		this.jumpSpeedX = jumpSpeedX;
-	}
-
-	/**
-	 * @return the jumpSpeedY
-	 */
-	private double getJumpSpeedY() {
-		return jumpSpeedY;
-	}
-
-	/**
-	 * @param jumpSpeedY
-	 *            the jumpSpeedY to set
-	 */
-	private void setJumpSpeedY(double jumpSpeedY) {
-		this.jumpSpeedY = jumpSpeedY;
-	}
 	
 	/**
 	 * This the actual weapon in inventory.
@@ -379,6 +289,203 @@ public class Worm extends Movable {
 	public World getWorld() {
 		return this.world;
 	}
+	
+	//Begin Inventory stuff
+	
+	/**
+	 * Return the weapon of this worm at the given index.
+	 * 
+	 * @param  index
+	 *         The index of the weapon to return.
+	 * @throws IndexOutOfBoundsException
+	 *         The given index is not positive or it exceeds the
+	 *         number of inventory of this worm.
+	 *       | (index < 1) || (index > getNbWeapons())
+	 */
+	@Basic
+	public Weapon getWeaponAt(int index) throws IndexOutOfBoundsException {
+		return inventory.get(index);
+	}
+	
+	/**
+	 * Return the number of inventory of this worm.
+	 */
+	@Basic
+	public int getNbWeapons() {
+		return inventory.size();
+	}
+	
+	/**
+	 * Check whether this worm can have the given weapon
+	 * as one of its inventory.
+	 * 
+	 * @param  weapon
+	 *         The weapon to check.
+	 * @return True if and only if the given weapon is effective, and
+	 *         if that weapon can have this worm as its worm.
+	 *       | result ==
+	 *       |   (weapon != null) &&
+	 *       |   weapon.canHaveAsWorm(this)
+	 */
+	public boolean canHaveAsWeapon(Weapon weapon) {
+		return (weapon != null);
+	}
+	
+	/**
+	 * Check whether this worm can have the given weapon
+	 * as one of its inventory at the given index.
+	 * 
+	 * @param  weapon
+	 *         The weapon to check.
+	 * @param  index
+	 *         The index to check.
+	 * @return False if the given index is not positive or exceeds
+	 *         the number of inventory of this worm + 1.
+	 *       | if ( (index < 1) || (index > getNbWeapons()+1) )
+	 *       |   then result == false
+	 *         Otherwise, false if this worm cannot have the
+	 *         given weapon as one of its inventory.
+	 *       | else if (! canHaveAsWeapon(weapon))
+	 *       |   then result == false
+	 *         Otherwise, true if and only if the given weapon is
+	 *         not already registered at another index.
+	 *       | else result ==
+	 *       |   for each I in 1..getNbWeapons():
+	 *       |     ( (I == index) || (getWeaponAt(I) != weapon) )
+	 */
+	public boolean canHaveAsWeaponAt(Weapon weapon, int index) {
+		if ((index < 1) || (index > getNbWeapons() + 1))
+			return false;
+		if (!canHaveAsWeapon(weapon))
+			return false;
+		for (int pos = 1; pos <= getNbWeapons(); pos++)
+			if ((pos != index) && (getWeaponAt(pos) == weapon))
+				return false;
+		return true;
+	}
+	
+	/**
+	 * Check whether this worm has a proper arraylist of weapons.
+	 * 
+	 * @return True if and only if this worm can have each of its
+	 *         inventory at their index, and if each of these inventory
+	 *         references this worm as their owner.
+	 *       | for each index in 1..getNbWeapons():
+	 *       |   canHaveAsWeaponAt(getWeaponAt(index),index) &&
+	 *       |   (getWeaponAt(index).getWeapon() == this)
+	 */
+	public boolean hasProperWeapons() {
+		for (int index = 1; index <= getNbWeapons(); index++) {
+			if (!canHaveAsWeaponAt(getWeaponAt(index), index))
+				return false;
+			if (getWeaponAt(index).getWorm() != this)
+				return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * Check whether this worm has the given weapon as one of
+	 * its weapon.
+	 *
+	 * @param  weapon
+	 *         The weapon to check.
+	 * @return True if and only if this worm has the given weapon
+	 *         as one of its inventory at some index.
+	 *       | result ==
+	 *       |   for some index in 1..getNbWeapons():
+	 *       |     getWeaponAt(index).equals(weapon)
+	 */
+	public boolean hasAsWeapon(Weapon weapon) {
+		return inventory.contains(weapon);
+	}
+	
+	/**
+	 * Return the index at which the given weapon is registered
+	 * in the list of weapons for this worm.
+	 *  
+	 * @param  weapon
+	 *         The weapon to search for.
+	 * @return If this worm has the given weapon as one of its
+	 *         inventory, that weapon is registered at the resulting
+	 *         index. Otherwise, the resulting value is -1.
+	 *       | if (hasAsWeapon(weapon))
+	 *       |    then getWeaponAt(result) == weapon
+	 *       |    else result == -1
+	 */
+	public int getIndexOfWeapon(Weapon weapon) {
+		return inventory.indexOf(weapon);
+	}
+	
+	/**
+	 * Return a list of all the inventory of this worm.
+	 * 
+	 * @return The size of the resulting list is equal to the number of
+	 *         inventory of this worm.
+	 *       | result.size() == getNbWeapons()
+	 * @return Each element in the resulting list is the same as the
+	 *         weapon of this worm at the corresponding index.
+	 *       | for each index in 0..result-size()-1 :
+	 *       |   result.get(index) == getWeaponAt(index+1)
+	 */
+	public ArrayList<Weapon> getAllWeapons() {
+		return new ArrayList<Weapon>(inventory);
+	}
+	
+	/**
+	 * Add the given weapon at the end of the arraylist of
+	 * inventory of this worm.
+	 * 
+	 * @param  weapon
+	 *         The weapon to be added.
+	 * @pre    The given weapon is effective and already references
+	 *         this worm as its worm.
+	 *       | (weapon != null) && (weapon.getWorm() == this)
+	 * @pre    This worm does not not yet have the given weapon
+	 *         as one of its inventory.
+	 *       | ! hasAsWeapon(weapon)
+	 * @post   The number of inventory of this worm is incremented
+	 *         by 1.
+	 *       | new.getNbWeapons() == getNbWeapons() + 1
+	 * @post   This worm has the given weapon as its new last
+	 *         weapon.
+	 *       | new.getWeaponAt(getNbWeapons()+1) == weapon
+	 */
+	public void addAsWeapon(Weapon weapon) {
+		assert (weapon != null) && (weapon.getWorm() == this);
+		assert !hasAsWeapon(weapon);
+		inventory.add(weapon);
+	}
+	
+	/**
+	 * Remove the given weapon from the inventory of this worm.
+	 * 
+	 * @param  weapon
+	 *         The weapon to be removed.
+	 * @pre    The given weapon is effective and does not have any
+	 *         worm.
+	 *       | (weapon != null) && (weapon.getWorm() == null)
+	 * @pre    This worm has the given weapon as one of
+	 *         its inventory.
+	 *       | hasAsWeapon(weapon)
+	 * @post   The number of inventory of this worm is decremented
+	 *         by 1.
+	 *       | new.getNbWeapons() == getNbWeapons() - 1
+	 * @post   This worm no longer has the given weapon as
+	 *         one of its inventory.
+	 *       | (! new.hasAsWeapon(weapon))
+	 * @post   All inventory registered beyond the removed weapon
+	 *         shift one position to the left.
+	 *       | for each index in getIndexOfWeapon(weapon)+1..getNbWeapons():
+	 *       |   new.getWeaponAt(index-1) == getWeaponAt(index) 
+	 */
+	public void removeAsWeapon(Weapon weapon) {
+		assert (weapon != null) && (weapon.getWorm() == null);
+		assert (hasAsWeapon(weapon));
+		inventory.remove(weapon);
+	}
+	
+	//End Inventory stuff
 	
 	/**
 	 * 
@@ -473,7 +580,6 @@ public class Worm extends Movable {
 				}
 			}
 		}
-		updateJumpData();
 	}
 
 	/**
@@ -504,31 +610,6 @@ public class Worm extends Movable {
 					.abs(amount) / (2 * Math.PI)) * 60;
 			setActionPoints((long) Math.ceil(targetAP));
 		}
-		updateJumpData();
-	}
-
-	/**
-	 * 
-	 * @post if the worm is not allowed to jump, the value of JumpLegal gets set
-	 *       to false
-	 *       | if (! canJump() )
-	 *       | {
-	 *       |	new.getJumpLegal() == false
-	 *       | }
-	 * @post if the worm is allowed
-	 */
-	private void updateJumpData() {
-	}
-	/**
-	 * 
-	 * @return true when the orientation of the worm is valid (between 0 and pi)
-	 *         and the worm has action points remaining 
-	 *         | result == (isValidOrientation() && getActionPoints() > 0)
-	 */
-	public boolean canJump() {
-		}
-
-	private void calculateJump() {
 	}
 
 	/**
@@ -549,32 +630,10 @@ public class Worm extends Movable {
 	 *       |  new.getActionPoints() == 0
 	 *       | }
 	 */
-	public void jump() throws ExhaustionException, IllegalStateException {
-		if(canJump()) {
-			super.Jump(getActionPoints());
-			setActionPoints(0);
-		}
-	}
-
-	 /**
-	 * Mandatory 'jumpTime' function as mentioned in the assignment.
-	 * @return the value of jumptime
-	 * 		| result == getJumpTime()
-	 */
-	 public double jumpTime() {
-	 }
-
-	/**
-	 * 
-	 * @param time
-	 * 		the timestamp for which the coordinates of the worm is wanted
-	 * @pre the requested time shall be within the range of the jumptime, thus between 0 and jumpTime().
-	 *      | time >= 0 && time <= jumpTime()
-	 * @return	the coordinates of the worm at the requested time
-	 * 			| result = {(getPosX() + (time * getJumpSpeedX())),
-	 * 			|	(getPosY() + (time * (getJumpSpeedY() - time * 9.80665)/2))}
-	 */
-	public double[] jumpStep(double time) {
+	public void jump(double timestep) throws ExhaustionException, IllegalStateException {
+		double[] target = jumpStep(getActionPoints(), jumpTime(getActionPoints(), timestep));
+		setPosX(target[0]); setPosY(target[1]);
+		setActionPoints(0);
 	}
 	
 	/**
@@ -641,5 +700,10 @@ public class Worm extends Movable {
 		if (isValidActionPoints(getActionPoints()-APcost))
 			getEquipped().shoot(yield);
 			setActionPoints(getActionPoints()-APcost);
+	}
+	
+	public void damage(long amount) {
+		//TODO implement
+		// This kills the worm and makes the world remove this
 	}
 }

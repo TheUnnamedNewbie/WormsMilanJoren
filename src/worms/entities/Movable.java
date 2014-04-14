@@ -6,7 +6,7 @@ import be.kuleuven.cs.som.annotate.*;
 public abstract class Movable extends Entity {
 	
 	private double orientation, jumpTime;
-	protected long density; //Q: why not a private?
+	protected long density; //Q: why not a private? A: gives errors. Must fix this, but is persistend accross all classes (e.g. world is always redefined)
 	//[0] = x, [1] = y.
 	private double[] jumpSpeed = new double[2];
 	
@@ -49,54 +49,70 @@ public abstract class Movable extends Entity {
 		return Math.abs(target) <= Math.PI;
 	}
 	
+	/**
+	 * 
+	 * @return	the mass calculated from radius
+	 * 			| result == 1062 * ((4.0 / 3.0) * Math.PI * Math.pow(getRadius() , 3)
+	 */
 	public double getMass() {
-		return -1;
-	}
-	
-	public abstract double jumpTime(); //TODO see if we can make one main method for both worms and projectiles of if separate methods are needed.
-	
-	
-	
-	//TODO check how we should implement constants 
-	/**
-	 * MATHS GO HERE
-	 */
-	public void jump(long AP){
-		double force, speed;	
-		force = (5 * AP) + (getMass() * this.getWorld().GRAVITY);
-		speed = (force/getMass())*(((double)1)/2);
-		jumpSpeed[0] = speed * Math.cos(getOrientation()); 
-		jumpSpeed[1] = speed * Math.sin(getOrientation());
-		
-		
-		
-		return;
+		return getDensity() * (double)(4.0/3.0) * Math.PI * (Math.pow(getRadius(), 3));
 	}
 	
 	/**
 	 * MATHS GO HERE
 	 * @return
 	 */
-	public double jumpTime() {
-		return -1;
-	}
-	
-	
-	/**
-	 * MATHS GO HERE
-	 * @param time
-	 * @return
-	 */
-	public double jumpStep(double time) {
-		if(!isLegalTime(time)){
-			time = endOfJump();
+	public double jumpTime(long AP, double timestep) {
+		double time = timestep;
+		while (true) {
+			double[] target = jumpStep(AP, time);
+			if (!isValidPosition(target) || collides(target))
+				return time;
+			time += timestep;
 		}
+	}
+	
+	public double jumpTime(double force, double timestep) {
+		double time = timestep;
+		while (true) {
+			double[] target = jumpStep(force, time);
+			if (!isValidPosition(target) || collides(target))
+				return time;
+			time += timestep;
+		}
+	}
+	
+	/**
+	 * The collide method checks to see if a movable enitity can exist at a given position.
+	 * Inheriting classes will receive more specified rules (e.g. Projectile collides with worm)
+	 * @param coordinates
+	 * @return
+	 */
+	public boolean collides(double[] coordinates) {
+		if (! getWorld().canExist(coordinates, getRadius())) //TODO EDIT canExist
+			//Collides with map
+			return true;
+		return false;
+	}
+	
+	@Raw
+	public double[] jumpStep(double force, double time) {
 		double[] returnCoordinates = new double[2];
+		double speed;
+		speed = (force/getMass())*(double)(1/2);
+		jumpSpeed[0] = speed * Math.cos(getOrientation());
+		jumpSpeed[1] = speed * Math.sin(getOrientation());
 		returnCoordinates[0] = (jumpSpeed[0]*time) + getPosX();
 		returnCoordinates[1] = ((jumpSpeed[1]*time) - ((1.0/2.0) * this.getWorld().GRAVITY * time * time)) + getPosY();
 		return returnCoordinates;
 	}
 	
+	@Raw
+	public double[] jumpStep(long AP, double time) {
+		double force;
+		force = (5 * AP) + (getMass() * getWorld().GRAVITY);
+		return jumpStep(force, time);
+	}
 	
 	/**
 	 * TODO boolean shizzle
@@ -115,7 +131,7 @@ public abstract class Movable extends Entity {
 		if ((canJump() == false) && (time > -EPS) && (time < EPS)){
 			return true;
 		}
-		if ((canJump() == true) && (time > 0) && (time <= jumpTime())) {
+		if ((canJump() == true) && (time > 0) && (time <= jumpTime(0.01))) {
 			return true;
 		}
 		return false;
@@ -126,7 +142,7 @@ public abstract class Movable extends Entity {
 	 * STUFF GOES HERE
 	 * @return
 	 */
-	public boolean canJump() { //TODO Milan, work your magic!
+	public boolean canJump() {
 		return false;
 	}
 }
