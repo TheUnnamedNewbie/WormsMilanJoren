@@ -60,8 +60,8 @@ import java.util.ArrayList;
  * 	UF		jumpStep()			movable
  * 			CONSTRUCTOR(2nd)	World
  * 			isLegalSize()		World
- * 	F		exception			IllegalSizeException --- MILAN: work your magic please
- * 	F		exception			TooManyProjectilesException --- MILAN: work your magic please
+ * 	F		exception			IllegalSizeException
+ * 	F		exception			TooManyProjectilesException
  * 			isLegalMap()		World
  * 	UF		canExist			World
  * 
@@ -112,6 +112,7 @@ import java.util.ArrayList;
  * MAIN TODO
  * 
  * World: Make cellWidth and cellHeight constants?
+ * General: Y-axis is positive downwards, take this into account!!
  */
 
 
@@ -124,7 +125,8 @@ import java.util.ArrayList;
  * JOREN: can we "assume" that the passablemap is a square, IE for every double[] in passablemap can we assume that it is the same length?
  * 				NOTE: writing checker anyways, because why the hell not.
  * JOREN: Maybe it's not a bad Idea to turn cellWidth and cellHeight in world into constants?
- * MILAN: Can you move through a worm?
+ * MILAN: Can you move through a worm? Not stand in one, just moving through.
+ * MILAN: Exceptions, am I doing it right? With the serial and such.
  * 
  */
 /**
@@ -133,9 +135,9 @@ import java.util.ArrayList;
  * The class Worm contains all information and methods related to the
  * actual worms and their movements.
  * 
- * @invar The current (at stable point) action points must remain above 0 and
- *        under max action points.
- *        | isValidPoints(getActionPoints())
+ * @invar The current (at stable point) action and hit points must remain valid
+ *        | isValidActionPoints(getActionPoints())
+ *        | isValidHitPoints(getHitPoints())
  * @invar The radius is always at least 0.25m
  * 		  | getRadius() >= 0.25
  * @author Milan Sanders
@@ -638,7 +640,9 @@ public class Worm extends Movable {
 			}
 			setPosX(getPosX() + Math.cos(temp[1]) * temp[0]);
 			setPosY(getPosY() + Math.sin(temp[1]) * temp[0]);
-			//fall();
+			if (!isValidPosition(getCoordinates()))
+				die();
+			fall();
 			eat();
 		} else throw new ExhaustionException();
 	}
@@ -648,11 +652,11 @@ public class Worm extends Movable {
 		for (double dist = getRadius(); dist > minD; dist -= deltaD) {
 			double targetX = getPosX()+Math.cos(angle)*dist;
 			double targetY = getPosY()+Math.sin(angle)*dist;
-			if (!getWorld().isAdjacent(new double[]{targetX, targetY}, getRadius())) {
+			if (getWorld().isAdjacent(new double[]{targetX, targetY}, getRadius())) {
 				return dist;
 			}
 		}
-		return minD;
+		return 0.0;
 	}
 
 	/**
