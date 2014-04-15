@@ -30,9 +30,6 @@ public class World {
 		this.passableMap = map;
 		this.cellWidth = (width/(map.length+1));
 		this.cellHeight = (height/(map[0].length+1));
-		
-		
-		
 	}
 	
 	public World() {
@@ -50,6 +47,7 @@ public class World {
 	private final double width, height, cellWidth, cellHeight;
 	private ArrayList<Food> foods;
 	private ArrayList<Worm> worms;
+	private ArrayList<Team> teams;
 	private Projectile projectile;
 	private final boolean[][] passableMap;
 	public final double GRAVITY = 9.80665;
@@ -459,6 +457,199 @@ public class World {
 		assert (food != null) && (food.getWorld() == null);
 		assert (hasAsFood(food));
 		foods.remove(food);
+	}
+	
+	/**
+	 * Return the team of this world at the given index.
+	 * 
+	 * @param  index
+	 *         The index of the team to return.
+	 * @throws IndexOutOfBoundsException
+	 *         The given index is not positive or it exceeds the
+	 *         number of teams of this world.
+	 *       | (index < 1) || (index > getNbTeams())
+	 */
+	@Basic
+	public Team getTeamAt(int index) throws IndexOutOfBoundsException {
+		return teams.get(index);
+	}
+	
+	/**
+	 * Return the number of teams of this world.
+	 */
+	@Basic
+	public int getNbTeams() {
+		return teams.size();
+	}
+	
+	/**
+	 * Check whether this world can have the given team
+	 * as one of its teams.
+	 * 
+	 * @param  team
+	 *         The team to check.
+	 * @return True if and only if the given team is effective, and
+	 *         if that team can have this world as its world.
+	 *       | result ==
+	 *       |   (team != null) &&
+	 *       |   team.canHaveAsWorld(this)
+	 */
+	public boolean canHaveAsTeam(Team team) {
+		return (team != null);
+	}
+	
+	/**
+	 * Check whether this world can have the given team
+	 * as one of its teams at the given index.
+	 * 
+	 * @param  team
+	 *         The team to check.
+	 * @param  index
+	 *         The index to check.
+	 * @return False if the given index is not positive or exceeds
+	 *         the number of teams of this world + 1.
+	 *       | if ( (index < 1) || (index > getNbTeams()+1) )
+	 *       |   then result == false
+	 *         Otherwise, false if this world cannot have the
+	 *         given team as one of its teams.
+	 *       | else if (! canHaveAsTeam(team))
+	 *       |   then result == false
+	 *         Otherwise, true if and only if the given team is
+	 *         not already registered at another index.
+	 *       | else result ==
+	 *       |   for each I in 1..getNbTeams():
+	 *       |     ( (I == index) || (getTeamAt(I) != team) )
+	 */
+	public boolean canHaveAsTeamAt(Team team, int index) {
+		if ((index < 1) || (index > getNbTeams() + 1))
+			return false;
+		if (!canHaveAsTeam(team))
+			return false;
+		for (int pos = 1; pos <= getNbTeams(); pos++)
+			if ((pos != index) && (getTeamAt(pos) == team))
+				return false;
+		return true;
+	}
+	
+	/**
+	 * Check whether this world has a proper arraylist of teams.
+	 * 
+	 * @return True if and only if this world can have each of its
+	 *         teams at their index, and if each of these teams
+	 *         references this world as their world.
+	 *       | for each index in 1..getNbTeams():
+	 *       |   canHaveAsTeamAt(getTeamAt(index),index) &&
+	 *       |   (getTeamAt(index).getTeam() == this)
+	 */
+	public boolean hasProperTeams() {
+		for (int index = 1; index <= getNbTeams(); index++) {
+			if (!canHaveAsTeamAt(getTeamAt(index), index))
+				return false;
+			if (getTeamAt(index).getWorld() != this)
+				return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * Check whether this world has the given team as one of
+	 * its team.
+	 *
+	 * @param  team
+	 *         The team to check.
+	 * @return True if and only if this world has the given team
+	 *         as one of its teams at some index.
+	 *       | result ==
+	 *       |   for some index in 1..getNbTeams():
+	 *       |     getTeamAt(index).equals(team)
+	 */
+	public boolean hasAsTeam(Team team) {
+		return teams.contains(team);
+	}
+	
+	/**
+	 * Return the index at which the given team is registered
+	 * in the list of teams for this world.
+	 *  
+	 * @param  team
+	 *         The team to search for.
+	 * @return If this world has the given team as one of its
+	 *         teams, that team is registered at the resulting
+	 *         index. Otherwise, the resulting value is -1.
+	 *       | if (hasAsTeam(team))
+	 *       |    then getTeamAt(result) == team
+	 *       |    else result == -1
+	 */
+	public int getIndexOfTeam(Team team) {
+		return teams.indexOf(team);
+	}
+	
+	/**
+	 * Return a list of all the teams of this world.
+	 * 
+	 * @return The size of the resulting list is equal to the number of
+	 *         teams of this world.
+	 *       | result.size() == getNbTeams()
+	 * @return Each element in the resulting list is the same as the
+	 *         team of this world at the corresponding index.
+	 *       | for each index in 0..result-size()-1 :
+	 *       |   result.get(index) == getTeamAt(index+1)
+	 */
+	public ArrayList<Team> getAllTeams() {
+		return new ArrayList<Team>(teams);
+	}
+	
+	/**
+	 * Add the given team at the end of the arraylist of
+	 * teams of this world.
+	 * 
+	 * @param  team
+	 *         The team to be added.
+	 * @pre    The given team is effective and already references
+	 *         this world as its world.
+	 *       | (team != null) && (team.getWorld() == this)
+	 * @pre    This world does not not yet have the given team
+	 *         as one of its teams.
+	 *       | ! hasAsTeam(team)
+	 * @post   The number of teams of this world is incremented
+	 *         by 1.
+	 *       | new.getNbTeams() == getNbTeams() + 1
+	 * @post   This world has the given team as its new last
+	 *         team.
+	 *       | new.getTeamAt(getNbTeams()+1) == team
+	 */
+	public void addAsTeam(Team team) {
+		assert (team != null) && (team.getWorld() == this);
+		assert !hasAsTeam(team);
+		teams.add(team);
+	}
+	
+	/**
+	 * Remove the given team from the teams of this world.
+	 * 
+	 * @param  team
+	 *         The team to be removed.
+	 * @pre    The given team is effective and does not have any
+	 *         world.
+	 *       | (team != null) && (team.getWorld() == null)
+	 * @pre    This world has the given team as one of
+	 *         its teams.
+	 *       | hasAsTeam(team)
+	 * @post   The number of teams of this world is decremented
+	 *         by 1.
+	 *       | new.getNbTeams() == getNbTeams() - 1
+	 * @post   This world no longer has the given team as
+	 *         one of its teams.
+	 *       | (! new.hasAsTeam(team))
+	 * @post   All teams registered beyond the removed team
+	 *         shift one position to the left.
+	 *       | for each index in getIndexOfTeam(team)+1..getNbTeams():
+	 *       |   new.getTeamAt(index-1) == getTeamAt(index) 
+	 */
+	public void removeAsTeam(Team team) {
+		assert (team != null) && (team.getWorld() == null);
+		assert (hasAsTeam(team));
+		teams.remove(team);
 	}
 	
 	public boolean isPassableAt(double x, double y){

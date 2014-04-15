@@ -105,6 +105,10 @@ import java.util.ArrayList;
  * Renamed Radius to radius in Entity and thus fixed all the redefining of radius
  * made cost a field in weapon
  * initialized the worm with a rifle and a bazooka
+ * started on team:
+ * 		Made getters/setters for members
+ * 		Made Worm be able to join a team
+ * 		Checks name of team (IllArgExc)
  */
 
 
@@ -113,6 +117,7 @@ import java.util.ArrayList;
  * 
  * World: Make cellWidth and cellHeight constants?
  * General: Y-axis is positive downwards, take this into account!!
+ * Genera: fix src-provided so that we can test the GUI
  */
 
 
@@ -168,6 +173,7 @@ public class Worm extends Movable {
 	private int currentWeapon;
 	private ArrayList<Weapon> inventory;
 	private final World world;
+	private Team team;
 
 	/**
 	 * 
@@ -264,6 +270,7 @@ public class Worm extends Movable {
 	 * @return the name of the worm.
 	 * 		| result == this.name
 	 */
+	@Basic
 	public String getName() {
 		return this.name;
 	}
@@ -299,6 +306,7 @@ public class Worm extends Movable {
 	/**
 	 * This is the index of Equipped in inventory.
 	 */
+	@Basic
 	public int getCurrentWeapon(){
 		return this.currentWeapon;
 	}
@@ -306,7 +314,8 @@ public class Worm extends Movable {
 	public void setCurrentWeapon(int index) {
 		currentWeapon = index;
 	}
-	
+
+	@Basic
 	public World getWorld() {
 		return this.world;
 	}
@@ -508,6 +517,24 @@ public class Worm extends Movable {
 	
 	//End Inventory stuff
 	
+	public void join(Team team) {
+		if (isProperTeam(team))
+			team.addAsWorm(this);
+	}
+	
+	public boolean isProperTeam(Team team) {
+		if (team == null)
+			return false;
+		if (team.getWorld() != getWorld())
+			return false;
+		return true;
+	}
+	
+	@Basic
+	public Team getTeam() {
+		return this.team;
+	}
+	
 	/**
 	 * 
 	 * @param radius
@@ -546,12 +573,6 @@ public class Worm extends Movable {
 		return ((points >= 0) && (points <= getMaxHitPoints()));
 	}
 
-	/**
-	 * 
-	 * @param name
-	 * @return	...
-	 * 			| (name.length() >= 2) && containsLegalChars() )
-	 */
 	private boolean isValidName(String name) {
 		return name.matches("[A-Z][a-zA-Z0-9\\s'\"]+");
 	}
@@ -808,6 +829,10 @@ public class Worm extends Movable {
 		}
 	}
 	
+	/**
+	 * Makes the worm shoot its equipped weapon with given yield if applicable
+	 * @param yield
+	 */
 	public void shoot(int yield) {
 		long APcost = getEquipped().getCost();
 		if (isValidActionPoints(getActionPoints()-APcost))
@@ -815,6 +840,10 @@ public class Worm extends Movable {
 			setActionPoints(getActionPoints()-APcost);
 	}
 	
+	/**
+	 * Damages the worm for the given amount and kills it if necessary
+	 * @param amount
+	 */
 	public void damage(long amount) {
 		if (amount > 0) {
 			long targetHP = getHitPoints() - amount;

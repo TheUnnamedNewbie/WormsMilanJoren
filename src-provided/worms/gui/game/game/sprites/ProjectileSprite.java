@@ -7,7 +7,7 @@ import java.util.LinkedList;
 import worms.gui.GUIUtils;
 import worms.gui.game.PlayGameScreen;
 import worms.gui.game.Sprite;
-import worms.model.Projectile;
+import worms.entities.Projectile;
 
 public class ProjectileSprite extends Sprite<Projectile> {
 

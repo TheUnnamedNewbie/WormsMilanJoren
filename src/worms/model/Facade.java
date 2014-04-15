@@ -15,13 +15,6 @@ import worms.containment.*;
  */
 public class Facade implements IFacade {
 	
-	/**
-	 * Depricated constructor that does not use world
-	public Worm createWorm(double x, double y, double direction, double radius, String name) {
-		return new Worm(name, x, y, radius, direction);
-	}
-	*/
-	
 	public boolean canMove(Worm worm) {
 		return worm.canMove();
 	}
@@ -44,20 +37,6 @@ public class Facade implements IFacade {
 			worm.turn(angle, true);
 		}
 	}
-	
-//	public void jump(Worm worm) throws ModelException {
-//		try {
-//			worm.jump();
-//		} catch (ExhaustionException e) {
-//			throw new ModelException("No more actionpoints");
-//		} catch (IllegalStateException e) {
-//			throw new ModelException("Worm must face up");
-//		}
-//	}
-	
-//	public double getJumpTime(Worm worm) {
-//		return worm.getJumpTime();
-//	}
 	
 	public double[] getJumpStep(Worm worm, double t) {
 		return worm.jumpStep(0.01, t);
@@ -118,8 +97,7 @@ public class Facade implements IFacade {
 
 	
 	public void addEmptyTeam(World world, String newName) {
-		// TODO Auto-generated method stub
-		
+		world.addAsTeam(new Team(newName, world));
 	}
 
 	
@@ -212,8 +190,7 @@ public class Facade implements IFacade {
 
 	
 	public String getTeamName(Worm worm) {
-		// TODO Auto-generated method stub
-		return null;
+		return worm.getTeam().getName();
 	}
 
 	

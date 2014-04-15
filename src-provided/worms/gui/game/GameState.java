@@ -7,7 +7,7 @@ import java.util.Random;
 import worms.gui.game.commands.Command;
 import worms.gui.game.commands.CommandProcessor;
 import worms.model.IFacade;
-import worms.model.World;
+import worms.containment.World;
 import worms.model.Worm;
 
 public class GameState {
