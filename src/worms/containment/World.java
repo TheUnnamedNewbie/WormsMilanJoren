@@ -491,7 +491,11 @@ public class World {
 	}
 	
 	public double distance(Entity a, Entity b) {
-		return Math.sqrt(Math.pow(a.getPosX() - b.getPosX(), 2) + Math.pow(a.getPosY() - b.getPosY(), 2));
+		return distance(a.getCoordinates(), b.getCoordinates());
+	}
+	
+	public double distance(double[] coordA, double[] coordB) {
+		return Math.sqrt(Math.pow(coordA[0] - coordB[0], 2) + Math.pow(coordA[1] - coordB[1], 2));
 	}
 	
 	public static boolean isLegalMap(boolean[][] map) {
@@ -504,18 +508,22 @@ public class World {
 		return true;
 	}
 	
-	public boolean canExist(double[] coordinates, Entity entity) {
+	public boolean isAdjacent(double[] coordinate, double radius) {
+		return Entity.collides(coordinate, radius, this) && Entity.collides(coordinate, radius*1.1, this);
+	}
+	
+	public boolean canExist(double[] coordinates, double radius) {
 		//this is gonna be one hell of a method.
 		
 		assert(coordinates[0] <= getWidth());
 		assert(coordinates[1] <= getHeight());
 		assert(coordinates[0] >= 0);
 		assert(coordinates[1] >= 0);
-		assert(entity != null);
-		assert((entity.getPosX()-entity.getRadius())<=coordinates[0]);
-		assert((entity.getPosX()+entity.getRadius())>=coordinates[0]);
-		assert((entity.getPosY()-entity.getRadius())<=coordinates[0]);
-		assert((entity.getPosY()+entity.getRadius())>=coordinates[0]);
+//		assert(entity != null);
+//		assert((entity.getPosX()-entity.getRadius())<=coordinates[0]);
+//		assert((entity.getPosX()+entity.getRadius())>=coordinates[0]);
+//		assert((entity.getPosY()-entity.getRadius())<=coordinates[0]);
+//		assert((entity.getPosY()+entity.getRadius())>=coordinates[0]);
 		//only now I realise I might have gone overboard with asserting this stuff.
 		
 		//vardec
@@ -526,10 +534,10 @@ public class World {
 		
 		
 		//prepare to be confused with inverted coordinatesystemstuff
-		upperLeft[0] = entity.getPosX() - entity.getRadius();
-		upperLeft[1] = entity.getPosY() - entity.getRadius(); 
-		lowerRight[0] = entity.getPosX() + entity.getRadius();
-		lowerRight[1] = entity.getPosY() + entity.getRadius();
+		upperLeft[0] = coordinates[0] - radius;
+		upperLeft[1] = coordinates[1] - radius; 
+		lowerRight[0] = coordinates[0] + radius;
+		lowerRight[1] = coordinates[1] + radius;
 		
 		//can be merged with above later for more efficiency
 		upperLeftCell[0] = (int)Math.floor(upperLeft[0]/getCellWidth());
@@ -540,7 +548,7 @@ public class World {
 		
 		
 		//some forstuffs comes here to populate the submap with usefull things
-		for(int j = upperLeftCell[0]; j < lowerRightCell[0]; j++) { //TODO check if it this is 100% correct, didn't have enought coffee yet to propperly think about that
+		for(int j = upperLeftCell[0]; j < lowerRightCell[0]; j++) { //TODO check if it this is 100% correct, didn't have enough coffee yet to properly think about that
 			for(int i = upperLeftCell[1]; i < lowerRightCell[1]; i++){
 				//Vardec
 				double[] absoluteCoordinate = new double[2];
@@ -550,12 +558,11 @@ public class World {
 				absoluteCoordinate[1] = (i * getCellHeight());
 				
 				//prepare your butt for #mathClusterFuck
-				distanceToEntity = Math.sqrt(	Math.pow( entity.getPosX() - absoluteCoordinate[0], 2) + 
-												Math.pow( entity.getPosY() - absoluteCoordinate[1], 2));
+				distanceToEntity = Math.sqrt(	Math.pow( coordinates[0] - absoluteCoordinate[0], 2) + 
+												Math.pow( coordinates[1] - absoluteCoordinate[1], 2));
 				
 				//Need to think long and hard about this one in relation to it checking all 4 adjacant cells to the absolutecoordinate
-				if(distanceToEntity <= (entity.getRadius() + EPS)){
-					//TODO check if it is -1 or +1 and if there is a more efficient way to check these 4 cases
+				if(distanceToEntity <= (radius + EPS)){
 					if(passableMap[j-1][i-1]){
 						if(passableMap[j][i-1]){
 							if(passableMap[j][i]){

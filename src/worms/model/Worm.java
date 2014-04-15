@@ -69,7 +69,7 @@ import java.util.ArrayList;
  * World:
  * 		worked some stuff on the constructor
  * 			Added this.projectile = null
- * 			arraylistrelated stuff
+ * 			arraylist related stuff
  * 		isLegalSize seems to be finished.
  * 		added a second constructor that calls with default values
  * 	    world now stores the gravity constant for that world.	
@@ -89,6 +89,19 @@ import java.util.ArrayList;
  * Made getters/setter for World.worms, World.foods and Worms.inventory
  * fixed exceptions
  * implemented jump (it should work, but tell me if you see anything)
+ * 
+ * 15-4-2014:
+ * overloaded distance to work w/ coordinate arrays
+ * Made things collide with worms.
+ * Made worms eat after jump()
+ * set and position through use of coordinate array (Entity)
+ * Implemented step() with use of isAdjacent.
+ * Made collides() require a radius for use with isAdjacent (the radius*1.1 would otherwise require the creation of new object)
+ * Moved collides() to Entity and made static (fixed implementations of collides())
+ * implemented Worm.damage()
+ * Created Movable.canJump()
+ * Implemented fall()
+ * Edited canExist to work with coordinates and radius
  */
 
 
@@ -106,13 +119,15 @@ import java.util.ArrayList;
  * 
  * JOREN: does the construction of an arraylist have to happen in the constructor of the object that stores that arraylist
  * JOREN: can we "assume" that the passablemap is a square, IE for every double[] in passablemap can we assume that it is the same length?
- * 				NOTE: writing checker anyways, becuase why the hell not.
+ * 				NOTE: writing checker anyways, because why the hell not.
  * JOREN: Maybe it's not a bad Idea to turn cellWidth and cellHeight in world into constants?
+ * MILAN: Can you move through a worm?
  * 
  */
 /**
  * 
- * WORMS!! The class Worm contains all information and methods related to the
+ * WORMS!! Are violently erupting!
+ * The class Worm contains all information and methods related to the
  * actual worms and their movements.
  * 
  * @invar The current (at stable point) action points must remain above 0 and
@@ -166,11 +181,11 @@ public class Worm extends Movable {
 		if (!isValidRadius(radius)) {
 			throw new IllegalArgumentException();
 		} else {
-			double APratio = (double) getActionPoints()/getMaxActionPoints();
-			double HPratio = (double) getHitPoints()/getMaxHitPoints();
 			this.radius = radius;
-			setActionPoints(Math.round(getMaxActionPoints() * APratio));
-			setHitPoints(Math.round(getMaxHitPoints() * HPratio));
+			if (getActionPoints() < getMaxActionPoints())
+				setActionPoints(getMaxActionPoints());
+			if (getHitPoints() < getMaxHitPoints())
+				setHitPoints(getMaxHitPoints());
 		}
 	}
 
@@ -543,43 +558,97 @@ public class Worm extends Movable {
 	 * 		This means that the worm has enough actionpoints, every step takes (cos(getOrientation())) + 4*sin(getOrientation()).
 	 *  	| result == (getActionPoints() >= (Math.abs(Math.cos(getOrientation())) + Math.abs(Math.sin(getOrientation())) * 4 * steps)) && (steps > 0)
 	 */
-	public boolean canMove(int steps) {
+	public boolean canMove() {
 		double currentOrientation = getOrientation();
-		double stepPoints = (Math.abs(Math.cos(currentOrientation)) + Math.abs(Math.sin(currentOrientation)) * 4 * steps);
-		return (getActionPoints() >= stepPoints) && (steps > 0);
+		double stepPoints = (Math.abs(Math.cos(currentOrientation)) + Math.abs(Math.sin(currentOrientation)) * 4);
+		return (getActionPoints() >= stepPoints);
 	}
 
+//	/**
+//	 * @param steps
+//	 * 		The amount of steps to be moved.
+//	 * @throws IllegalArgumentException
+//	 * 		If the amount of steps is smaller than 0.
+//	 * 		| (steps <= 0)
+//	 * @throws ExhaustionException
+//	 * 		If the worm does not have enough actionpoints.
+//	 * 		| (!canMove(steps))
+//	 */
+//	public void step(int steps) throws IllegalArgumentException,
+//	ExhaustionException {
+//		if (steps <= 0)
+//			throw new IllegalArgumentException();
+//		else {
+//			if (!canMove(steps))
+//				throw new ExhaustionException();
+//			else {
+//				for (int i = 0; i < steps; i++) {
+//					double currentOrientation = getOrientation();
+//					setPosX(getPosX() + Math.cos(currentOrientation)
+//							* getRadius());
+//					setPosY(getPosY() + Math.sin(currentOrientation)
+//							* getRadius());
+//					double targetAP = getActionPoints()
+//							- Math.abs(Math.cos(currentOrientation))
+//							- Math.abs(4 * Math.sin(currentOrientation));
+//					setActionPoints((long) Math.ceil(targetAP));
+//				}
+//			}
+//		}
+//	}
+	
 	/**
-	 * @param steps
-	 * 		The amount of steps to be moved.
-	 * @throws IllegalArgumentException
-	 * 		If the amount of steps is smaller than 0.
-	 * 		| (steps <= 0)
-	 * @throws ExhaustionException
-	 * 		If the worm does not have enough actionpoints.
-	 * 		| (!canMove(steps))
+	 * The step method moves the worm to a fitting location as per the assignment
+	 * (too much to explain in the comments)
+	 * 
+	 * minD is used to minimize the amount of calculations
+	 * 
+	 * @throws ExhaustionException Thrown when you do not have sufficient actionpoints to complete the step
 	 */
-	public void step(int steps) throws IllegalArgumentException,
-	ExhaustionException {
-		if (steps <= 0)
-			throw new IllegalArgumentException();
-		else {
-			if (!canMove(steps))
-				throw new ExhaustionException();
-			else {
-				for (int i = 0; i < steps; i++) {
-					double currentOrientation = getOrientation();
-					setPosX(getPosX() + Math.cos(currentOrientation)
-							* getRadius());
-					setPosY(getPosY() + Math.sin(currentOrientation)
-							* getRadius());
-					double targetAP = getActionPoints()
-							- Math.abs(Math.cos(currentOrientation))
-							- Math.abs(4 * Math.sin(currentOrientation));
-					setActionPoints((long) Math.ceil(targetAP));
+	public void step() throws ExhaustionException {
+		if (canMove()) {
+			double deltaT = 0.0175; //infinitesimal angle to see how far one can move.
+			double minD = 0.1;
+			double[] temp = new double[]{0.0, getOrientation()}; //temp is the furthest the worm can move and that direction
+			for (double count = 0.0; count < 0.7875; count += deltaT) {
+				double maxDistClockwise = maxDist(getOrientation()+count, minD);
+				if (maxDistClockwise == getRadius()) {
+					temp = new double[] {getRadius(), getOrientation() + count };
+					break;
+				} else {
+					if (maxDistClockwise > temp[0]) {
+						temp = new double[] {maxDistClockwise, getOrientation() + count };
+						minD = maxDistClockwise;
+					}
+				}
+				double maxDistCounterClockwise = maxDist(getOrientation()-count, minD);
+				if (maxDistCounterClockwise == getRadius()) {
+					temp = new double[] {getRadius(), getOrientation() - count };
+					break;
+				} else {
+					if (maxDistCounterClockwise > temp[0]){
+						temp = new double[] {maxDistCounterClockwise, getOrientation() - count };
+						minD = maxDistCounterClockwise;
+					}
 				}
 			}
+			setPosX(getPosX() + Math.cos(temp[1]) * temp[0]);
+			setPosY(getPosY() + Math.sin(temp[1]) * temp[0]);
+			//fall();
+			eat();
+		} else throw new ExhaustionException();
+	}
+	
+	public double maxDist(double angle, double minD) {
+		double deltaD = 0.01; //infinitesimal distance to check how far you can move in every direction.
+		for (double dist = getRadius(); dist > minD; dist -= deltaD) {
+			double targetX = getPosX()+Math.cos(angle)*dist;
+			double targetY = getPosY()+Math.sin(angle)*dist;
+			if (!getWorld().isAdjacent(new double[]{targetX, targetY}, getRadius())) {
+				return dist;
+			}
 		}
+		return minD;
 	}
 
 	/**
@@ -631,19 +700,58 @@ public class Worm extends Movable {
 	 *       | }
 	 */
 	public void jump(double timestep) throws ExhaustionException, IllegalStateException {
-		double[] target = jumpStep(getActionPoints(), jumpTime(getActionPoints(), timestep));
-		setPosX(target[0]); setPosY(target[1]);
-		setActionPoints(0);
+		if (getActionPoints() > 0 && canJump()){
+			double[] target = jumpStep(getActionPoints(), jumpTime(getActionPoints(), timestep));
+			setPosX(target[0]); setPosY(target[1]);
+			setActionPoints(0);
+			eat();
+		} else {throw new ExhaustionException();};
+	}
+	
+	/**
+	 * checks to see if it can fall, makes it fall and damages it accordingly
+	 */
+	public void fall() {
+		if (canFall()) {
+			double fallTime = fallTime();
+			if (fallTime == Double.MAX_VALUE) {
+				die();
+			} else {
+				double fallDist = Math.abs(getPosY() - fallDist(fallTime));
+				damage((long) Math.floor(fallDist) * 3);
+				setPosY(getPosY() + fallDist);
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 * @param time The time at which point you want to check the fallen distance
+	 * @return the distance fallen after a amount of time
+	 */
+	public double fallDist(double time) {
+		 return getPosY() + ((1.0/2.0) * this.getWorld().GRAVITY * time * time);
+	}
+	
+	public double fallTime() {
+		double timestep = 0.01;
+		double time = 0.0;
+		while (true) {
+			double target = fallDist(time);
+			if (!isValidPosition(getPosX(), target))
+				return Double.MAX_VALUE;
+			if (!isValidPosition(getPosX(), target) || getWorld().isAdjacent(new double[]{getPosX(), target}, getRadius()))
+				return time;
+			time += timestep;
+		}
+	}
+	
+	public boolean canFall() {
+		return !getWorld().isAdjacent(getCoordinates(), getRadius());
 	}
 	
 	/**
 	 * The grow function increases the radius of the worm by 10%.
-	 * 
-	 * Q: We need to destroy the food at some point, how do we do this?
-	 * 		Do we tell the worm to tell the food to destroy itself.
-	 * 		Thus making the food tell the world that it is destroyed.
-	 * 		If so, have grow() be grow(Food meal) and end with meal.eat() or smth like that.
-	 * TODO answer Q
 	 * @post The radius will be 1.1 times it's original size.
 	 * 		| new.getRadius() == 1.1*this.getRadius()
 	 *
@@ -657,6 +765,7 @@ public class Worm extends Movable {
 	 */
 	public void grow() {
 		setRadius(getRadius()*1.1);
+		eat();
 	}
 	
 	/**
@@ -692,7 +801,7 @@ public class Worm extends Movable {
 	}
 	
 	public void shoot(int yield) {
-		long APcost = 999999999; //What's the max positive integer again?
+		long APcost = Long.MAX_VALUE;
 		if (getEquipped().getName() == "Rifle") //work with getClass() things
 			APcost = 10;
 		if (getEquipped().getName() == "Bazooka")
@@ -703,7 +812,21 @@ public class Worm extends Movable {
 	}
 	
 	public void damage(long amount) {
-		//TODO implement
-		// This kills the worm and makes the world remove this
+		if (amount > 0) {
+			long targetHP = getHitPoints() - amount;
+			if (isValidHitPoints(targetHP))
+				setHitPoints(targetHP);
+			else if (targetHP <= 0) {
+				die();
+			}
+		}
+	}
+
+	/**
+	 * The Die method terminates the worm after removing it from its world
+	 */
+	private void die() {
+		getWorld().removeAsWorm(this);
+		terminate();
 	}
 }

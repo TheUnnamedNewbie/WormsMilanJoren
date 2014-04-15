@@ -24,7 +24,7 @@ public class Projectile extends Movable {
 	private final World world;
 	
 	@Immutable
-	private double getForce() {
+	public double getForce() {
 		return this.force;
 	}
 	

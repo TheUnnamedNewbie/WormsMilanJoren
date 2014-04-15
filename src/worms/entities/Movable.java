@@ -1,5 +1,6 @@
 package worms.entities;
 
+import worms.model.Worm;
 import worms.util.Util;
 import be.kuleuven.cs.som.annotate.*;
 
@@ -59,14 +60,14 @@ public abstract class Movable extends Entity {
 	}
 	
 	/**
-	 * MATHS GO HERE
+	 * The jumpTime method tells us how long a jump takes in seconds.
 	 * @return
 	 */
 	public double jumpTime(long AP, double timestep) {
 		double time = timestep;
 		while (true) {
 			double[] target = jumpStep(AP, time);
-			if (!isValidPosition(target) || collides(target))
+			if (!isValidPosition(target) || collides(target, getRadius(), getWorld()))
 				return time;
 			time += timestep;
 		}
@@ -76,23 +77,10 @@ public abstract class Movable extends Entity {
 		double time = timestep;
 		while (true) {
 			double[] target = jumpStep(force, time);
-			if (!isValidPosition(target) || collides(target))
+			if (!isValidPosition(target) || collides(target, getRadius(), getWorld()))
 				return time;
 			time += timestep;
 		}
-	}
-	
-	/**
-	 * The collide method checks to see if a movable enitity can exist at a given position.
-	 * Inheriting classes will receive more specified rules (e.g. Projectile collides with worm)
-	 * @param coordinates
-	 * @return
-	 */
-	public boolean collides(double[] coordinates) {
-		if (! getWorld().canExist(coordinates, getRadius())) //TODO EDIT canExist
-			//Collides with map
-			return true;
-		return false;
 	}
 	
 	@Raw
@@ -114,35 +102,38 @@ public abstract class Movable extends Entity {
 		return jumpStep(force, time);
 	}
 	
-	/**
-	 * TODO boolean shizzle
-	 * @return true if the object cannot jump, and time = 0 or if the object can jump and time > 0 and time <= JumpTime(), false all other times
-	 * 		| if ((canJump() == false) && (time > -EPS) && (time < EPS)) 
-	 * 		|	result = true
-	 * 		| if ((canJump() == true) && (time > 0) && (time <= jumpTime()))
-	 * 		|	result = true
-	 * 		| else
-	 * 		|	result = false
-	 * @param time
-	 * 		time you want to check
-	 *  
-	 */
-	public boolean isLegalTime(double time) {
-		if ((canJump() == false) && (time > -EPS) && (time < EPS)){
-			return true;
-		}
-		if ((canJump() == true) && (time > 0) && (time <= jumpTime(0.01))) {
-			return true;
-		}
-		return false;
-	}
+//	/**
+//	 * I think we no longer need this, canJump is better.
+//	 * @return true if the object cannot jump, and time = 0 or if the object can jump and time > 0 and time <= JumpTime(), false all other times
+//	 * 		| if ((canJump() == false) && (time > -EPS) && (time < EPS)) 
+//	 * 		|	result = true
+//	 * 		| if ((canJump() == true) && (time > 0) && (time <= jumpTime()))
+//	 * 		|	result = true
+//	 * 		| else
+//	 * 		|	result = false
+//	 * @param time
+//	 * 		time you want to check
+//	 *  
+//	 */
+//	public boolean isLegalTime(double time) {
+//		if ((canJump() == false) && (time > -EPS) && (time < EPS)){
+//			return true;
+//		}
+//		if ((canJump() == true) && (time > 0) && (time <= jumpTime(0.01))) {
+//			return true;
+//		}
+//		return false;
+//	}
 	
 	
 	/**
-	 * STUFF GOES HERE
+	 * canJump() sees if you can move a decent amount in the direction you would wish to jump
 	 * @return
 	 */
 	public boolean canJump() {
-		return false;
+		double checkDist = 0.2; // How far ahead a Enitity must be able to move be able to justify a jump
+		double targetX = getPosX()+Math.cos(getOrientation())*(getRadius()+checkDist);
+		double targetY = getPosY()+Math.sin(getOrientation())*(getRadius()+checkDist);
+		return !collides(new double[]{targetX, targetY}, getRadius(), getWorld());
 	}
 }

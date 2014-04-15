@@ -1,5 +1,6 @@
 package worms.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
 
@@ -22,22 +23,19 @@ public class Facade implements IFacade {
 	}
 	*/
 	
-	public boolean canMove(Worm worm, int nbSteps) {
-		return worm.canMove(nbSteps);
+	public boolean canMove(Worm worm) {
+		return worm.canMove();
 	}
 	
-	public void move(Worm worm, int nbSteps) throws ModelException {
+	public void move(Worm worm) throws ModelException {
 		try {
-			worm.step(nbSteps);
+			worm.step();
 		} catch (ExhaustionException e) {
 			throw new ModelException("Insufficient ActionPoints");
-		} catch (IllegalArgumentException e) {
-			throw new ModelException("nbSteps must be positive");
 		}
 	}
 	
 	public boolean canTurn(Worm worm, double angle) {
-		//(-Math.PI <= (amount + getOrientation())) && ((amount + getOrientation()) <= Math.PI)
 		return (-4*Math.PI <= (angle + worm.getOrientation())) && ((angle + worm.getOrientation()) <= 4*Math.PI)
 				&& (((Math.abs(angle) / (2 * Math.PI)) * 60) <= worm.getActionPoints());
 	}
@@ -139,26 +137,18 @@ public class Facade implements IFacade {
 
 	
 	public boolean canFall(Worm worm) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	
-	public boolean canMove(Worm worm) {
-		return canMove(worm, 1);
+		return worm.canFall();
 	}
 
 	
 	public Food createFood(World world, double x, double y) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Food(world, x, y);
 	}
 
 	
 	public World createWorld(double width, double height,
 			boolean[][] passableMap, Random random) {
-		// TODO Auto-generated method stub
-		return null;
+		return new World(width, height, passableMap, random);
 	}
 
 	public Worm createWorm(World world, double x, double y, double direction,
@@ -168,8 +158,7 @@ public class Facade implements IFacade {
 
 	
 	public void fall(Worm worm) {
-		// TODO Auto-generated method stub
-		
+		worm.fall();
 	}
 
 	public Projectile getActiveProjectile(World world) {
@@ -182,8 +171,7 @@ public class Facade implements IFacade {
 	}
 
 	public Collection<Food> getFood(World world) {
-		// TODO Auto-generated method stub
-		return null;
+		return world.getAllFoods();
 	}
 
 	public int getHitPoints(Worm worm) {
@@ -191,19 +179,16 @@ public class Facade implements IFacade {
 	}
 
 	public double[] getJumpStep(Projectile projectile, double t) {
-		// TODO Auto-generated method stub
-		return null;
+		return projectile.jumpStep(projectile.getForce(), t);
 	}
 
 	public double getJumpTime(Projectile projectile, double timeStep) {
-		// TODO Auto-generated method stub
-		return 0;
+		return projectile.jumpTime(projectile.getForce(), timeStep);
 	}
 
 	
 	public double getJumpTime(Worm worm, double timeStep) {
-		// TODO Auto-generated method stub
-		return 0;
+		return worm.jumpTime(worm.getActionPoints(), timeStep);
 	}
 
 	
@@ -218,8 +203,7 @@ public class Facade implements IFacade {
 
 	
 	public double getRadius(Projectile projectile) {
-		// TODO Auto-generated method stub
-		return 0;
+		return projectile.getRadius();
 	}
 
 	
@@ -241,8 +225,7 @@ public class Facade implements IFacade {
 
 	
 	public Collection<Worm> getWorms(World world) {
-		// TODO Auto-generated method stub
-		return null;
+		return world.getAllWorms();
 	}
 
 	
@@ -267,26 +250,22 @@ public class Facade implements IFacade {
 
 	
 	public boolean isActive(Food food) {
-		// TODO Auto-generated method stub
-		return false;
+		return !food.isTerminated();
 	}
 
 	
 	public boolean isActive(Projectile projectile) {
-		// TODO Auto-generated method stub
-		return false;
+		return projectile == projectile.getWorld().getProjectile();
 	}
 
 	
 	public boolean isAdjacent(World world, double x, double y, double radius) {
-		// TODO Auto-generated method stub
-		return false;
+		return world.isAdjacent(new double[]{x, y}, radius);
 	}
 
 	
 	public boolean isAlive(Worm worm) {
-		// TODO Auto-generated method stub
-		return false;
+		return !worm.isTerminated();
 	}
 
 	
@@ -297,37 +276,27 @@ public class Facade implements IFacade {
 
 	
 	public boolean isImpassable(World world, double x, double y, double radius) {
-		// TODO Auto-generated method stub
-		return false;
+		return !world.canExist(new double[]{x,y}, radius);
 	}
 
 	
 	public void jump(Projectile projectile, double timeStep) {
-		// TODO Auto-generated method stub
-		
+		projectile.shoot(timeStep);
 	}
 
 	
 	public void jump(Worm worm, double timeStep) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	
-	public void move(Worm worm) {
-		move(worm, 1);
+		worm.jump(timeStep);
 	}
 
 	
 	public void selectNextWeapon(Worm worm) {
-		// TODO Auto-generated method stub
-		
+		worm.cycle();
 	}
 
 	
 	public void shoot(Worm worm, int yield) {
-		// TODO Auto-generated method stub
-		
+		worm.shoot(yield);
 	}
 
 	

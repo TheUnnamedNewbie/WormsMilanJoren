@@ -2,6 +2,7 @@ package worms.entities;
 
 import worms.CoordinateOutOfBoundsException;
 import worms.containment.World;
+import worms.model.Worm;
 import worms.util.Util;
 
 public abstract class Entity {
@@ -61,6 +62,15 @@ public abstract class Entity {
 		return this.posY;
 	}
 	
+	public double[] getCoordinates() {
+		return new double[]{getPosX(), getPosY()};
+	}
+	
+	public void setCoordinates(double[] target) {
+		setPosX(target[0]);
+		setPosY(target[1]);
+	}
+	
 	public double getRadius() {
 		return this.Radius;
 	}
@@ -103,4 +113,19 @@ public abstract class Entity {
 		this.terminated = true;
 	}
 	
+	/**
+	 * The collide method checks to see if a enitity can exist at a given position.
+	 * Inheriting classes will receive more specified rules (e.g. Projectile collides with worm)
+	 * @param coordinates
+	 * @return
+	 */
+	public static boolean collides(double[] coordinates, double radius, World world) {
+		if (! world.canExist(coordinates, radius))
+			//Collides with map
+			return true;
+		for (Worm worm: world.getAllWorms())
+			if (world.distance(coordinates, worm.getCoordinates()) < radius+worm.getRadius())
+				return true;
+		return false;
+	}
 }
