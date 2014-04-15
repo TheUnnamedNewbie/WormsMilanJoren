@@ -3,7 +3,6 @@ package worms.containment;
 import be.kuleuven.cs.som.annotate.*;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import worms.IllegalMapException;

@@ -6,6 +6,7 @@ import worms.model.Worm;
 public class Rifle extends Weapon {
 	public Rifle(Worm owner) {
 		this.worm = owner;
+		this.cost = 10;
 	}
 	
 	public void shoot(int yield) {

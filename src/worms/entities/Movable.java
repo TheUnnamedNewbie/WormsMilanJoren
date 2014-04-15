@@ -1,12 +1,10 @@
 package worms.entities;
 
-import worms.model.Worm;
-import worms.util.Util;
 import be.kuleuven.cs.som.annotate.*;
 
 public abstract class Movable extends Entity {
 	
-	private double orientation, jumpTime;
+	private double orientation;
 	protected long density; //Q: why not a private? A: gives errors. Must fix this, but is persistend accross all classes (e.g. world is always redefined)
 	//[0] = x, [1] = y.
 	private double[] jumpSpeed = new double[2];

@@ -7,7 +7,8 @@ import worms.util.Util;
 
 public abstract class Entity {
 
-	private double posX, posY, Radius;
+	private double posX, posY;
+	protected double radius;
 	private World world;
 	private boolean terminated;
 	protected static final double EPS = Util.DEFAULT_EPSILON;
@@ -72,11 +73,11 @@ public abstract class Entity {
 	}
 	
 	public double getRadius() {
-		return this.Radius;
+		return this.radius;
 	}
 	
 	public void setRadius(double target) {
-		this.Radius = target;
+		this.radius = target;
 	}
 	
 	public World getWorld() {
@@ -98,7 +99,7 @@ public abstract class Entity {
 	}
 	
 	public boolean isValidPosition(double[] coordinates) {
-		return getWorld().isValidX(coordinates[0]) && getWorld().isValidY(coordinates[1]);
+		return isValidPosition(coordinates[0], coordinates[1]);
 	}
 	
 	public boolean isValidRadius(double target) {

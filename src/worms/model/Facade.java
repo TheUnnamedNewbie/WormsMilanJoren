@@ -1,6 +1,5 @@
 package worms.model;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
 

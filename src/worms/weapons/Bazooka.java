@@ -6,6 +6,7 @@ import worms.model.Worm;
 public class Bazooka extends Weapon {
 	public Bazooka(Worm owner) {
 		this.owner = owner;
+		this.cost = 50;
 	}
 	
 	private final Worm owner;

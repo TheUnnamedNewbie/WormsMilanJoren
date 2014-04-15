@@ -102,6 +102,9 @@ import java.util.ArrayList;
  * Created Movable.canJump()
  * Implemented fall()
  * Edited canExist to work with coordinates and radius
+ * Renamed Radius to radius in Entity and thus fixed all the redefining of radius
+ * made cost a field in weapon
+ * initialized the worm with a rifle and a bazooka
  */
 
 
@@ -152,9 +155,10 @@ public class Worm extends Movable {
 		setName(name);
 		this.world = world;
 		setDensity(1062);
+		addAsWeapon(new Rifle(this));
+		addAsWeapon(new Bazooka(this));
 	}
 
-	private double radius;
 	private long ActionPoints, HitPoints;
 	private String name;
 
@@ -801,11 +805,7 @@ public class Worm extends Movable {
 	}
 	
 	public void shoot(int yield) {
-		long APcost = Long.MAX_VALUE;
-		if (getEquipped().getName() == "Rifle") //work with getClass() things
-			APcost = 10;
-		if (getEquipped().getName() == "Bazooka")
-			APcost = 50;
+		long APcost = getEquipped().getCost();
 		if (isValidActionPoints(getActionPoints()-APcost))
 			getEquipped().shoot(yield);
 			setActionPoints(getActionPoints()-APcost);

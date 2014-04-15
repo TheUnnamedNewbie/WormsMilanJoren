@@ -2,7 +2,6 @@ package worms.entities;
 
 import be.kuleuven.cs.som.annotate.*;
 import worms.containment.*;
-import worms.entities.*;
 import worms.model.Worm;
 
 public class Projectile extends Movable {
