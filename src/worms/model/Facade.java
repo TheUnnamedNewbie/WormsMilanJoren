@@ -1,5 +1,6 @@
 package worms.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
 
@@ -193,8 +194,13 @@ public class Facade implements IFacade {
 
 	
 	public String getWinner(World world) {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<Worm> winners = world.getWinner();
+		if (winners.get(0) == null)
+			return null;
+		else if (winners.size() == 1)
+			return winners.get(0).getName();
+		else
+			return winners.get(0).getTeam().getName();
 	}
 
 	
@@ -244,8 +250,7 @@ public class Facade implements IFacade {
 
 	
 	public boolean isGameFinished(World world) {
-		// TODO Auto-generated method stub
-		return false;
+		return world.hasWinner();
 	}
 
 	

@@ -870,4 +870,29 @@ public class World {
 		} else
 			return new double[]{getWidth(), getHeight()};
 	}
+	
+	public boolean hasWinner() {
+		boolean activated = false;
+		Team team = null;
+		if (getNbWorms() == 1)
+			return true;
+		for (Worm worm: getAllWorms()) {
+			if (!activated) {
+				team = worm.getTeam();
+				activated = true;
+			} else {
+				if (worm.getTeam() != team)
+					return false;
+			}
+		}
+		return true;
+	}
+	
+	public ArrayList<Worm> getWinner() {
+		ArrayList<Worm> emptyOutput = new ArrayList<Worm>(null);
+		if (hasWinner())
+			return getAllWorms();
+		else
+			return emptyOutput;
+	}
 }

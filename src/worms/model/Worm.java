@@ -124,6 +124,7 @@ import java.util.ArrayList;
  * this first rows (y) then columns (x) thing gave weird shit at defining cellwidth and cellheight. I fixed it.
  * 
  * Implemented random worm and food creation and their helper methods (getRandomPosition(radius) and getMaxPosition(angle))
+ * Implemented winners and linked to facade (getWinner and isGameFinished==true if there is one)
  */
 
 
