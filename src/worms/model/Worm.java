@@ -109,6 +109,20 @@ import java.util.ArrayList;
  * 		Made getters/setters for members
  * 		Made Worm be able to join a team
  * 		Checks name of team (IllArgExc)
+ * 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// * !!IMPORTANT TO UNDERSTAND Placed the origin at bottom left and defined y-axis positive upward to prevent weird stuff with:	//
+// * (the length of the list is reasons why)																					//
+// * angles (clockwise == counterclockwise)																						//
+// * positions (up is down)																										//
+// * 		falling (this isn't VVVVVV)																							//
+// * 		Jumping (g = -9.8)																									//
+// * 		Moving																												//
+// * 		And God knows what else...																							//
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ * 
+ * Basically, instead of using passableMap[y][x] (oh yeah, another thing. The y coordinate is first) instead use getBoolAt(int x, int y)
+ * this first rows (y) then columns(x) would give weird shit at defining cellwidth and cellheight.
  */
 
 
@@ -638,7 +652,7 @@ public class Worm extends Movable {
 			double minD = 0.1;
 			double[] temp = new double[]{0.0, getOrientation()}; //temp is the furthest the worm can move and that direction
 			for (double count = 0.0; count < 0.7875; count += deltaT) {
-				double maxDistClockwise = maxDist(getOrientation()+count, minD);
+				double maxDistClockwise = maxDist(getOrientation() + count, minD);
 				if (maxDistClockwise == getRadius()) {
 					temp = new double[] {getRadius(), getOrientation() + count };
 					break;
@@ -648,7 +662,7 @@ public class Worm extends Movable {
 						minD = maxDistClockwise;
 					}
 				}
-				double maxDistCounterClockwise = maxDist(getOrientation()-count, minD);
+				double maxDistCounterClockwise = maxDist(getOrientation() - count, minD);
 				if (maxDistCounterClockwise == getRadius()) {
 					temp = new double[] {getRadius(), getOrientation() - count };
 					break;
@@ -748,25 +762,25 @@ public class Worm extends Movable {
 			} else {
 				double fallDist = Math.abs(getPosY() - fallDist(fallTime));
 				damage((long) Math.floor(fallDist) * 3);
-				setPosY(getPosY() + fallDist);
+				setPosY(getPosY() - fallDist);
 			}
 		}
 	}
 	
 	/**
-	 * 
+	 * The distance (positive) a worm falls after a given time.
 	 * @param time The time at which point you want to check the fallen distance
 	 * @return the distance fallen after a amount of time
 	 */
 	public double fallDist(double time) {
-		 return getPosY() + ((1.0/2.0) * this.getWorld().GRAVITY * time * time);
+		 return ((1.0/2.0) * this.getWorld().GRAVITY * time * time);
 	}
 	
 	public double fallTime() {
 		double timestep = 0.01;
 		double time = 0.0;
 		while (true) {
-			double target = fallDist(time);
+			double target = getPosY() - fallDist(time);
 			if (!isValidPosition(getPosX(), target))
 				return Double.MAX_VALUE;
 			if (!isValidPosition(getPosX(), target) || getWorld().isAdjacent(new double[]{getPosX(), target}, getRadius()))

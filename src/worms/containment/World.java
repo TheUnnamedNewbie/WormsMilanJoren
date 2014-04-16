@@ -15,7 +15,7 @@ import worms.util.Util;
 //TODO add documentation and shizzle
 
 public class World {
-	public World(double width, double height, boolean[][] map, Random random) throws IllegalMapException,IllegalSizeException{
+	public World(double width, double height, boolean[][] map, Random random) throws IllegalMapException, IllegalSizeException {
 		if(!isLegalSize(width, height)) {
 			throw new IllegalSizeException();
 		}
@@ -28,8 +28,8 @@ public class World {
 			throw new IllegalMapException();
 		}
 		this.passableMap = map;
-		this.cellWidth = (width/(map.length+1));
-		this.cellHeight = (height/(map[0].length+1));
+		this.cellWidth = (width/(map[0].length+1));
+		this.cellHeight = (height/(map.length+1));
 	}
 	
 	public World() {
@@ -39,8 +39,8 @@ public class World {
 		foods = new ArrayList<Food>();
 		worms = new ArrayList<Worm>();
 		this.passableMap = new boolean[2][2];
-		this.cellWidth = (width/(passableMap.length+1));
-		this.cellHeight = (height/(passableMap[0].length+1));
+		this.cellWidth = (width/(passableMap[0].length+1));
+		this.cellHeight = (height/(passableMap.length+1));
 	}
 	
 	 //FIELDS
@@ -655,11 +655,12 @@ public class World {
 	public boolean isPassableAt(double x, double y){
 		assert(0.0<x); assert(x<width);
 		assert(0.0<y); assert(y<height);
-		return passableMap[(int)Math.floor(x/getCellWidth())][(int)Math.floor(y/getCellHeight())];
+		return getBoolAt((int)Math.floor(x/getCellWidth()),(int)Math.floor(y/getCellHeight()));
 	}
 	
-	
-	
+	public boolean getBoolAt(int x, int y) {
+		return passableMap[passableMap.length-y][x];
+	}
 	
 	public boolean isValidX(double posX) { 
 		return (posX <= getWidth()) && (posX >= 0);
@@ -737,7 +738,7 @@ public class World {
 		
 		
 		
-		//some forstuffs comes here to populate the submap with usefull things
+		//some forstuffs comes here to populate the submap with useful things
 		for(int j = upperLeftCell[0]; j < lowerRightCell[0]; j++) { //TODO check if it this is 100% correct, didn't have enough coffee yet to properly think about that
 			for(int i = upperLeftCell[1]; i < lowerRightCell[1]; i++){
 				//Vardec
@@ -751,12 +752,12 @@ public class World {
 				distanceToEntity = Math.sqrt(	Math.pow( coordinates[0] - absoluteCoordinate[0], 2) + 
 												Math.pow( coordinates[1] - absoluteCoordinate[1], 2));
 				
-				//Need to think long and hard about this one in relation to it checking all 4 adjacant cells to the absolutecoordinate
+				//Need to think long and hard about this one in relation to it checking all 4 adjacent cells to the absolutecoordinate
 				if(distanceToEntity <= (radius + EPS)){
-					if(passableMap[j-1][i-1]){
-						if(passableMap[j][i-1]){
-							if(passableMap[j][i]){
-								if(! passableMap[j-1][i]){
+					if(getBoolAt(j-1,i-1)){
+						if(getBoolAt(j,i-1)){
+							if(getBoolAt(j,i)){
+								if(! getBoolAt(j-1,i)){
 									return false;
 								}
 							} else{return false;};
@@ -770,7 +771,7 @@ public class World {
 			//TODO: Stuffs.
 			//need to check here for each point except the leftmost, upmost, rightmost, and downmost edges
 			//if the entity will cover it with the radius and if so, that the 4 adjacent are empty.
-			//might acutally simply be easier to not store a submap for this.
+			//might actually simply be easier to not store a submap for this.
 		return true;	
 		}
 	
