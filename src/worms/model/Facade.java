@@ -102,14 +102,12 @@ public class Facade implements IFacade {
 
 	
 	public void addNewFood(World world) {
-		// TODO Auto-generated method stub
-		
+		world.createRandomFood();
 	}
 
 	
 	public void addNewWorm(World world) {
-		// TODO Auto-generated method stub
-		
+		world.createRandomWorm();
 	}
 
 	

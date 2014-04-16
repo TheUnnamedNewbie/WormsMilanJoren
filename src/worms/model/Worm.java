@@ -120,9 +120,10 @@ import java.util.ArrayList;
 // * 		Moving																												//
 // * 		And God knows what else...																							//
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
- * 
  * Basically, instead of using passableMap[y][x] (oh yeah, another thing. The y coordinate is first) instead use getBoolAt(int x, int y)
- * this first rows (y) then columns(x) would give weird shit at defining cellwidth and cellheight.
+ * this first rows (y) then columns (x) thing gave weird shit at defining cellwidth and cellheight. I fixed it.
+ * 
+ * Implemented random worm and food creation and their helper methods (getRandomPosition(radius) and getMaxPosition(angle))
  */
 
 
@@ -141,7 +142,7 @@ import java.util.ArrayList;
  * thought this might not be to bad an idea, you think of something we should ask the TA, just type it down here
  * 
  * JOREN: does the construction of an arraylist have to happen in the constructor of the object that stores that arraylist
- * JOREN: can we "assume" that the passablemap is a square, IE for every double[] in passablemap can we assume that it is the same length?
+ * JOREN: can we "assume" that the passablemap is a square *more like 'full'*, IE for every double[] in passablemap can we assume that it is the same length?
  * 				NOTE: writing checker anyways, because why the hell not.
  * JOREN: Maybe it's not a bad Idea to turn cellWidth and cellHeight in world into constants?
  * MILAN: Can you move through a worm? Not stand in one, just moving through.

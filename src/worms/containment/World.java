@@ -3,6 +3,8 @@ package worms.containment;
 import be.kuleuven.cs.som.annotate.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 import worms.IllegalMapException;
@@ -30,6 +32,7 @@ public class World {
 		this.passableMap = map;
 		this.cellWidth = (width/(map[0].length+1));
 		this.cellHeight = (height/(map.length+1));
+		this.random = random;
 	}
 	
 	public World() {
@@ -45,6 +48,7 @@ public class World {
 	
 	 //FIELDS
 	private final double width, height, cellWidth, cellHeight;
+	private Random random;
 	private ArrayList<Food> foods;
 	private ArrayList<Worm> worms;
 	private ArrayList<Team> teams;
@@ -52,6 +56,9 @@ public class World {
 	private final boolean[][] passableMap;
 	public final double GRAVITY = 9.80665;
 	private static final double EPS = Util.DEFAULT_EPSILON;
+	private List<String> wormNames = Arrays.asList("Shari", "Shannon",
+			"Willard", "Jodi", "Santos", "Ross", "Cora", "Jacob", "Homer",
+			"Kara");
 	// END FIELDS
 	
 	public double getWidth() {
@@ -669,6 +676,10 @@ public class World {
 	public boolean isValidY(double posY) {
 		return (posY <= getHeight()) && (posY >= 0);
 	}
+	
+	public boolean isValidPosition(double[] target) {
+		return isValidX(target[0]) && isValidY(target[1]);
+	}
 
 	public Projectile getProjectile() {
 		return this.projectile;
@@ -795,5 +806,68 @@ public class World {
 		}
 		
 		return true;
+	}
+	
+	private int nameIndex = 0;
+	
+	public void createRandomWorm() {
+		double randomAngleOrient = random.nextDouble()*(Math.PI*2.0);
+		String name = wormNames.get(nameIndex++);
+		double radius = 0.25 + random.nextDouble() / 4.0;
+		double[] randomPos = getRandomPosition(radius);
+		Worm randomWorm = new Worm(name, randomPos[0], randomPos[1], radius, randomAngleOrient, this);
+		addAsWorm(randomWorm);
+	}
+	
+	public void createRandomFood() {
+		double[] randomPos = getRandomPosition(0.2);
+		Food randomFood = new Food(this, randomPos[0], randomPos[1]);
+		addAsFood(randomFood);
+	}
+	
+	/**
+	 * 
+	 * @param deltaD
+	 * @return A random adjacent position
+	 */
+	private double[] getRandomPosition(double deltaD) {
+		double[] target = new double[]{0.0, 0.0};
+		boolean isFound = false; //is a random adjacent position found? NO! Not yet.
+		while (!isFound) {
+			double randomAnglePos = random.nextDouble()*(Math.PI/2.0);
+			double[] maxPos = getMaxPosition(randomAnglePos);
+			double maxX =maxPos[0] - Math.cos(randomAnglePos)*deltaD;//Making sure they don't start out of bounds
+			double maxY =maxPos[1] - Math.sin(randomAnglePos)*deltaD;
+			target = new double[]{maxX, maxY};
+			boolean hasEnded = false; //has this direction been depleted;
+			while (!hasEnded) {
+				target[0] -= Math.cos(randomAnglePos)*deltaD;
+				target[1] -= Math.sin(randomAnglePos)*deltaD;
+				if (!isValidPosition(target))
+					hasEnded = true;
+				else if (isAdjacent(target, deltaD)) {
+					hasEnded = true;
+					isFound = true;
+				}
+			}
+		}
+		return target;
+	}
+	
+	/**
+	 * @pre 0 <= angle <= Pi/2
+	 * @param angle
+	 * @return The position at the edge of the map when looking in the given angle
+	 */
+	public double[] getMaxPosition(double angle) {
+		double diagonalAngle = Math.tan(getHeight()/getWidth());
+		if (angle < diagonalAngle) {
+			double maxY = getWidth()*Math.tan(angle);
+			return new double[]{getWidth(),maxY};
+		} else if (angle > diagonalAngle) {
+			double maxX = getHeight()/Math.tan(angle);
+			return new double[]{maxX,getHeight()};
+		} else
+			return new double[]{getWidth(), getHeight()};
 	}
 }
