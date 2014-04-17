@@ -1,6 +1,7 @@
 package worms.gui.game.commands;
 
 import worms.gui.game.PlayGameScreen;
+import worms.gui.messages.MessageType;
 import worms.model.IFacade;
 import worms.model.ModelException;
 import worms.model.Worm;
@@ -17,7 +18,7 @@ public class Rename extends InstantaneousCommand {
 	}
 
 	@Override
-	protected boolean canExecute() {
+	protected boolean canStart() {
 		return worm != null;
 	}
 
@@ -27,7 +28,7 @@ public class Rename extends InstantaneousCommand {
 			getFacade().rename(worm, newName);
 		} catch (ModelException e) {
 			// an invalid name
-			getScreen().addMessage("Invalid name: " + newName);
+			getScreen().addMessage("Invalid name: " + newName, MessageType.ERROR);
 		}
 	}
 }
