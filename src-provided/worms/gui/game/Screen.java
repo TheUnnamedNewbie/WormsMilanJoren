@@ -1,5 +1,4 @@
-package worms.gui;
-
+package worms.gui.game;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;

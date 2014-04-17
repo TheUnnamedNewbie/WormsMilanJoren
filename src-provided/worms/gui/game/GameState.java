@@ -1,4 +1,4 @@
-package worms.gui;
+package worms.gui.game;
 
 import java.util.Collection;
 import java.util.List;

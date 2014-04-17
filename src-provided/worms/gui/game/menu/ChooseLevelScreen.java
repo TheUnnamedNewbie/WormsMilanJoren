@@ -1,4 +1,4 @@
-package worms.gui.menu;
+package worms.gui.game.menu;
 
 import worms.gui.Level;
 import worms.gui.WormsGUI;

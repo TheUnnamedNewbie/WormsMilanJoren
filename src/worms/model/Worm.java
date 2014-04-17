@@ -133,7 +133,41 @@ import java.util.ArrayList;
  * 
  * World: Make cellWidth and cellHeight constants?
  * General: Y-axis is positive downwards, take this into account!!
- * Genera: fix src-provided so that we can test the GUI
+ * General: fix src-provided so that we can test the GUI
+ * 
+ * FIX:
+ * 		worms.gui.GameState 						
+ * 				LN 53 - a method call on facade.createWorm gives an error. 
+ * 		worms.gui.game.GameState					
+ * 				LN 60 - a method call to getCommandStack gives errors 
+ * 		worms.gui.game.PlayGameScreenDebugPainter	
+ * 				LN 36 - a getJumpTime method fails (calles on a object of the facade class)
+ * 		worms.gui.game.PlayGameScreenPainter		
+ * 				LN 216 - same getJumpTime as above.
+ * 		worms.gui.game.Screen 									
+ * 				- Holymotherofgod....
+ * 		worms.gui.game.WormsGUI						
+ * 				LN 57 - Undefined constructor
+ * 		worms.gui.game.WormsGUI 					
+ * 				LN 58 - switch to screen is not aplicable to menuscreen
+ * 		worms.gui.game.commands.Jump 				
+ * 				LN 38 - getJumpTime
+ *				LN 47 - jump not applicable to worms
+ *		worms.gui.game.commands.Move 				
+ *				LN 31 - canMove not applicable to worms
+ * 				LN 66 - getFacade().move not appliccable with arguments
+ * 		worms.gui.game.game.PlayGameScreen
+ * 				Toomannyerrors
+ * 		worms.gui.game.game.PlayGameScreenDebugPainter
+ * 				TooManyErrors
+ * 		worms.gui.game.game.PlayGameScreenPainter
+ * 				TooManyErrors
+ * 		worms.gui.game.game.commands.Command
+ * 				LN 30 - getWorld() not defined for type PlayGameScreen
+ * 				LN 56 - updateSprites not defined for type PlayGameScreen
+ *				LN 58 - gameFinished not defined for type PlayGameScreen
+ *
+ *
  */
 
 

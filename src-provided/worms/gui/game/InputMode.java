@@ -1,4 +1,4 @@
-package worms.gui;
+package worms.gui.game;
 
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;

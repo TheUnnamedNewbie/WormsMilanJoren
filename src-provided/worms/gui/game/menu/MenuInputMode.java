@@ -1,4 +1,4 @@
-package worms.gui.menu;
+package worms.gui.game.menu;
 
 import java.awt.event.KeyEvent;
 

@@ -1,4 +1,4 @@
-package worms.gui.game.sprites;
+package worms.gui.game.game.sprites;
 
 import java.awt.Color;
 import java.awt.Graphics2D;

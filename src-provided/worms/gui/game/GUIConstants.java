@@ -1,4 +1,4 @@
-package worms.gui;
+package worms.gui.game;
 
 public final class GUIConstants {
 

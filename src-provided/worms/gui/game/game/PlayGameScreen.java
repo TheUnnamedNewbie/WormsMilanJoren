@@ -1,4 +1,4 @@
-package worms.gui.game;
+package worms.gui.game.game;
 
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;

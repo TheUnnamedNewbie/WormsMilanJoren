@@ -1,4 +1,4 @@
-package worms.gui.game.sprites;
+package worms.gui.game.game.sprites;
 
 import worms.gui.GUIUtils;
 import worms.gui.game.ImageSprite;

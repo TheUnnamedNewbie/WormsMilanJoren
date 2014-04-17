@@ -1,4 +1,4 @@
-package worms.gui.game.commands;
+package worms.gui.game.game.commands;
 
 import java.util.LinkedList;
 import java.util.List;

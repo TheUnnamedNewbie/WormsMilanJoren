@@ -1,4 +1,4 @@
-package worms.gui.game.commands;
+package worms.gui.game.game.commands;
 
 import worms.gui.game.PlayGameScreen;
 import worms.gui.messages.MessageType;

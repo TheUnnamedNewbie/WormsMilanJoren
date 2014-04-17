@@ -1,5 +1,4 @@
-package worms.gui.game.modes;
-
+package worms.gui.game.game.modes;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 
