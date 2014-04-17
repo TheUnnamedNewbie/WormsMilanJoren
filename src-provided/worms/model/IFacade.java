@@ -3,6 +3,10 @@ package worms.model;
 import java.util.Collection;
 import java.util.Random;
 
+import worms.containment.World;
+import worms.entities.Food;
+import worms.entities.Projectile;
+
 /**
  * Implement this interface to connect your code to the user interface.
  * 
