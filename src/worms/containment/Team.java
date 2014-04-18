@@ -18,6 +18,7 @@ public class Team {
 			throw new IllegalArgumentException();
 		this.name = name;
 		this.world = world;
+		members = new ArrayList<Worm>();
 	}
 	
 	private final String name;

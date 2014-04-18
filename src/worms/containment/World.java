@@ -813,7 +813,7 @@ public class World {
 	
 	public void createRandomWorm() {
 		Team team = null;
-		boolean joinTeam = false;//random.nextBoolean();
+		boolean joinTeam = random.nextBoolean();
 		System.out.println("nb teams: "+getNbTeams());
 		if (joinTeam) {
 			int teamIndex = 0;
@@ -831,9 +831,10 @@ public class World {
 		print("successfully created");
 		addAsWorm(randomWorm);
 		print("Added the worm in worms");
-		if (joinTeam && (getNbTeams() > 0))
+		if (joinTeam && (getNbTeams() > 0)) {
 			System.out.println("team name: "+team.getName());
 			randomWorm.join(team); //No problem with nullpointer because if(condition)
+		}
 	}
 	
 	public void createRandomFood() {

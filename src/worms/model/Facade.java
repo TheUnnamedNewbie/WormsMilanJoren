@@ -190,7 +190,7 @@ public class Facade implements IFacade {
 	
 	public String getTeamName(Worm worm) {
 		if(worm.getTeam() == null) {
-			System.out.println("teamname is null");
+			//System.out.println("teamname is null");
 			return null;
 		} else
 			return worm.getTeam().getName();
