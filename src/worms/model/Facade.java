@@ -189,6 +189,9 @@ public class Facade implements IFacade {
 
 	
 	public String getTeamName(Worm worm) {
+		if(worm.getTeam() == null) {
+			System.out.println("teamname is null");
+		}
 		return worm.getTeam().getName();
 	}
 
@@ -197,7 +200,7 @@ public class Facade implements IFacade {
 		ArrayList<Worm> winners = world.getWinner();
 		if (winners.get(0) == null)
 			return null;
-		else if (winners.size() == 1)
+		else if (w	inners.size() == 1)
 			return winners.get(0).getName();
 		else
 			return winners.get(0).getTeam().getName();

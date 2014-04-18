@@ -204,14 +204,16 @@ public class Worm extends Movable {
 
 	public Worm(String name, double posX, double posY, double radius,
 			double direction, World world) {
+		this.world = world;
 		setPosX(posX);
 		setPosY(posY);
 		setRadius(radius);
 		setOrientation(direction);
 		setActionPoints(getMaxActionPoints());
 		setName(name);
-		this.world = world;
+//		this.world = world;
 		setDensity(1062);
+		inventory = new ArrayList<Weapon>();
 		addAsWeapon(new Rifle(this));
 		addAsWeapon(new Bazooka(this));
 	}
@@ -532,6 +534,9 @@ public class Worm extends Movable {
 	 *       | new.getWeaponAt(getNbWeapons()+1) == weapon
 	 */
 	public void addAsWeapon(Weapon weapon) {
+		if(!hasAsWeapon(weapon)) {
+			System.out.println("legit worm");
+		}
 		assert (weapon != null) && (weapon.getWorm() == this);
 		assert !hasAsWeapon(weapon);
 		inventory.add(weapon);

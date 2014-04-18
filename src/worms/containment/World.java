@@ -812,11 +812,13 @@ public class World {
 	private int nameIndex = 0;
 	
 	public void createRandomWorm() {
-		double randomAngleOrient = random.nextDouble()*(Math.PI*2.0);
+		double randomAngleOrient = (random.nextDouble()*(Math.PI*2.0)) - Math.PI;
 		String name = wormNames.get(nameIndex++);
 		double radius = 0.25 + random.nextDouble() / 4.0;
 		double[] randomPos = getRandomPosition(radius);
+		print("About to create worm");
 		Worm randomWorm = new Worm(name, randomPos[0], randomPos[1], radius, randomAngleOrient, this);
+		print("Could creat the worm");
 		addAsWorm(randomWorm);
 	}
 	
@@ -895,5 +897,9 @@ public class World {
 			return getAllWorms();
 		else
 			return emptyOutput;
+	}
+	
+	public void print(String string){
+		System.out.println("World: " + string);
 	}
 }

@@ -29,6 +29,13 @@ public abstract class Entity {
 		this.posX = target;
 	}
 	
+	public void setPosX(double target, World world) throws CoordinateOutOfBoundsException {
+		if (!world.isValidX(target)) {
+			throw new CoordinateOutOfBoundsException();			
+		}
+		this.posX = target;
+	}
+	
 	/**
 	 * 
 	 * @return 

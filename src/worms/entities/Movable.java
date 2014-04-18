@@ -17,6 +17,7 @@ public abstract class Movable extends Entity {
 	 * 		If the orientation is not of a legal type, that is, not greater than pi (inclusive) and not smaller or equal to -pi 
 	 */
 	public void setOrientation(double target) {
+		System.out.println(target);
 		assert isValidOrientation(target);
 		this.orientation = target;
 	}
