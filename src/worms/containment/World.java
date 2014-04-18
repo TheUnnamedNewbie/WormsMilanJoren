@@ -26,6 +26,7 @@ public class World {
 		this.projectile = null;
 		foods = new ArrayList<Food>();//Do these have to be in the constructor?
 		worms = new ArrayList<Worm>();//
+		teams = new ArrayList<Team>();
 		if(!isLegalMap(map)){
 			throw new IllegalMapException();
 		}

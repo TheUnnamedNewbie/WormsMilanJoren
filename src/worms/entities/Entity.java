@@ -23,8 +23,9 @@ public abstract class Entity {
 	 * 		outside of the legal bounds of the map)
 	 */
 	public void setPosX(double target) throws CoordinateOutOfBoundsException {
-		if (!getWorld().isValidX(target))
-			throw new CoordinateOutOfBoundsException();
+		if (!getWorld().isValidX(target)) {
+			throw new CoordinateOutOfBoundsException();			
+		}
 		this.posX = target;
 	}
 	
