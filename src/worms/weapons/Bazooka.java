@@ -4,10 +4,13 @@ import worms.entities.Projectile;
 import worms.model.Worm;
 
 public class Bazooka extends Weapon {
-	public Bazooka(Worm owner) {
+	
+public Bazooka(Worm owner) {
 		this.worm = owner;
 		this.cost = 50;
 	}
+
+	private Worm owner;
 	
 	public void shoot(int yield) {
 		double projRadius = Math.pow(((double) (3 / 4) * (0.3 / 7800)), (double) (1 / 3));

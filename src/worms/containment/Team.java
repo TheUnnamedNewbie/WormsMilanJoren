@@ -196,6 +196,7 @@ public class Team {
 	public void addAsWorm(Worm worm) {
 		assert (worm != null) && (worm.getTeam() == this);
 		assert !hasAsWorm(worm);
+		System.out.println("Adding worm: "+worm.getName());
 		members.add(worm);
 	}
 	

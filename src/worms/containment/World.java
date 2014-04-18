@@ -60,6 +60,7 @@ public class World {
 	private List<String> wormNames = Arrays.asList("Shari", "Shannon",
 			"Willard", "Jodi", "Santos", "Ross", "Cora", "Jacob", "Homer",
 			"Kara");
+	private List<String> teamNames = Arrays.asList("MannLebtNurEinmahl", "Olympians", "Worms", "Derps", "Ulteamate", "Inteamate");
 	// END FIELDS
 	
 	public double getWidth() {
@@ -809,17 +810,30 @@ public class World {
 		return true;
 	}
 	
-	private int nameIndex = 0;
 	
 	public void createRandomWorm() {
+		Team team = null;
+		boolean joinTeam = false;//random.nextBoolean();
+		System.out.println("nb teams: "+getNbTeams());
+		if (joinTeam) {
+			int teamIndex = 0;
+			if (getNbTeams() > 1)
+				teamIndex = random.nextInt(getNbTeams()-1);
+			if (teamIndex >= 0 && getNbTeams()>0)
+				team = getTeamAt(teamIndex);
+		}
 		double randomAngleOrient = (random.nextDouble()*(Math.PI*2.0)) - Math.PI;
-		String name = wormNames.get(nameIndex++);
+		String wormName = wormNames.get(random.nextInt(wormNames.size()-1));
 		double radius = 0.25 + random.nextDouble() / 4.0;
 		double[] randomPos = getRandomPosition(radius);
 		print("About to create worm");
-		Worm randomWorm = new Worm(name, randomPos[0], randomPos[1], radius, randomAngleOrient, this);
-		print("Could creat the worm");
+		Worm randomWorm = new Worm(wormName, randomPos[0], randomPos[1], radius, randomAngleOrient, this);
+		print("successfully created");
 		addAsWorm(randomWorm);
+		print("Added the worm in worms");
+		if (joinTeam && (getNbTeams() > 0))
+			System.out.println("team name: "+team.getName());
+			randomWorm.join(team); //No problem with nullpointer because if(condition)
 	}
 	
 	public void createRandomFood() {
@@ -884,7 +898,7 @@ public class World {
 				team = worm.getTeam();
 				activated = true;
 			} else {
-				if (worm.getTeam() != team)
+				if (worm.getTeam() != team || worm.getTeam() == null)
 					return false;
 			}
 		}
@@ -892,7 +906,7 @@ public class World {
 	}
 	
 	public ArrayList<Worm> getWinner() {
-		ArrayList<Worm> emptyOutput = new ArrayList<Worm>(null);
+		ArrayList<Worm> emptyOutput = new ArrayList<Worm>();
 		if (hasWinner())
 			return getAllWorms();
 		else

@@ -211,7 +211,6 @@ public class Worm extends Movable {
 		setOrientation(direction);
 		setActionPoints(getMaxActionPoints());
 		setName(name);
-//		this.world = world;
 		setDensity(1062);
 		inventory = new ArrayList<Weapon>();
 		addAsWeapon(new Rifle(this));

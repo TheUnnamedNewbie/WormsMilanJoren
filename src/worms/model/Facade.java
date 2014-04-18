@@ -191,16 +191,17 @@ public class Facade implements IFacade {
 	public String getTeamName(Worm worm) {
 		if(worm.getTeam() == null) {
 			System.out.println("teamname is null");
-		}
-		return worm.getTeam().getName();
+			return null;
+		} else
+			return worm.getTeam().getName();
 	}
 
 	
 	public String getWinner(World world) {
 		ArrayList<Worm> winners = world.getWinner();
 		if (winners.get(0) == null)
-			return null;
-		else if (w	inners.size() == 1)
+			return "";
+		else if (winners.size() == 1)
 			return winners.get(0).getName();
 		else
 			return winners.get(0).getTeam().getName();
