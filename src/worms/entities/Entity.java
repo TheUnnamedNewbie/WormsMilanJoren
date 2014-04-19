@@ -7,9 +7,9 @@ import worms.util.Util;
 
 public abstract class Entity {
 
-	private double posX, posY;
+	protected double posX, posY;
 	protected double radius;
-	private World world;
+	protected World world;
 	private boolean terminated;
 	protected static final double EPS = Util.DEFAULT_EPSILON;
 	
@@ -123,18 +123,29 @@ public abstract class Entity {
 	}
 	
 	/**
-	 * The collide method checks to see if a enitity can exist at a given position.
+	 * The collide method checks to see if a entity can exist at a given position.
 	 * Inheriting classes will receive more specified rules (e.g. Projectile collides with worm)
 	 * @param coordinates
 	 * @return
 	 */
 	public static boolean collides(double[] coordinates, double radius, World world) {
 		if (! world.canExist(coordinates, radius))
-			//Collides with map
 			return true;
-		for (Worm worm: world.getAllWorms())
-			if (world.distance(coordinates, worm.getCoordinates()) < radius+worm.getRadius())
+		for (Worm worm: world.getAllWorms()) {
+			if ((world.distance(coordinates, worm.getCoordinates()) < radius+worm.getRadius()))
 				return true;
+		}
+		return false;
+	}
+	
+	public boolean collides(double[] coordinates, double radius) {
+		if (! getWorld().canExist(coordinates, getRadius())) {
+			return true;
+		}
+		for (Worm worm: getWorld().getAllWorms()) {
+			if ((worm != this) && (getWorld().distance(coordinates, worm.getCoordinates()) < (radius+worm.getRadius())))
+				return true;
+		}
 		return false;
 	}
 }

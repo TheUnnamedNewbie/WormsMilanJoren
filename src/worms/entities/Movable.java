@@ -130,7 +130,7 @@ public abstract class Movable extends Entity {
 	 * @return
 	 */
 	public boolean canJump() {
-		double checkDist = 0.2; // How far ahead a Enitity must be able to move be able to justify a jump
+		double checkDist = getRadius(); // How far ahead a Enitity must be able to move be able to justify a jump
 		double targetX = getPosX()+Math.cos(getOrientation())*(getRadius()+checkDist);
 		double targetY = getPosY()+Math.sin(getOrientation())*(getRadius()+checkDist);
 		return !collides(new double[]{targetX, targetY}, getRadius(), getWorld());
