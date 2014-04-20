@@ -132,6 +132,8 @@ import java.util.ArrayList;
  * MAIN TODO
  * 
  * World: Make cellWidth and cellHeight constants?
+ * General: Y-axis is positive downwards, take this into account!!
+ * General: fix src-provided so that we can test the GUI
  * 
  * FIX:
  * 		worms.gui.GameState 						
@@ -207,17 +209,12 @@ public class Worm extends Movable {
 		setPosY(posY);
 		setRadius(radius);
 		setOrientation(direction);
+		setActionPoints(getMaxActionPoints());
 		setName(name);
 		setDensity(1062);
-		setActionPoints(getMaxActionPoints());
-		setHitPoints(getMaxHitPoints());
 		inventory = new ArrayList<Weapon>();
 		addAsWeapon(new Rifle(this));
 		addAsWeapon(new Bazooka(this));
-//		System.out.println("Created worm with stats:");
-//		System.out.println("Radius: "+getRadius()+" Mass: "+getMass());
-//		System.out.println("AP: "+getActionPoints()+" max AP: "+getMaxActionPoints());
-//		System.out.println("HP: "+getHitPoints()+" max HP: "+getMaxHitPoints());
 	}
 
 	private long ActionPoints, HitPoints;
@@ -315,7 +312,6 @@ public class Worm extends Movable {
 	 *       | if (isValidActionPoints(points)) {new.getActionPoints() == points}
 	 */
 	private void setActionPoints(long points) {
-		System.out.println("setting AP to: "+points+" is Possible? "+isValidActionPoints(points));
 		if (isValidActionPoints(points))
 			ActionPoints = points;
 	}
@@ -576,10 +572,8 @@ public class Worm extends Movable {
 	//End Inventory stuff
 	
 	public void join(Team team) {
-		if (isProperTeam(team)) {
+		if (isProperTeam(team))
 			team.addAsWorm(this);
-			this.team = team;
-		}
 	}
 	
 	public boolean isProperTeam(Team team) {
@@ -694,17 +688,13 @@ public class Worm extends Movable {
 	 */
 	public void step() throws ExhaustionException {
 		if (canMove()) {
-			System.out.println("Stepping...");
 			double deltaT = 0.0175; //infinitesimal angle to see how far one can move.
-			double maxT = 0.7875;
 			double minD = 0.1;
 			double[] temp = new double[]{0.0, getOrientation()}; //temp is the furthest the worm can move and that direction
-			for (double count = 0.0; count < maxT; count += deltaT) {
-				System.out.println("Starting new direction...");
+			for (double count = 0.0; count < 0.7875; count += deltaT) {
 				double maxDistClockwise = maxDist(getOrientation() + count, minD);
-				System.out.println("maxDist: "+maxDistClockwise);
 				if (maxDistClockwise == getRadius()) {
-					temp = new double[] {getRadius(), getOrientation() + count};
+					temp = new double[] {getRadius(), getOrientation() + count };
 					break;
 				} else {
 					if (maxDistClockwise > temp[0]) {
@@ -722,16 +712,12 @@ public class Worm extends Movable {
 						minD = maxDistCounterClockwise;
 					}
 				}
-			System.out.println("Direction depleted");
 			}
-			//System.out.println("Is new position OK? (collision) "+getWorld().canExist(new double[]{getPosX() + Math.cos(temp[1]) * temp[0], getPosY() + Math.sin(temp[1]) * temp[0]}, getRadius()));
 			setPosX(getPosX() + Math.cos(temp[1]) * temp[0]);
 			setPosY(getPosY() + Math.sin(temp[1]) * temp[0]);
 			if (!isValidPosition(getCoordinates()))
 				die();
-			System.out.println("falling...");
 			fall();
-			System.out.println("fell");
 			eat();
 		} else throw new ExhaustionException();
 	}
@@ -741,9 +727,9 @@ public class Worm extends Movable {
 		for (double dist = getRadius(); dist > minD; dist -= deltaD) {
 			double targetX = getPosX()+Math.cos(angle)*dist;
 			double targetY = getPosY()+Math.sin(angle)*dist;
-			System.out.println("Checking position: ("+targetX+","+targetY+")");
-			if (getWorld().isAdjacent(new double[]{targetX, targetY}, this))
+			if (getWorld().isAdjacent(new double[]{targetX, targetY}, getRadius())) {
 				return dist;
+			}
 		}
 		return 0.0;
 	}
@@ -797,9 +783,7 @@ public class Worm extends Movable {
 	 *       | }
 	 */
 	public void jump(double timestep) throws ExhaustionException, IllegalStateException {
-		boolean canJump = canJump();
-		System.out.println("can Jump? "+canJump);
-		if (getActionPoints() > 0 && canJump){
+		if (getActionPoints() > 0 && canJump()){
 			double[] target = jumpStep(getActionPoints(), jumpTime(getActionPoints(), timestep));
 			setPosX(target[0]); setPosY(target[1]);
 			setActionPoints(0);
@@ -811,9 +795,7 @@ public class Worm extends Movable {
 	 * checks to see if it can fall, makes it fall and damages it accordingly
 	 */
 	public void fall() {
-		boolean canFall = canFall();
-		System.out.println("can Fall? "+canFall);
-		if (canFall) {
+		if (canFall()) {
 			double fallTime = fallTime();
 			if (fallTime == Double.MAX_VALUE) {
 				die();
@@ -835,7 +817,7 @@ public class Worm extends Movable {
 	}
 	
 	public double fallTime() {
-		double timestep = 0.001;
+		double timestep = 0.01;
 		double time = 0.0;
 		while (true) {
 			double target = getPosY() - fallDist(time);
@@ -865,9 +847,8 @@ public class Worm extends Movable {
 	 * 
 	 */
 	public void grow() {
-		System.out.println("Old radius = "+getRadius());
 		setRadius(getRadius()*1.1);
-		System.out.println("New radius = "+getRadius());
+		eat();
 	}
 	
 	/**
@@ -927,30 +908,11 @@ public class Worm extends Movable {
 			}
 		}
 	}
-	
-	public void heal(long amount) {
-		if (amount > 0) {
-			long targetHP = getHitPoints() + amount;
-			if (isValidHitPoints(targetHP))
-				setHitPoints(targetHP);
-			else if (targetHP >= getMaxHitPoints()) {
-				setHitPoints(getMaxHitPoints());
-			}
-		}
-	}
-	
-	/**
-	 * restores the AP of a worm to full. Used at beginning of turn.
-	 */
-	public void restore() {
-		setActionPoints(getMaxActionPoints());
-	}
 
 	/**
 	 * The Die method terminates the worm after removing it from its world
 	 */
 	private void die() {
-		getWorld().nextWorm();
 		getWorld().removeAsWorm(this);
 		terminate();
 	}

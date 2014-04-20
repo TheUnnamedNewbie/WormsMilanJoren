@@ -28,6 +28,9 @@ public class PartialFacadeTest {
 	}
 
 	@Test
+	
+	
+	
 	public void testMoveHorizontal() {
 		Worm worm = facade.createWorm(0, 0, 0, 1, "Test");
 		facade.move(worm, 5);

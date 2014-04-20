@@ -98,14 +98,7 @@ public class Facade implements IFacade {
 
 	
 	public void addEmptyTeam(World world, String newName) {
-		try {
-			world.addAsTeam(new Team(newName, world));
-		} catch (IllegalArgumentException e) {
-			if (Team.isValidName(newName))
-				throw new ModelException("Team already exists.");
-			else
-				throw new ModelException("Invalid name");
-		}
+		world.addAsTeam(new Team(newName, world));
 	}
 
 	
@@ -149,11 +142,11 @@ public class Facade implements IFacade {
 	}
 
 	public Worm getCurrentWorm(World world) {
-		return world.getCurrentWorm();
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	public Collection<Food> getFood(World world) {
-		System.out.println("returning "+world.getNbFoods()+" foods");
 		return world.getAllFoods();
 	}
 
@@ -181,7 +174,7 @@ public class Facade implements IFacade {
 
 	
 	public double getRadius(Food food) {
-		return food.getRadius();
+		return 0.2;
 	}
 
 	
@@ -206,9 +199,7 @@ public class Facade implements IFacade {
 	
 	public String getWinner(World world) {
 		ArrayList<Worm> winners = world.getWinner();
-		if (winners.size()==0)
-			return "non-existent";
-		else if (winners.get(0) == null)
+		if (winners.get(0) == null)
 			return "";
 		else if (winners.size() == 1)
 			return winners.get(0).getName();
@@ -293,14 +284,14 @@ public class Facade implements IFacade {
 
 	
 	public void startGame(World world) {
-		world.start();
+		// TODO Auto-generated method stub
+		
 	}
 
 	
 	public void startNextTurn(World world) {
-		world.nextWorm();
-		//TODO Check if there needs to be more than just cycling the worm
-		//e.g.: removing active projectiles, cleaning up stuff.
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

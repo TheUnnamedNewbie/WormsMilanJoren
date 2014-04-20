@@ -7,11 +7,11 @@ import worms.model.Worm;
 public class Projectile extends Movable {
 	
 	public Projectile(World world, double posX, double posY, double radius, long density, double orientation, double force, long damage) {
-		this.world = world;
-		getWorld().setProjectile(this);
 		setPosX(posX);
 		setPosY(posY);
 		setRadius(radius);
+		this.world = world;
+		getWorld().setProjectile(this);
 		setDensity(density);
 		setOrientation(orientation);
 		this.force = force;

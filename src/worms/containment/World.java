@@ -31,8 +31,8 @@ public class World {
 			throw new IllegalMapException();
 		}
 		this.passableMap = map;
-		this.cellWidth = (width/(map[0].length+1));
-		this.cellHeight = (height/(map.length+1));
+		this.cellWidth = (width/(map[0].length));
+		this.cellHeight = (height/(map.length));
 		this.random = random;
 	}
 	
@@ -54,7 +54,6 @@ public class World {
 	private ArrayList<Worm> worms;
 	private ArrayList<Team> teams;
 	private Projectile projectile;
-	private Worm currentWorm = null;
 	private final boolean[][] passableMap;
 	public final double GRAVITY = 9.80665;
 	private static final double EPS = Util.DEFAULT_EPSILON;
@@ -78,14 +77,6 @@ public class World {
 	
 	public double getCellHeight() {
 		return this.cellHeight;
-	}
-	
-	public Worm getCurrentWorm() {
-		return this.currentWorm;
-	}
-	
-	public void setCurrentWorm(Worm worm) {
-		this.currentWorm = worm;
 	}
 	
 	//Begin things with worms
@@ -474,9 +465,7 @@ public class World {
 	public void removeAsFood(Food food) {
 		assert (food != null) && (food.getWorld() == null);
 		assert (hasAsFood(food));
-		//System.out.println("removing a food. Is it contained before? "+hasAsFood(food));
 		foods.remove(food);
-		//System.out.println("Removed a food. Is it still contained? "+hasAsFood(food));
 	}
 	
 	/**
@@ -673,19 +662,12 @@ public class World {
 	}
 	
 	public boolean isPassableAt(double x, double y){
-		System.out.println("request bool @real:("+x+","+y+")");
 		assert(0.0<x); assert(x<width);
 		assert(0.0<y); assert(y<height);
 		return getBoolAt((int)Math.floor(x/getCellWidth()),(int)Math.floor(y/getCellHeight()));
 	}
 	
 	public boolean getBoolAt(int x, int y) {
-		//System.out.println("request bool @int:("+x+","+y+")");
-		if (x<0 || y<0 || x>passableMap.length-1 || y>passableMap.length-1) {
-			//System.out.println("out of bounds, returning false");
-			return false;
-		}
-		//System.out.println("Returning bool: "+passableMap[passableMap.length-y-1][x]);
 		return passableMap[passableMap.length-y-1][x];
 	}
 	
@@ -731,11 +713,7 @@ public class World {
 	}
 	
 	public boolean isAdjacent(double[] coordinate, double radius) {
-		return (!Entity.collides(coordinate, radius, this)) && Entity.collides(coordinate, radius*1.1, this);
-	}
-	
-	public boolean isAdjacent(double[] coordinate, Entity subject) {
-		return (!subject.collides(coordinate, subject.getRadius())) && subject.collides(coordinate, subject.getRadius()*1.1);
+		return Entity.collides(coordinate, radius, this) && Entity.collides(coordinate, radius*1.1, this);
 	}
 	
 	public boolean canExist(double[] coordinates, double radius) {
@@ -753,51 +731,69 @@ public class World {
 		//only now I realise I might have gone overboard with asserting this stuff.
 		
 		//vardec
-		double[] lowerLeft = new double[2];
-		double[] upperRight = new double[2];
-		int[] lowerLeftCell = new int[2];
-		int[] upperRightCell = new int[2];
+		double[] upperLeft = new double[2];
+		double[] lowerRight = new double[2];
+		int[] upperLeftCell = new int[2];
+		int[] lowerRightCell = new int[2];
 		
 		
 		//prepare to be confused with inverted coordinatesystemstuff
-		lowerLeft[0] = coordinates[0] - radius;
-		lowerLeft[1] = coordinates[1] - radius; 
-		upperRight[0] = coordinates[0] + radius;
-		upperRight[1] = coordinates[1] + radius;
+		upperLeft[0] = coordinates[0] - radius;
+		upperLeft[1] = coordinates[1] - radius; 
+		lowerRight[0] = coordinates[0] + radius;
+		lowerRight[1] = coordinates[1] + radius;
+//		System.out.println(upperLeft[0]);
+//		System.out.println(upperLeft[1]);
+//		System.out.println(lowerRight[0]);
+//		System.out.println(lowerRight[1]);
 		
 		//can be merged with above later for more efficiency
-		lowerLeftCell[0] = (int)Math.floor(lowerLeft[0]/getCellWidth());
-		lowerLeftCell[1] = (int)Math.floor(lowerLeft[1]/getCellHeight());
-		upperRightCell[0] = (int)Math.floor(upperRight[0]/getCellWidth());
-		upperRightCell[1] = (int)Math.floor(upperRight[1]/getCellHeight());
-		
+		upperLeftCell[0] = (int)Math.floor(upperLeft[0]/getCellWidth());
+		upperLeftCell[1] = (int)Math.floor(upperLeft[1]/getCellHeight());
+		lowerRightCell[0] = (int)Math.ceil(lowerRight[0]/getCellWidth());
+		lowerRightCell[1] = (int)Math.ceil(lowerRight[1]/getCellHeight());
 		
 		
 		//some forstuffs comes here to populate the submap with useful things
-		for(int j = lowerLeftCell[0]; j < upperRightCell[0]; j++) { //TODO check if it this is 100% correct, didn't have enough coffee yet to properly think about that
-			for(int i = lowerLeftCell[1]; i < upperRightCell[1]; i++){
+		for(int j = upperLeftCell[0]; j < lowerRightCell[0]; j++) { //TODO check if it this is 100% correct, didn't have enough coffee yet to properly think about that
+			for(int i = upperLeftCell[1]; i < lowerRightCell[1]; i++){
 				//Vardec
 				double[] absoluteCoordinate = new double[2];
 				double distanceToEntity;
 				
 				absoluteCoordinate[0] = (j * getCellWidth());
 				absoluteCoordinate[1] = (i * getCellHeight());
+				System.out.println(absoluteCoordinate[0]);
+				System.out.println(absoluteCoordinate[1]);
+				System.out.println(getCellWidth());
 				
 				//prepare your butt for #mathClusterFuck
-				distanceToEntity = Math.sqrt(	Math.pow( coordinates[0] - absoluteCoordinate[0], 2) + 
-												Math.pow( coordinates[1] - absoluteCoordinate[1], 2));
+				distanceToEntity = Math.sqrt(	Math.pow( (double)coordinates[0] - (double)absoluteCoordinate[0], 2) + 
+												Math.pow( (double)coordinates[1] - (double)absoluteCoordinate[1], 2));
 				
+				System.out.println((Math.sqrt(	2.0* Math.pow( 3.0 - 2, 2))));
 				//Need to think long and hard about this one in relation to it checking all 4 adjacent cells to the absolutecoordinate
-				if(distanceToEntity <= (radius + EPS)){
+				System.out.println(getBoolAt(j-1,i-1));
+				System.out.println(getBoolAt(j,i-1));
+				System.out.println(getBoolAt(j-1,i));
+				System.out.println(getBoolAt(j,i));
+				System.out.println("j= " + j);
+				System.out.println("i= " + i);
+				if(distanceToEntity <= (radius)){
+					System.out.println(distanceToEntity);
 					if(getBoolAt(j-1,i-1)){
 						if(getBoolAt(j,i-1)){
 							if(getBoolAt(j,i)){
-								if(!getBoolAt(j-1,i)){
+								if(! getBoolAt(j-1,i)){
+									System.out.println("THIS SHOULD FUCKING WORK");
 									return false;
 								}
-							} else{return false;};
-						} else{return false;};
-					} else{return false;};
+							} else{
+								return false;}
+						} else{
+							return false;}
+					} else{
+						return false;}
 				}
 			}
 		}
@@ -835,7 +831,7 @@ public class World {
 	
 	public void createRandomWorm() {
 		Team team = null;
-		boolean joinTeam = true;//random.nextBoolean();
+		boolean joinTeam = random.nextBoolean();
 		System.out.println("nb teams: "+getNbTeams());
 		if (joinTeam) {
 			int teamIndex = 0;
@@ -847,7 +843,7 @@ public class World {
 		double randomAngleOrient = (random.nextDouble()*(Math.PI*2.0)) - Math.PI;
 		String wormName = wormNames.get(random.nextInt(wormNames.size()-1));
 		double radius = 0.25 + random.nextDouble() / 4.0;
-		double[] randomPos = getRandomPosition2(radius);
+		double[] randomPos = getRandomPosition(radius);
 		print("About to create worm");
 		Worm randomWorm = new Worm(wormName, randomPos[0], randomPos[1], radius, randomAngleOrient, this);
 		print("successfully created");
@@ -860,11 +856,9 @@ public class World {
 	}
 	
 	public void createRandomFood() {
-		double[] randomPos = getRandomPosition2(0.2);
+		double[] randomPos = getRandomPosition(0.2);
 		Food randomFood = new Food(this, randomPos[0], randomPos[1]);
-		System.out.println("Created food and adding...");
 		addAsFood(randomFood);
-		System.out.println("Added.");
 	}
 	
 	/**
@@ -893,37 +887,7 @@ public class World {
 				}
 			}
 		}
-		System.out.println("found random position at"+target);
 		return target;
-	}
-	
-	/**
-	 * Alternative random position finder
-	 * @param deltaD
-	 * @return
-	 */
-	private double[] getRandomPosition2(double deltaD) {
-		double mapBounds = deltaD; //The distance we must leave between the the edges of the map for preventing creation in the impassable edge
-		double[] target = new double[2];
-		//System.out.println("finding...");
-		while (true) {
-			//System.out.println("New strip");
-			double randomX = random.nextDouble()*(getWidth()-2*mapBounds)+mapBounds;
-			double randomY = random.nextDouble()*(getHeight()-2*mapBounds)+mapBounds;
-			boolean hasEnded = false; //has this strip been depleted;
-			target = new double[]{randomX, randomY};
-			while (!hasEnded) {
-				target[1] -= deltaD/2.0;
-				if (target[1]<mapBounds)
-					hasEnded = true;
-				else if (isAdjacent(target, deltaD)) {
-					//System.out.println("found random position at "+"("+target[0]+","+target[1]+")");
-					return target;
-				}
-			}
-			//System.out.println("Strip depleted");
-		}
-		
 	}
 	
 	/**
@@ -944,29 +908,19 @@ public class World {
 	}
 	
 	public boolean hasWinner() {
-		//System.out.println("Checking winner");
 		boolean activated = false;
 		Team team = null;
-		if (getNbWorms() == 1) {
-			//System.out.println("Only 1 worm, declaring winner...");
+		if (getNbWorms() == 1)
 			return true;
-		}
-		//System.out.println("More than 1 worm. Continuing check...");
 		for (Worm worm: getAllWorms()) {
 			if (!activated) {
-				//System.out.println("1st worm, setting team.");
 				team = worm.getTeam();
 				activated = true;
 			} else {
-				//System.out.println("checking \""+worm.getTeam()+"\" against set team...");
-				if (worm.getTeam() != team || worm.getTeam() == null) {
-					//System.out.println("Check failed: no winner");
+				if (worm.getTeam() != team || worm.getTeam() == null)
 					return false;
-				}
-				//System.out.println("Check succeeded. Continuing if able");
 			}
 		}
-		//System.out.println("Checked all worms. Declaring winning team...");
 		return true;
 	}
 	
@@ -980,26 +934,5 @@ public class World {
 	
 	public void print(String string){
 		System.out.println("World: " + string);
-	}
-	
-	/**
-	 * The start method puts the first worm as active worm and thus initializes the chain of events
-	 */
-	public void start() {
-		if (getNbWorms() < 2)
-			throw new IllegalStateException("Not enough worms. Have at least 2");
-		else if (getCurrentWorm() == null)
-			setCurrentWorm(getWormAt(0));
-		else throw new IllegalStateException("Game has already started");
-	}
-	
-	/**
-	 * The nextWorm function puts the next worm in line as the current worm
-	 */
-	public void nextWorm() {
-		Worm newWorm = getWormAt((getIndexOfWorm(getCurrentWorm())+1)%getNbWorms());
-		setCurrentWorm(newWorm);
-		newWorm.restore();
-		newWorm.heal(10);
 	}
 }
