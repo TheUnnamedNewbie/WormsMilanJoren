@@ -55,6 +55,7 @@ public class World {
 	private ArrayList<Team> teams;
 	private Projectile projectile;
 	private final boolean[][] passableMap;
+	private Worm currentWorm = null;
 	public final double GRAVITY = 9.80665;
 	private static final double EPS = Util.DEFAULT_EPSILON;
 	private List<String> wormNames = Arrays.asList("Shari", "Shannon",
@@ -77,6 +78,14 @@ public class World {
 	
 	public double getCellHeight() {
 		return this.cellHeight;
+	}
+	
+	public Worm getCurrentWorm() {
+		return this.currentWorm;
+	}
+	
+	public void setCurrentWorm(Worm worm) {
+		this.currentWorm = worm;
 	}
 	
 	//Begin things with worms
@@ -668,8 +677,15 @@ public class World {
 	}
 	
 	public boolean getBoolAt(int x, int y) {
+		//System.out.println("request bool @int:("+x+","+y+")");
+		if (x<0 || y<0 || x>passableMap.length-1 || y>passableMap.length-1) {
+		//System.out.println("out of bounds, returning false");
+		return false;
+		}
+		//System.out.println("Returning bool: "+passableMap[passableMap.length-y-1][x]);
 		return passableMap[passableMap.length-y-1][x];
 	}
+		
 	
 	public boolean isValidX(double posX) { 
 		return (posX <= getWidth()) && (posX >= 0);
@@ -713,7 +729,11 @@ public class World {
 	}
 	
 	public boolean isAdjacent(double[] coordinate, double radius) {
-		return Entity.collides(coordinate, radius, this) && Entity.collides(coordinate, radius*1.1, this);
+		return (!Entity.collides(coordinate, radius, this)) && Entity.collides(coordinate, radius*1.1, this);
+	}
+	
+	public boolean isAdjacent(double[] coordinate, Entity subject) {
+		return (!subject.collides(coordinate, subject.getRadius())) && subject.collides(coordinate, subject.getRadius()*1.1);
 	}
 	
 	public boolean canExist(double[] coordinates, double radius) {
@@ -858,7 +878,9 @@ public class World {
 	public void createRandomFood() {
 		double[] randomPos = getRandomPosition(0.2);
 		Food randomFood = new Food(this, randomPos[0], randomPos[1]);
+		System.out.println("Created food and adding...");
 		addAsFood(randomFood);
+		System.out.println("Added.");
 	}
 	
 	/**
@@ -887,8 +909,39 @@ public class World {
 				}
 			}
 		}
+		System.out.println("found random position at"+target);
 		return target;
 	}
+
+	/**
+	 * Alternative random position finder
+	 * @param deltaD
+	 * @return
+	 */
+	private double[] getRandomPosition2(double deltaD) {
+		double mapBounds = deltaD; //The distance we must leave between the the edges of the map for preventing creation in the impassable edge
+		double[] target = new double[2];
+		//System.out.println("finding...");
+		while (true) {
+			//System.out.println("New strip");
+			double randomX = random.nextDouble()*(getWidth()-2*mapBounds)+mapBounds;
+			double randomY = random.nextDouble()*(getHeight()-2*mapBounds)+mapBounds;
+			boolean hasEnded = false; //has this strip been depleted;
+			target = new double[]{randomX, randomY};
+			while (!hasEnded) {
+				target[1] -= deltaD/2.0;
+				if (target[1]<mapBounds)
+					hasEnded = true;
+				else if (isAdjacent(target, deltaD)) {
+					//System.out.println("found random position at "+"("+target[0]+","+target[1]+")");
+					return target;
+				}
+			}
+			//System.out.println("Strip depleted");
+		}
+		
+	}
+	
 	
 	/**
 	 * @pre 0 <= angle <= Pi/2
@@ -908,19 +961,29 @@ public class World {
 	}
 	
 	public boolean hasWinner() {
+		//System.out.println("Checking winner");
 		boolean activated = false;
 		Team team = null;
-		if (getNbWorms() == 1)
+		if (getNbWorms() == 1){
+			//System.out.println("Only 1 worm, declaring winner...");
 			return true;
+		}
+		//System.out.println("More than 1 worm. Continuing check...");
 		for (Worm worm: getAllWorms()) {
 			if (!activated) {
+				//System.out.println("1st worm, setting team.");
 				team = worm.getTeam();
 				activated = true;
 			} else {
-				if (worm.getTeam() != team || worm.getTeam() == null)
+				//System.out.println("checking \""+worm.getTeam()+"\" against set team...");
+				if (worm.getTeam() != team || worm.getTeam() == null){
+					//System.out.println("Check failed: no winner");
 					return false;
+				}
+				//System.out.println("Check succeeded. Continuing if able");
 			}
 		}
+		//System.out.println("Checked all worms. Declaring winning team...");
 		return true;
 	}
 	
@@ -934,5 +997,26 @@ public class World {
 	
 	public void print(String string){
 		System.out.println("World: " + string);
+	}
+
+	/**
+	 * The start method puts the first worm as active worm and thus initializes the chain of events
+	 */
+	public void start() {
+		if (getNbWorms() < 2)
+			throw new IllegalStateException("Not enough worms. Have at least 2");
+		else if (getCurrentWorm() == null)
+			setCurrentWorm(getWormAt(0));
+		else throw new IllegalStateException("Game has already started");
+	}
+	
+	/**
+	 * The nextWorm function puts the next worm in line as the current worm
+	 */
+	public void nextWorm() {
+		Worm newWorm = getWormAt((getIndexOfWorm(getCurrentWorm())+1)%getNbWorms());
+		setCurrentWorm(newWorm);
+		newWorm.restore();
+		newWorm.heal(10);
 	}
 }
