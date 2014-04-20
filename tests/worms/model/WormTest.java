@@ -10,17 +10,25 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+
 import worms.containment.Team;
 import worms.containment.World;
+import worms.weapons.Rifle;
+import worms.weapons.Bazooka; 
+
 import worms.util.Util;
+
 
 public class WormTest {
 
-	private Worm worm1;// worm2, worm3;
+	private Worm worm1, worm2;// worm2, worm3;
 	private World world;
 	//private boolean[][] passableMap;
 	private Team team;
 	private static final double EPS = Util.DEFAULT_EPSILON;
+	private Bazooka bazooka;
+	private Rifle rifle;
+	
 	
 //	@BeforeClass
 //	public static void setUpBeforeClass() throws Exception {
@@ -79,9 +87,78 @@ public class WormTest {
 		
 		
 	}
-//	
-//	}
 	
+	@Test(expected = IllegalArgumentException.class)
+	public void createWormTest_illegalRadius() throws IllegalArgumentException{
+		boolean[][] passableMap =  {{false, false, false, false, false},{true, true, true, false, false},
+				{true, true, true, true, false},{true, true, true, true, false},{true, true, true, true, false},{false, false, false, false, false}};
+		Random rand = new Random();	
+		world = new World(5, 6, passableMap, rand);
+		team = new Team("Team", world);
+		worm1 = new Worm("Charles", 3, 3, 0.2, 0.9, world);
+	}
+
+	@Test
+	public void canHaveAsWeapon_test(){
+		boolean[][] passableMap =  {{false, false, false, false, false},{true, true, true, false, false},
+				{true, true, true, true, false},{true, true, true, true, false},{true, true, true, true, false},{false, false, false, false, false}};
+		Random rand = new Random();	
+		world = new World(5, 6, passableMap, rand);
+		team = new Team("Team", world);
+		worm1 = new Worm("Charles", 3, 3, 0.7, 0.9, world);
+		rifle = new Rifle(worm1);
+		bazooka = new Bazooka(worm1);
+		assertEquals(worm1.canHaveAsWeapon(rifle), true);
+		assertEquals(worm1.canHaveAsWeapon(bazooka), true);
+	}
+	
+	@Test
+	public void hasAsWeapon_test(){
+		boolean[][] passableMap =  {{false, false, false, false, false},{true, true, true, false, false},
+				{true, true, true, true, false},{true, true, true, true, false},{true, true, true, true, false},{false, false, false, false, false}};
+		Random rand = new Random();	
+		world = new World(5, 6, passableMap, rand);
+		team = new Team("Team", world);
+		worm1 = new Worm("Charles", 3, 3, 0.7, 0.9, world);
+		rifle = new Rifle(worm1);
+		worm1.addAsWeapon(rifle);
+		assertEquals(worm1.hasAsWeapon(rifle), true);
+		bazooka = new Bazooka(worm1);
+		assertEquals(worm1.hasAsWeapon(bazooka), false);
+		worm1.addAsWeapon(bazooka);
+		assertEquals(worm1.hasAsWeapon(bazooka), true);
+	}
+	
+	@Test
+	public void hasPropperWeapons_test(){
+		boolean[][] passableMap =  {{false, false, false, false, false},{true, true, true, false, false},
+				{true, true, true, true, false},{true, true, true, true, false},{true, true, true, true, false},{false, false, false, false, false}};
+		Random rand = new Random();	
+		world = new World(5, 6, passableMap, rand);
+		team = new Team("Team", world);
+		worm1 = new Worm("Charles", 3, 3, 0.7, 0.9, world);
+		rifle = new Rifle(worm1);
+		worm1.addAsWeapon(rifle);
+		bazooka = new Bazooka(worm1);
+		worm1.addAsWeapon(bazooka);
+		assertEquals(worm1.hasProperWeapons(), true);	
+	}
+	
+	@Test
+	public void hasPropperWeapons_test_illegal(){
+		boolean[][] passableMap =  {{false, false, false, false, false},{true, true, true, false, false},
+				{true, true, true, true, false},{true, true, true, true, false},{true, true, true, true, false},{false, false, false, false, false}};
+		Random rand = new Random();	
+		world = new World(5, 6, passableMap, rand);
+		team = new Team("Team", world);
+		worm1 = new Worm("Charles", 3, 3, 0.7, 0.9, world);
+		worm2 = new Worm("Darwin", 3, 3, 0.7, 0.9, world);
+		rifle = new Rifle(worm1);
+		worm1.addAsWeapon(rifle);
+		bazooka = new Bazooka(worm2);
+		worm1.addAsWeapon(bazooka);
+		assertEquals(worm1.hasProperWeapons(), false);	
+	}	
 	
 	@Test
 	public void canfall_test1() {
@@ -97,19 +174,19 @@ public class WormTest {
 		assert(worm1.canFall());	
 	}
 	
-	@Test
-	public void fall_test1() {
-		boolean[][] passableMap =  {{false, false, false, false, false},{true, true, true, false, false},
-				{true, true, true, true, false},{true, true, true, true, false},{true, true, true, true, false},{false, false, false, false, false}};
-		Random rand = new Random();	
-		world = new World(5, 6, passableMap, rand);
-		worm1 = new Worm("Tester1", 3, 3, 0.5, 0.1, world);
-		worm1.fall();
-		System.out.println("Postfall X: " + worm1.getPosX());
-		System.out.println("Postfall Y: " + worm1.getPosY());
-		assert((worm1.getCoordinates() == toArray(3, 1.5)));
-	}
-	
+//	@Test
+//	public void fall_test1() {
+//		boolean[][] passableMap =  {{false, false, false, false, false},{true, true, true, false, false},
+//				{true, true, true, true, false},{true, true, true, true, false},{true, true, true, true, false},{false, false, false, false, false}};
+//		Random rand = new Random();	
+//		world = new World(5, 6, passableMap, rand);
+//		worm1 = new Worm("Tester1", 3, 3, 0.5, 0.1, world);
+//		worm1.fall();
+//		System.out.println("Postfall X: " + worm1.getPosX());
+//		System.out.println("Postfall Y: " + worm1.getPosY());
+//		assert((worm1.getCoordinates() == toArray(3, 1.5)));
+//	}
+//	
 	@Test
 	public void jump_test_hitWall() {
 		boolean[][] passableMap =  {{false, false, false, false, false},{true, true, true, false, false},
