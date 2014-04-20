@@ -18,6 +18,8 @@ import worms.util.Util;
 
 public class World {
 	public World(double width, double height, boolean[][] map, Random random) throws IllegalMapException, IllegalSizeException {
+		System.out.println("Initialisation width: " + width);
+		System.out.println("Initialisation height: " + height);
 		if(!isLegalSize(width, height)) {
 			throw new IllegalSizeException();
 		}
@@ -783,29 +785,29 @@ public class World {
 				
 				absoluteCoordinate[0] = (j * getCellWidth());
 				absoluteCoordinate[1] = (i * getCellHeight());
-				System.out.println(absoluteCoordinate[0]);
-				System.out.println(absoluteCoordinate[1]);
-				System.out.println(getCellWidth());
+				//System.out.println(absoluteCoordinate[0]);
+				//System.out.println(absoluteCoordinate[1]);
+				//System.out.println(getCellWidth());
 				
 				//prepare your butt for #mathClusterFuck
 				distanceToEntity = Math.sqrt(	Math.pow( (double)coordinates[0] - (double)absoluteCoordinate[0], 2) + 
 												Math.pow( (double)coordinates[1] - (double)absoluteCoordinate[1], 2));
 				
-				System.out.println((Math.sqrt(	2.0* Math.pow( 3.0 - 2, 2))));
+				//System.out.println((Math.sqrt(	2.0* Math.pow( 3.0 - 2, 2))));
 				//Need to think long and hard about this one in relation to it checking all 4 adjacent cells to the absolutecoordinate
-				System.out.println(getBoolAt(j-1,i-1));
-				System.out.println(getBoolAt(j,i-1));
-				System.out.println(getBoolAt(j-1,i));
-				System.out.println(getBoolAt(j,i));
-				System.out.println("j= " + j);
-				System.out.println("i= " + i);
+				//System.out.println(getBoolAt(j-1,i-1));
+				//System.out.println(getBoolAt(j,i-1));
+				//System.out.println(getBoolAt(j-1,i));
+				//System.out.println(getBoolAt(j,i));
+				//System.out.println("j= " + j);
+				//System.out.println("i= " + i);
 				if(distanceToEntity <= (radius)){
-					System.out.println(distanceToEntity);
+					//System.out.println(distanceToEntity);
 					if(getBoolAt(j-1,i-1)){
 						if(getBoolAt(j,i-1)){
 							if(getBoolAt(j,i)){
 								if(! getBoolAt(j-1,i)){
-									System.out.println("THIS SHOULD FUCKING WORK");
+									//System.out.println("THIS SHOULD FUCKING WORK");
 									return false;
 								}
 							} else{
@@ -852,7 +854,7 @@ public class World {
 	public void createRandomWorm() {
 		Team team = null;
 		boolean joinTeam = random.nextBoolean();
-		System.out.println("nb teams: "+getNbTeams());
+		//System.out.println("nb teams: "+getNbTeams());
 		if (joinTeam) {
 			int teamIndex = 0;
 			if (getNbTeams() > 1)
@@ -864,13 +866,14 @@ public class World {
 		String wormName = wormNames.get(random.nextInt(wormNames.size()-1));
 		double radius = 0.25 + random.nextDouble() / 4.0;
 		double[] randomPos = getRandomPosition(radius);
-		print("About to create worm");
+		print("About to create worm at coordinates");
+		System.out.println("x: " + randomPos[0] + " y: " + randomPos[1]);
 		Worm randomWorm = new Worm(wormName, randomPos[0], randomPos[1], radius, randomAngleOrient, this);
 		print("successfully created");
 		addAsWorm(randomWorm);
 		print("Added the worm in worms");
 		if (joinTeam && (getNbTeams() > 0)) {
-			System.out.println("team name: "+team.getName());
+			//System.out.println("team name: "+team.getName());
 			randomWorm.join(team); //No problem with nullpointer because if(condition)
 		}
 	}
@@ -878,9 +881,9 @@ public class World {
 	public void createRandomFood() {
 		double[] randomPos = getRandomPosition(0.2);
 		Food randomFood = new Food(this, randomPos[0], randomPos[1]);
-		System.out.println("Created food and adding...");
+		//System.out.println("Created food and adding...");
 		addAsFood(randomFood);
-		System.out.println("Added.");
+		//System.out.println("Added.");
 	}
 	
 	/**
@@ -889,11 +892,13 @@ public class World {
 	 * @return A random adjacent position
 	 */
 	private double[] getRandomPosition(double deltaD) {
+		System.out.println("width: " + getWidth());
 		double[] target = new double[]{0.0, 0.0};
 		boolean isFound = false; //is a random adjacent position found? NO! Not yet.
 		while (!isFound) {
 			double randomAnglePos = random.nextDouble()*(Math.PI/2.0);
 			double[] maxPos = getMaxPosition(randomAnglePos);
+			System.out.println("Max pos: " + maxPos[0]);
 			double maxX =maxPos[0] - Math.cos(randomAnglePos)*deltaD;//Making sure they don't start out of bounds
 			double maxY =maxPos[1] - Math.sin(randomAnglePos)*deltaD;
 			target = new double[]{maxX, maxY};
@@ -909,7 +914,7 @@ public class World {
 				}
 			}
 		}
-		System.out.println("found random position at"+target);
+		//System.out.println("found random position at"+target);
 		return target;
 	}
 
@@ -921,7 +926,7 @@ public class World {
 	private double[] getRandomPosition2(double deltaD) {
 		double mapBounds = deltaD; //The distance we must leave between the the edges of the map for preventing creation in the impassable edge
 		double[] target = new double[2];
-		//System.out.println("finding...");
+		////System.out.println("finding...");
 		while (true) {
 			//System.out.println("New strip");
 			double randomX = random.nextDouble()*(getWidth()-2*mapBounds)+mapBounds;
@@ -929,7 +934,7 @@ public class World {
 			boolean hasEnded = false; //has this strip been depleted;
 			target = new double[]{randomX, randomY};
 			while (!hasEnded) {
-				target[1] -= deltaD/2.0;
+				target[1] -= deltaD /* /2.0*/;
 				if (target[1]<mapBounds)
 					hasEnded = true;
 				else if (isAdjacent(target, deltaD)) {
@@ -996,7 +1001,7 @@ public class World {
 	}
 	
 	public void print(String string){
-		System.out.println("World: " + string);
+		System.out.println(string);
 	}
 
 	/**

@@ -138,7 +138,7 @@ public abstract class Entity {
 	}
 	
 	public boolean collides(double[] coordinates, double radius) {
-		if (! getWorld().canExist(coordinates, getRadius())) {
+		if (! getWorld().canExist(coordinates, radius)) {
 			return true;
 		}
 		for (Worm worm: getWorld().getAllWorms()) {

@@ -153,7 +153,7 @@ public class Facade implements IFacade {
 	}
 
 	public Collection<Food> getFood(World world) {
-		System.out.println("returning "+world.getNbFoods()+" foods");
+		//System.out.println("returning "+world.getNbFoods()+" foods");
 		return world.getAllFoods();
 	}
 

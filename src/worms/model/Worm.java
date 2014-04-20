@@ -248,9 +248,9 @@ public class Worm extends Movable {
 			throw new IllegalArgumentException();
 		} else {
 			this.radius = radius;
-			if (getActionPoints() < getMaxActionPoints())
+			if (getActionPoints() > getMaxActionPoints())
 				setActionPoints(getMaxActionPoints());
-			if (getHitPoints() < getMaxHitPoints())
+			if (getHitPoints() > getMaxHitPoints())
 				setHitPoints(getMaxHitPoints());
 		}
 	}
@@ -315,7 +315,7 @@ public class Worm extends Movable {
 	 *       | if (isValidActionPoints(points)) {new.getActionPoints() == points}
 	 */
 	private void setActionPoints(long points) {
-		System.out.println("setting AP to: "+points+" is Possible? "+isValidActionPoints(points));
+		//System.out.println("setting AP to: "+points+" is Possible? "+isValidActionPoints(points));
 		if (isValidActionPoints(points))
 			ActionPoints = points;
 	}
@@ -538,7 +538,7 @@ public class Worm extends Movable {
 	 */
 	public void addAsWeapon(Weapon weapon) {
 		if(!hasAsWeapon(weapon)) {
-			System.out.println("legit worm");
+			//System.out.println("legit worm");
 		}
 		assert (weapon != null) && (weapon.getWorm() == this);
 		assert !hasAsWeapon(weapon);
@@ -694,15 +694,15 @@ public class Worm extends Movable {
 	 */
 	public void step() throws ExhaustionException {
 		if (canMove()) {
-			System.out.println("Stepping...");
+			//System.out.println("Stepping...");
 			double deltaT = 0.0175; //infinitesimal angle to see how far one can move.
 			double maxT = 0.7875;
 			double minD = 0.1;
 			double[] temp = new double[]{0.0, getOrientation()}; //temp is the furthest the worm can move and that direction
 			for (double count = 0.0; count < maxT; count += deltaT) {
-				System.out.println("Starting new direction...");
+				//System.out.println("Starting new direction...");
 				double maxDistClockwise = maxDist(getOrientation() + count, minD);
-				System.out.println("maxDist: "+maxDistClockwise);
+				//System.out.println("maxDist: "+maxDistClockwise);
 				if (maxDistClockwise == getRadius()) {
 					temp = new double[] {getRadius(), getOrientation() + count};
 					break;
@@ -722,16 +722,16 @@ public class Worm extends Movable {
 						minD = maxDistCounterClockwise;
 					}
 				}
-			System.out.println("Direction depleted");
+			//System.out.println("Direction depleted");
 			}
-			//System.out.println("Is new position OK? (collision) "+getWorld().canExist(new double[]{getPosX() + Math.cos(temp[1]) * temp[0], getPosY() + Math.sin(temp[1]) * temp[0]}, getRadius()));
+			////System.out.println("Is new position OK? (collision) "+getWorld().canExist(new double[]{getPosX() + Math.cos(temp[1]) * temp[0], getPosY() + Math.sin(temp[1]) * temp[0]}, getRadius()));
 			setPosX(getPosX() + Math.cos(temp[1]) * temp[0]);
 			setPosY(getPosY() + Math.sin(temp[1]) * temp[0]);
 			if (!isValidPosition(getCoordinates()))
 				die();
-			System.out.println("falling...");
+			//System.out.println("falling...");
 			fall();
-			System.out.println("fell");
+			//System.out.println("fell");
 			eat();
 		} else throw new ExhaustionException();
 	}
@@ -741,7 +741,7 @@ public class Worm extends Movable {
 		for (double dist = getRadius(); dist > minD; dist -= deltaD) {
 			double targetX = getPosX()+Math.cos(angle)*dist;
 			double targetY = getPosY()+Math.sin(angle)*dist;
-			System.out.println("Checking position: ("+targetX+","+targetY+")");
+			//System.out.println("Checking position: ("+targetX+","+targetY+")");
 			if (getWorld().isAdjacent(new double[]{targetX, targetY}, this))
 				return dist;
 		}
@@ -798,7 +798,7 @@ public class Worm extends Movable {
 	 */
 	public void jump(double timestep) throws ExhaustionException, IllegalStateException {
 		boolean canJump = canJump();
-		System.out.println("can Jump? "+canJump);
+		//System.out.println("can Jump? "+canJump);
 		if (getActionPoints() > 0 && canJump){
 			double[] target = jumpStep(getActionPoints(), jumpTime(getActionPoints(), timestep));
 			setPosX(target[0]); setPosY(target[1]);
@@ -812,12 +812,13 @@ public class Worm extends Movable {
 	 */
 	public void fall() {
 		boolean canFall = canFall();
-		System.out.println("can Fall? "+canFall);
+		//System.out.println("can Fall? "+canFall);
 		if (canFall) {
 			double fallTime = fallTime();
 			if (fallTime == Double.MAX_VALUE) {
 				die();
 			} else {
+				System.out.println(fallDist(fallTime));
 				double fallDist = Math.abs(getPosY() - fallDist(fallTime));
 				damage((long) Math.floor(fallDist) * 3);
 				setPosY(getPosY() - fallDist);
@@ -834,7 +835,7 @@ public class Worm extends Movable {
 		 return ((1.0/2.0) * this.getWorld().GRAVITY * time * time);
 	}
 	
-	public double fallTime() {
+	public double fallTime() {	
 		double timestep = 0.001;
 		double time = 0.0;
 		while (true) {
@@ -865,9 +866,9 @@ public class Worm extends Movable {
 	 * 
 	 */
 	public void grow() {
-		System.out.println("Old radius = "+getRadius());
+		//System.out.println("Old radius = "+getRadius());
 		setRadius(getRadius()*1.1);
-		System.out.println("New radius = "+getRadius());
+		//System.out.println("New radius = "+getRadius());
 	}
 	
 	/**

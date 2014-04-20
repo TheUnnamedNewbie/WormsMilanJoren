@@ -14,23 +14,23 @@ import worms.model.Worm;
 public class Team {
 	
 	public Team(String targetName, World world) {
-		System.out.println("Checking name \""+targetName+"\" ...");
-		System.out.println("... For validity");
+		//System.out.println("Checking name \""+targetName+"\" ...");
+		//System.out.println("... For validity");
 		if (!isValidName(targetName)) {
-			System.out.println("Invalid name");
+			//System.out.println("Invalid name");
 			throw new IllegalArgumentException("Invalid name");
 		}
-		System.out.println("Valid name. Checking for already existing teams...");
+		//System.out.println("Valid name. Checking for already existing teams...");
 		for (Team subject: world.getAllTeams()) {
 			String nameToCheck = subject.getName();
-			System.out.println("...With \""+nameToCheck+"\"");
+			//System.out.println("...With \""+nameToCheck+"\"");
 			if (nameToCheck.equals(targetName)) {
-				System.out.println("Team already exists");
+				//System.out.println("Team already exists");
 				throw new IllegalArgumentException("Team already exists");
 				}
-			System.out.println("OK, checking next team");
+			//System.out.println("OK, checking next team");
 		}
-		System.out.println("Name OK, moving on...");
+		//System.out.println("Name OK, moving on...");
 		this.name = targetName;
 		this.world = world;
 		members = new ArrayList<Worm>();
@@ -212,7 +212,7 @@ public class Team {
 	public void addAsWorm(Worm worm) {
 		assert (worm != null);
 		assert !hasAsWorm(worm);
-		//System.out.println("Adding worm: "+worm.getName());
+		////System.out.println("Adding worm: "+worm.getName());
 		members.add(worm);
 	}
 	
