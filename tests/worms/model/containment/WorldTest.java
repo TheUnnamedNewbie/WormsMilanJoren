@@ -12,6 +12,9 @@ import org.junit.Test;
 
 
 
+
+import worms.IllegalMapException;
+import worms.IllegalSizeException;
 import worms.model.Worm;
 import worms.containment.World;
 
@@ -174,6 +177,89 @@ public class WorldTest {
 //		
 
 	}
+	
+	@Test(expected = IllegalMapException.class)
+	public void createWorld_IllegalPassableMapCase(){
+		boolean[][] passableMap = {	{true, true, true, true, true, true, true, true, true, true},
+				{true, true, true, true, true, true, true, true, true, true},
+				{true, true, true, true, true, true, true, true, true, true},
+				{true, true, true, true, true, true, true, true, true, true},
+				{true, true, true, true, true, true, true, true, true, true},
+				{true, true, true, true, true, true, true, true, true, true},
+				{true, true, true, true, true, true, true, true, true, true},
+				{true, true, true, true, true, true, true, true, true},
+				{false, false, false, false, false, false, false, false, false, false}};
+		Random rand = new Random();	
+		world = new World(10, 9, passableMap, rand);
+	}
+	
+	@Test(expected = IllegalSizeException.class)
+	public void createWorld_IllegalMapSize_NaN_x(){
+		boolean[][] passableMap = {	{true, true, true, true, true, true, true, true, true, true},
+				{true, true, true, true, true, true, true, true, true, true},
+				{true, true, true, true, true, true, true, true, true, true},
+				{true, true, true, true, true, true, true, true, true, true},
+				{true, true, true, true, true, true, true, true, true, true},
+				{true, true, true, true, true, true, true, true, true, true},
+				{true, true, true, true, true, true, true, true, true, true},
+				{true, true, true, true, true, true, true, true, true, true},
+				{false, false, false, false, false, false, false, false, false, false}};
+		Random rand = new Random();	
+		world = new World(Double.NaN, 9, passableMap, rand);
+	}
+	
+	@Test(expected = IllegalSizeException.class)
+	public void createWorld_IllegalMapSize_NaN_y(){
+		boolean[][] passableMap = {	{true, true, true, true, true, true, true, true, true, true},
+				{true, true, true, true, true, true, true, true, true, true},
+				{true, true, true, true, true, true, true, true, true, true},
+				{true, true, true, true, true, true, true, true, true, true},
+				{true, true, true, true, true, true, true, true, true, true},
+				{true, true, true, true, true, true, true, true, true, true},
+				{true, true, true, true, true, true, true, true, true, true},
+				{true, true, true, true, true, true, true, true, true, true},
+				{false, false, false, false, false, false, false, false, false, false}};
+		Random rand = new Random();	
+		world = new World(9,Double.NaN, passableMap, rand);
+	}
+	
+	@Test(expected = IllegalSizeException.class)
+	public void createWorld_IllegalMapSize_MaxVal_x(){
+		boolean[][] passableMap = {	{true, true, true, true, true, true, true, true, true, true},
+				{true, true, true, true, true, true, true, true, true, true},
+				{true, true, true, true, true, true, true, true, true, true},
+				{true, true, true, true, true, true, true, true, true, true},
+				{true, true, true, true, true, true, true, true, true, true},
+				{true, true, true, true, true, true, true, true, true, true},
+				{true, true, true, true, true, true, true, true, true, true},
+				{true, true, true, true, true, true, true, true, true, true},
+				{false, false, false, false, false, false, false, false, false, false}};
+		Random rand = new Random();	
+		world = new World(Double.MAX_VALUE, 9, passableMap, rand);
+	}
+	
+	@Test(expected = IllegalSizeException.class)
+	public void createWorld_IllegalMapSize_MaxVal_y(){
+		boolean[][] passableMap = {	{true, true, true, true, true, true, true, true, true, true},
+				{true, true, true, true, true, true, true, true, true, true},
+				{true, true, true, true, true, true, true, true, true, true},
+				{true, true, true, true, true, true, true, true, true, true},
+				{true, true, true, true, true, true, true, true, true, true},
+				{true, true, true, true, true, true, true, true, true, true},
+				{true, true, true, true, true, true, true, true, true, true},
+				{true, true, true, true, true, true, true, true, true, true},
+				{false, false, false, false, false, false, false, false, false, false}};
+		Random rand = new Random();	
+		world = new World( 9, Double.MAX_VALUE, passableMap, rand);
+	} 
+	
+	@Test
+	public void isLegalSize_NaN() {
+		assertEquals(World.isLegalSize(Double.NaN, 10), false);
+		assertEquals(World.isLegalSize(10, Double.NaN), false);
+		
+	}
+	
 	
 	public double[] toArray(double a, double b){
 		double[] array = {a, b};

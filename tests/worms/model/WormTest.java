@@ -15,6 +15,7 @@ import worms.containment.Team;
 import worms.containment.World;
 import worms.weapons.Rifle;
 import worms.weapons.Bazooka; 
+import worms.model.*;
 
 import worms.util.Util;
 
@@ -157,7 +158,7 @@ public class WormTest {
 		worm1.addAsWeapon(rifle);
 		bazooka = new Bazooka(worm2);
 		worm1.addAsWeapon(bazooka);
-		assertEquals(worm1.hasProperWeapons(), false);	
+		assertEquals(worm1.hasProperWeapons(), false);	//doesn't work, throws indexoutofbounds
 	}	
 	
 	@Test
@@ -197,6 +198,59 @@ public class WormTest {
 		//worm1.jump(timestep);
 		
 	}
+	
+	@Test
+	public void jumpTestFlatSurface() {
+		boolean[][] passableMap = {	{true, true, true, true, true, true, true, true, true, true},
+									{true, true, true, true, true, true, true, true, true, true},
+									{true, true, true, true, true, true, true, true, true, true},
+									{true, true, true, true, true, true, true, true, true, true},
+									{true, true, true, true, true, true, true, true, true, true},
+									{true, true, true, true, true, true, true, true, true, true},
+									{true, true, true, true, true, true, true, true, true, true},
+									{true, true, true, true, true, true, true, true, true, true},
+									{false, false, false, false, false, false, false, false, false, false}};
+		Random rand = new Random();	
+		world = new World(10, 9, passableMap, rand);
+		worm1 = new Worm("Tester1", 1, 1.52, 0.5, Math.PI/4.0 , world);
+		assertEquals(worm1.getPosX(), 1, EPS);
+		assertEquals(worm1.getPosY(), 1.52, EPS);
+		worm1.jump(0.00001);
+		assertEquals(worm1.getPosX(), 1+2.79469808, 0.0001); //this doesnt work, getPosX() returns 1.0
+		assertEquals(worm1.getPosY(), 1.52, 0.05);
+		
+		
+	
+	}
+	
+	@Test
+	public void jumpTimeTestFlatSurface() {
+		boolean[][] passableMap = {	{true, true, true, true, true, true, true, true, true, true},
+									{true, true, true, true, true, true, true, true, true, true},
+									{true, true, true, true, true, true, true, true, true, true},
+									{true, true, true, true, true, true, true, true, true, true},
+									{true, true, true, true, true, true, true, true, true, true},
+									{true, true, true, true, true, true, true, true, true, true},
+									{true, true, true, true, true, true, true, true, true, true},
+									{true, true, true, true, true, true, true, true, true, true},
+									{false, false, false, false, false, false, false, false, false, false}};
+		Random rand = new Random();	
+		world = new World(10, 9, passableMap, rand);
+		worm1 = new Worm("Tester1", 1, 1.51, 0.5, Math.PI/4.0 , world);
+		assertEquals(worm1.getPosX(), 1, EPS);
+		assertEquals(worm1.getPosY(), 1.51, EPS);
+		assertEquals(worm1.jumpTime(worm1.getActionPoints(), 0.001), 0.583383508, 0.01); //doesnt work either
+		
+		
+		
+	
+	}
+	
+	
+	
+	
+	
+	
 	
 	public double[] toArray(double a, double b){
 		double[] array = {a, b};

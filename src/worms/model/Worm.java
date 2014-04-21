@@ -131,6 +131,10 @@ import java.util.ArrayList;
 /**
  * MAIN TODO
  * 
+ * 
+ * Facade: jump for projectile and worm can be condensed to one jump for movable, or am I overlooking something obvious here?
+ * 
+ * 
  * World: Make cellWidth and cellHeight constants?
  * 
  * FIX:

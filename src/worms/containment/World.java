@@ -18,8 +18,8 @@ import worms.util.Util;
 
 public class World {
 	public World(double width, double height, boolean[][] map, Random random) throws IllegalMapException, IllegalSizeException {
-		System.out.println("Initialisation width: " + width);
-		System.out.println("Initialisation height: " + height);
+//		System.out.println("Initialisation width: " + width);
+//		System.out.println("Initialisation height: " + height);
 		if(!isLegalSize(width, height)) {
 			throw new IllegalSizeException();
 		}
@@ -58,7 +58,7 @@ public class World {
 	private Projectile projectile;
 	private final boolean[][] passableMap;
 	private Worm currentWorm = null;
-	public final double GRAVITY = 9.80665;
+	public static final double GRAVITY = 9.80665;
 	private static final double EPS = Util.DEFAULT_EPSILON;
 	private List<String> wormNames = Arrays.asList("Shari", "Shannon",
 			"Willard", "Jodi", "Santos", "Ross", "Cora", "Jacob", "Homer",
@@ -837,7 +837,7 @@ public class World {
 	 * @return If the world is of legal size (see specifications)
 	 */
 	public static boolean isLegalSize(double x, double y) {
-		if(x == Double.NaN) {
+		if(x != x) { //Testing for NaN
 			return false;
 		}
 		if(x == Double.MAX_VALUE) {
@@ -846,7 +846,15 @@ public class World {
 		if(x <=0){
 			return false;
 		}
-		
+		if(y != y) { //testing for nan
+			return false;
+		}
+		if(y == Double.MAX_VALUE) {
+			return false;
+		}
+		if(y <=0){
+			return false;
+		}
 		return true;
 	}
 	
