@@ -12,7 +12,6 @@ import worms.IllegalSizeException;
 import worms.TooManyProjectilesException;
 import worms.entities.*;
 import worms.model.Worm;
-import worms.util.Util;
 
 //TODO add documentation and shizzle
 
@@ -59,11 +58,11 @@ public class World {
 	private final boolean[][] passableMap;
 	private Worm currentWorm = null;
 	public static final double GRAVITY = 9.80665;
-	private static final double EPS = Util.DEFAULT_EPSILON;
+	//private static final double EPS = Util.DEFAULT_EPSILON;
 	private List<String> wormNames = Arrays.asList("Shari", "Shannon",
 			"Willard", "Jodi", "Santos", "Ross", "Cora", "Jacob", "Homer",
 			"Kara");
-	private List<String> teamNames = Arrays.asList("MannLebtNurEinmahl", "Olympians", "Worms", "Derps", "Ulteamate", "Inteamate");
+	//private List<String> teamNames = Arrays.asList("MannLebtNurEinmahl", "Olympians", "Worms", "Derps", "Ulteamate", "Inteamate");
 	// END FIELDS
 	
 	public double getWidth() {
@@ -679,11 +678,11 @@ public class World {
 	}
 	
 	public boolean getBoolAt(int x, int y) {
-		//System.out.println("request bool @int:("+x+","+y+")");
-		if (x<0 || y<0 || x>passableMap.length-1 || y>passableMap.length-1) {
-		//System.out.println("out of bounds, returning false");
-		return false;
-		}
+//		//System.out.println("request bool @int:("+x+","+y+")");
+//		if (x<0 || y<0 || x>passableMap.length-1 || y>passableMap.length-1) {
+//		//System.out.println("out of bounds, returning false");
+//			return true;
+//		}
 		//System.out.println("Returning bool: "+passableMap[passableMap.length-y-1][x]);
 		return passableMap[passableMap.length-y-1][x];
 	}
@@ -775,6 +774,9 @@ public class World {
 		lowerRightCell[0] = (int)Math.ceil(lowerRight[0]/getCellWidth());
 		lowerRightCell[1] = (int)Math.ceil(lowerRight[1]/getCellHeight());
 		
+		//returning false if you try to exist outside of the map
+		if (!isValidPosition(upperLeft) || !isValidPosition(lowerRight))
+			return false;
 		
 		//some forstuffs comes here to populate the submap with useful things
 		for(int j = upperLeftCell[0]; j < lowerRightCell[0]; j++) { //TODO check if it this is 100% correct, didn't have enough coffee yet to properly think about that
@@ -873,7 +875,7 @@ public class World {
 		double randomAngleOrient = (random.nextDouble()*(Math.PI*2.0)) - Math.PI;
 		String wormName = wormNames.get(random.nextInt(wormNames.size()-1));
 		double radius = 0.25 + random.nextDouble() / 4.0;
-		double[] randomPos = getRandomPosition(radius);
+		double[] randomPos = getRandomPosition2(radius);
 		print("About to create worm at coordinates");
 		System.out.println("x: " + randomPos[0] + " y: " + randomPos[1]);
 		Worm randomWorm = new Worm(wormName, randomPos[0], randomPos[1], radius, randomAngleOrient, this);
@@ -887,7 +889,7 @@ public class World {
 	}
 	
 	public void createRandomFood() {
-		double[] randomPos = getRandomPosition(0.2);
+		double[] randomPos = getRandomPosition2(0.2);
 		Food randomFood = new Food(this, randomPos[0], randomPos[1]);
 		//System.out.println("Created food and adding...");
 		addAsFood(randomFood);
@@ -899,6 +901,7 @@ public class World {
 	 * @param deltaD
 	 * @return A random adjacent position
 	 */
+	@SuppressWarnings("unused")
 	private double[] getRandomPosition(double deltaD) {
 		System.out.println("width: " + getWidth());
 		double[] target = new double[]{0.0, 0.0};

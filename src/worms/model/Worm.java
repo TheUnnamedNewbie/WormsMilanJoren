@@ -734,7 +734,7 @@ public class Worm extends Movable {
 			if (!isValidPosition(getCoordinates()))
 				die();
 			//System.out.println("falling...");
-			fall();
+			//fall(); //I think facade makes the worms fall automatically
 			//System.out.println("fell");
 			eat();
 		} else throw new ExhaustionException();
@@ -808,7 +808,7 @@ public class Worm extends Movable {
 			setPosX(target[0]); setPosY(target[1]);
 			setActionPoints(0);
 			eat();
-		} else {throw new ExhaustionException();};
+		} else if (getActionPoints() <= 0) {throw new ExhaustionException();};
 	}
 	
 	/**
@@ -816,7 +816,7 @@ public class Worm extends Movable {
 	 */
 	public void fall() {
 		boolean canFall = canFall();
-		//System.out.println("can Fall? "+canFall);
+		System.out.println("can Fall? "+canFall);
 		if (canFall) {
 			double fallTime = fallTime();
 			if (fallTime == Double.MAX_VALUE) {
@@ -836,24 +836,25 @@ public class Worm extends Movable {
 	 * @return the distance fallen after a amount of time
 	 */
 	public double fallDist(double time) {
-		 return ((1.0/2.0) * this.getWorld().GRAVITY * time * time);
+		 this.getWorld();
+		return ((1.0/2.0) * World.GRAVITY * time * time);
 	}
 	
 	public double fallTime() {	
-		double timestep = 0.001;
+		double timestep = 0.01;
 		double time = 0.0;
 		while (true) {
 			double target = getPosY() - fallDist(time);
 			if (!isValidPosition(getPosX(), target))
 				return Double.MAX_VALUE;
-			if (!isValidPosition(getPosX(), target) || getWorld().isAdjacent(new double[]{getPosX(), target}, getRadius()))
+			if (!isValidPosition(getPosX(), target) || getWorld().isAdjacent(new double[]{getPosX(), target}, this))
 				return time;
 			time += timestep;
 		}
 	}
 	
 	public boolean canFall() {
-		return !getWorld().isAdjacent(getCoordinates(), getRadius());
+		return !getWorld().isAdjacent(getCoordinates(), this);
 	}
 	
 	/**

@@ -1,5 +1,6 @@
 package worms.entities;
 
+import worms.containment.World;
 import be.kuleuven.cs.som.annotate.*;
 
 public abstract class Movable extends Entity {
@@ -66,7 +67,7 @@ public abstract class Movable extends Entity {
 		double time = timestep;
 		while (true) {
 			double[] target = jumpStep(AP, time);
-			if (!isValidPosition(target) || collides(target, getRadius(), getWorld()))
+			if (!isValidPosition(target) || collides(target, getRadius()))
 				return time;
 			time += timestep;
 		}
@@ -76,7 +77,7 @@ public abstract class Movable extends Entity {
 		double time = timestep;
 		while (true) {
 			double[] target = jumpStep(force, time);
-			if (!isValidPosition(target) || collides(target, getRadius(), getWorld()))
+			if (!isValidPosition(target) || collides(target, getRadius()))
 				return time;
 			time += timestep;
 		}
@@ -86,18 +87,20 @@ public abstract class Movable extends Entity {
 	public double[] jumpStep(double force, double time) {
 		double[] returnCoordinates = new double[2];
 		double speed;
-		speed = (force/getMass())*(double)(1/2);
+		speed = (force/getMass())*(double)(1.0/2.0);
 		jumpSpeed[0] = speed * Math.cos(getOrientation());
+		System.out.println("speedX: "+jumpSpeed[0]);
 		jumpSpeed[1] = speed * Math.sin(getOrientation());
 		returnCoordinates[0] = (jumpSpeed[0]*time) + getPosX();
-		returnCoordinates[1] = ((jumpSpeed[1]*time) - ((1.0/2.0) * this.getWorld().GRAVITY * time * time)) + getPosY();
+		this.getWorld();
+		returnCoordinates[1] = ((jumpSpeed[1]*time) - ((1.0/2.0) * World.GRAVITY * time * time)) + getPosY();
 		return returnCoordinates;
 	}
 	
 	@Raw
 	public double[] jumpStep(long AP, double time) {
 		double force;
-		force = (5 * AP) + (getMass() * getWorld().GRAVITY);
+		force = (5 * AP) + (getMass() * World.GRAVITY);
 		return jumpStep(force, time);
 	}
 	
@@ -133,6 +136,8 @@ public abstract class Movable extends Entity {
 		double checkDist = getRadius(); // How far ahead a Entity must be able to move be able to justify a jump
 		double targetX = getPosX()+Math.cos(getOrientation())*(getRadius()+checkDist);
 		double targetY = getPosY()+Math.sin(getOrientation())*(getRadius()+checkDist);
-		return !collides(new double[]{targetX, targetY}, getRadius(), getWorld());
+		boolean out = !collides(new double[]{targetX, targetY}, getRadius());
+		System.out.println("Can jump? "+out);
+		return out;
 	}
 }

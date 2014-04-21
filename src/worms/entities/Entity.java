@@ -137,8 +137,16 @@ public abstract class Entity {
 		return false;
 	}
 	
+	/**
+	 * The non-static version is used with the attempted moving/jumping/falling of existing worms.
+	 * The checking to see if you collide with worms does not take the current worm into account.
+	 * @param coordinates
+	 * @param radius
+	 * @return
+	 */
 	public boolean collides(double[] coordinates, double radius) {
 		if (! getWorld().canExist(coordinates, radius)) {
+			//System.out.println("Map collision detected");
 			return true;
 		}
 		for (Worm worm: getWorld().getAllWorms()) {

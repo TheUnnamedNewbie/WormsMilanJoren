@@ -69,7 +69,7 @@ public class WorldTest {
 		double[] coordinates = {2, 4};
 		Random rand = new Random();
 		world = new World(5.0, 5.0, passableMap, rand);
-		System.out.println(world.canExist(coordinates, 0.5));
+		//System.out.println(world.canExist(coordinates, 0.5));
 		assert((!world.canExist(coordinates, 0.5)));
 		
 	}
@@ -81,7 +81,7 @@ public class WorldTest {
 		double[] coordinates = {4, 2};
 		Random rand = new Random();
 		world = new World(5.0, 5.0, passableMap, rand);
-		System.out.println(world.canExist(coordinates, 0.5));
+		//System.out.println(world.canExist(coordinates, 0.5));
 		assert((!world.canExist(coordinates, 0.5)));
 		
 	}
@@ -145,12 +145,35 @@ public class WorldTest {
 		double[] coordinates = {2, 4};
 		Random rand = new Random();
 		world = new World(5.0, 5.0, passableMap, rand);
-		assert(! world.getBoolAt(4,0));
-		assert(world.getBoolAt(0, 0));
-		assert(! world.getBoolAt(4, 4));
-		assert(! world.getBoolAt(0, 4));
-		
-		
+		assertTrue(! world.getBoolAt(4,0));
+		assertTrue(world.getBoolAt(0, 0));
+		assertTrue(! world.getBoolAt(4, 4));//Shouldn't this give true?
+		assertTrue(! world.getBoolAt(0, 4));
+		assertTrue(world.getBoolAt(3, 3));
+		boolean[][] passableMap2 =
+			{{true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true},
+			 {true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true},
+			 {true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true},
+			 {true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true},
+			 {true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true},
+			 {true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true},
+			 {true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true},
+			 {true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true},
+			 {true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true},
+			 {true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true},
+			 {true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true},
+			 {true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true},
+			 {true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true},
+			 {true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true},
+			 {true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true},
+			 {true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true}};//16x16 field
+		Random rand2 = new Random();
+		World world2 = new World(5.0, 5.0, passableMap2, rand2);
+		for (int i = 0; i < passableMap2.length; i++) {
+			for (int j = 0; j < passableMap2[0].length; j++) {
+				assertTrue(world2.getBoolAt(i, j)); //now I believe it works
+			}
+		}
 	}
 	
 	@Test

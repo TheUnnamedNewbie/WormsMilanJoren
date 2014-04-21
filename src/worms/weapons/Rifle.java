@@ -10,9 +10,9 @@ public class Rifle extends Weapon {
 	}
 	
 	public void shoot(int yield) {
-		double projRadius = Math.pow(((double)(3/4) * (0.01/7800)),(double)(1/3));
-		double projX = getWorm().getPosX()+(getWorm().getRadius()*projRadius)*Math.cos(getWorm().getOrientation());
-		double projY = getWorm().getPosY()+(getWorm().getRadius()*projRadius)*Math.sin(getWorm().getOrientation());
+		double projRadius = Math.pow(((double)(3.0/4.0) * (0.01/7800)),(double)(1.0/3.0));
+		double projX = getWorm().getPosX()+(getWorm().getRadius()+projRadius)*Math.cos(getWorm().getOrientation());
+		double projY = getWorm().getPosY()+(getWorm().getRadius()+projRadius)*Math.sin(getWorm().getOrientation());
 		Projectile projectile = new Projectile(getWorm().getWorld(), projX, projY, projRadius, 7800, getWorm().getOrientation(), 1.5, 20);
 		projectile.shoot(0.01);
 	}
