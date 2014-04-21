@@ -8,7 +8,6 @@ public abstract class Movable extends Entity {
 	private double orientation;
 	protected long density; //Q: why not a private? A: gives errors. Must fix this, but is persistend accross all classes (e.g. world is always redefined)
 	//[0] = x, [1] = y.
-	private double[] jumpSpeed = new double[2];
 	
 	/**
 	 * 
@@ -88,12 +87,11 @@ public abstract class Movable extends Entity {
 		double[] returnCoordinates = new double[2];
 		double speed;
 		speed = (force/getMass())*(double)(1.0/2.0);
-		System.out.println("speed: "+speed);
-		jumpSpeed[0] = speed * Math.cos(getOrientation());
-		jumpSpeed[1] = speed * Math.sin(getOrientation());
-		returnCoordinates[0] = (jumpSpeed[0]*time) + getPosX();
-		this.getWorld();
-		returnCoordinates[1] = ((jumpSpeed[1]*time) - ((1.0/2.0) * World.GRAVITY * time * time)) + getPosY();
+		//System.out.println("speed: "+speed);
+		double speedX = speed * Math.cos(getOrientation());
+		double speedY = speed * Math.sin(getOrientation());
+		returnCoordinates[0] = (speedX*time) + getPosX();
+		returnCoordinates[1] = (speedY*time) + getPosY() - ((double )(1.0/2.0) * World.GRAVITY * time * time);
 		return returnCoordinates;
 	}
 	
@@ -117,7 +115,7 @@ public abstract class Movable extends Entity {
 		double targetX = getPosX()+Math.cos(getOrientation())*(getRadius()+checkDist);
 		double targetY = getPosY()+Math.sin(getOrientation())*(getRadius()+checkDist);
 		boolean out = !collides(new double[]{targetX, targetY}, getRadius());
-		System.out.println("Can jump? "+out);
+		//System.out.println("Can jump? "+out);
 		return out;
 	}
 }

@@ -40,7 +40,7 @@ public class Facade implements IFacade {
 	}
 	
 	public double[] getJumpStep(Worm worm, double t) {
-		return worm.jumpStep(0.01, t);
+		return worm.jumpStep(worm.getActionPoints(), t);
 	}
 	
 	public double getX(Worm worm) {
