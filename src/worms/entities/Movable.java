@@ -88,8 +88,8 @@ public abstract class Movable extends Entity {
 		double[] returnCoordinates = new double[2];
 		double speed;
 		speed = (force/getMass())*(double)(1.0/2.0);
+		System.out.println("speed: "+speed);
 		jumpSpeed[0] = speed * Math.cos(getOrientation());
-//		System.out.println("speedX: "+jumpSpeed[0]);
 		jumpSpeed[1] = speed * Math.sin(getOrientation());
 		returnCoordinates[0] = (jumpSpeed[0]*time) + getPosX();
 		this.getWorld();
@@ -99,34 +99,14 @@ public abstract class Movable extends Entity {
 	
 	@Raw
 	public double[] jumpStep(long AP, double time) {
+		//System.out.println("Running jumpStep from worm");
 		double force;
 		force = (5 * AP) + (getMass() * World.GRAVITY);
-		return jumpStep(force, time);
+		//System.out.println("force: "+force); //CHECKED
+		double[] targetPos = jumpStep(force, time);
+		//System.out.println("Returning steps: ("+targetPos[0]+","+targetPos[1]+")");
+		return targetPos;
 	}
-	
-//	/**
-//	 * I think we no longer need this, canJump is better.
-//	 * @return true if the object cannot jump, and time = 0 or if the object can jump and time > 0 and time <= JumpTime(), false all other times
-//	 * 		| if ((canJump() == false) && (time > -EPS) && (time < EPS)) 
-//	 * 		|	result = true
-//	 * 		| if ((canJump() == true) && (time > 0) && (time <= jumpTime()))
-//	 * 		|	result = true
-//	 * 		| else
-//	 * 		|	result = false
-//	 * @param time
-//	 * 		time you want to check
-//	 *  
-//	 */
-//	public boolean isLegalTime(double time) {
-//		if ((canJump() == false) && (time > -EPS) && (time < EPS)){
-//			return true;
-//		}
-//		if ((canJump() == true) && (time > 0) && (time <= jumpTime(0.01))) {
-//			return true;
-//		}
-//		return false;
-//	}
-	
 	
 	/**
 	 * canJump() sees if you can move a decent amount in the direction you would wish to jump
