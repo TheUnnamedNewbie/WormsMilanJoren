@@ -841,6 +841,7 @@ public class Worm extends Movable {
 		if (canFall) {
 			double fallTime = fallTime();
 			if (fallTime == Double.MAX_VALUE) {
+				System.out.println("Falltime= "+ fallTime);
 				die();
 			} else {
 //				System.out.println(fallDist(fallTime));
