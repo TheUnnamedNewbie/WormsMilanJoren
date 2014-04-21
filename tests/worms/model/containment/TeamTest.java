@@ -18,8 +18,8 @@ import worms.model.Worm;
 public class TeamTest {
 
 	
-	private Team team;
-	private World world;
+	private Team team, team1, team2;
+	private World world1, world2;
 	private Worm worm1, worm2, worm3, worm4;
 	private ArrayList<Worm> allworms;
 	
@@ -48,15 +48,15 @@ public class TeamTest {
 		boolean[][] passableMap =  {{false, false, false, false, false},{true, true, true, false, false},
 				{true, true, true, true, false},{true, true, true, true, false},{true, true, true, true, false},{false, false, false, false, false}};
 		Random rand = new Random();	
-		world = new World(5, 6, passableMap, rand);
-		team = new Team("Team", world);
-		worm1 = new Worm("Charles", 3, 3, 0.7, 0.9, world);
-		worm2 = new Worm("Thomas", 3, 3, 0.7, 0.9, world);
-		worm3 = new Worm("Nemo", 3, 3, 0.7, 0.9, world);
-		worm4 = new Worm("Toby", 3, 3, 0.7, 0.9, world);
+		world1 = new World(5, 6, passableMap, rand);
+		team = new Team("Team", world1);
+		worm1 = new Worm("Charles", 3, 3, 0.7, 0.9, world1);
+		worm2 = new Worm("Thomas", 3, 3, 0.7, 0.9, world1);
+		worm3 = new Worm("Nemo", 3, 3, 0.7, 0.9, world1);
+		worm4 = new Worm("Toby", 3, 3, 0.7, 0.9, world1);
 		worm1.join(team);
 		allworms.add(worm1);
-		assertEquals(team.getWorld(), world);
+		assertEquals(team.getWorld(), world1);
 		assertEquals(team.getName(), "Team");
 		assertEquals(team.getAllWorms(), allworms);
 		allworms.add(worm2);
@@ -78,6 +78,61 @@ public class TeamTest {
 	}
 
 	
-	//@Test
+	@Test(expected = IllegalArgumentException.class)
+	public void createTeam_illegalName_NameAllreadyExists() throws IllegalArgumentException{
+		allworms = new ArrayList<Worm>();
+		boolean[][] passableMap =  {{false, false, false, false, false},{true, true, true, false, false},
+				{true, true, true, true, false},{true, true, true, true, false},{true, true, true, true, false},{false, false, false, false, false}};
+		Random rand = new Random();	
+		world1 = new World(5, 6, passableMap, rand);
+		team = new Team("Team", world1);		
+		team1 = new Team("Team", world1);//Doesn't work because this requiers pointers set through a facade
+	}
+	
+	@Test(expected = AssertionError.class)
+	public void addWormAlreadyInOtherTeam() {
+		allworms = new ArrayList<Worm>();
+		boolean[][] passableMap =  {{false, false, false, false, false},{true, true, true, false, false},
+				{true, true, true, true, false},{true, true, true, true, false},{true, true, true, true, false},{false, false, false, false, false}};
+		Random rand = new Random();	
+		world1 = new World(5, 6, passableMap, rand);
+		worm1 = new Worm("Charles", 3, 3, 0.7, 0.9, world1);
+		worm2 = new Worm("Thomas", 3, 3, 0.7, 0.9, world1);
+		worm3 = new Worm("Nemo", 3, 3, 0.7, 0.9, world1);
+		team = new Team("Team", world1);
+		team1 = new Team("Team1", world1);
+		worm1.join(team1);
+		assertEquals(team1.hasAsWorm(worm1), true);
+		worm1.join(team);
 
+	}
+	
+	@Test(expected = AssertionError.class)
+	public void addWormAlreadyInTeam() {
+		allworms = new ArrayList<Worm>();
+		boolean[][] passableMap =  {{false, false, false, false, false},{true, true, true, false, false},
+				{true, true, true, true, false},{true, true, true, true, false},{true, true, true, true, false},{false, false, false, false, false}};
+		Random rand = new Random();	
+		world1 = new World(5, 6, passableMap, rand);
+		worm1 = new Worm("Charles", 3, 3, 0.7, 0.9, world1);
+		team = new Team("Team", world1);
+		worm1.join(team);
+		worm1.join(team);
+		
+	}
+	
+	@Test(expected = AssertionError.class)
+	public void addWormDifferentWorld() {
+		boolean[][] passableMap =  {{false, false, false, false, false},{true, true, true, false, false},
+				{true, true, true, true, false},{true, true, true, true, false},{true, true, true, true, false},{false, false, false, false, false}};
+		Random rand = new Random();	
+		world1 = new World(5, 6, passableMap, rand);
+		world2 = new World(5, 6, passableMap, rand);
+		team = new Team("TestingTeam", world1);
+		worm1 = new Worm("Charles", 3, 3, 0.7, 0.9, world2);
+		team.addAsWorm(worm1);
+	}
+
+	//@Test()
+	
 }

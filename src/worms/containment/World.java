@@ -308,6 +308,7 @@ public class World {
 		return foods.size();
 	}
 	
+
 	/**
 	 * Check whether this world can have the given food
 	 * as one of its foods.

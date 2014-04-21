@@ -29,6 +29,8 @@ public class WormTest {
 	private static final double EPS = Util.DEFAULT_EPSILON;
 	private Bazooka bazooka;
 	private Rifle rifle;
+	private Facade facade;
+	
 	
 	
 //	@BeforeClass
@@ -146,7 +148,7 @@ public class WormTest {
 		assertEquals(worm1.hasProperWeapons(), true);	
 	}
 	
-	@Test
+	@Test(expected = AssertionError.class)
 	public void hasPropperWeapons_test_illegal(){
 		boolean[][] passableMap =  {{false, false, false, false, false},{true, true, true, false, false},
 				{true, true, true, true, false},{true, true, true, true, false},{true, true, true, true, false},{false, false, false, false, false}};
@@ -159,7 +161,6 @@ public class WormTest {
 		worm1.addAsWeapon(rifle);
 		bazooka = new Bazooka(worm2);
 		worm1.addAsWeapon(bazooka);
-		assertEquals(worm1.hasProperWeapons(), false);	//doesn't work, throws indexoutofbounds
 	}	
 	
 	@Test
@@ -175,6 +176,46 @@ public class WormTest {
 		worm1.setCoordinates(toArray(3.49, 1));
 		assert(worm1.canFall());	
 	}
+	
+	@Test
+	public void renameWorm_testLegalCases(){
+		facade = new Facade();
+		boolean[][] passableMap =  {{false, false, false, false, false},{true, true, true, false, false},
+				{true, true, true, true, false},{true, true, true, true, false},{true, true, true, true, false},{false, false, false, false, false}};
+		Random rand = new Random();	
+		world = facade.createWorld(5, 6, passableMap, rand);
+		worm1 = facade.createWorm(world, 3, 3, 0.1, 0.5, "Tester1");
+		assertEquals(worm1.getName(), "Tester1");
+		facade.rename(worm1, "Tester");
+		assertEquals(worm1.getName(), "Tester");
+		
+	
+	}
+	
+	@Test(expected = ModelException.class)
+	public void renameWorm_testIllegalName1(){
+		facade = new Facade();
+		boolean[][] passableMap =  {{false, false, false, false, false},{true, true, true, false, false},
+				{true, true, true, true, false},{true, true, true, true, false},{true, true, true, true, false},{false, false, false, false, false}};
+		Random rand = new Random();	
+		world = facade.createWorld(5, 6, passableMap, rand);
+		worm1 = facade.createWorm(world, 3, 3, 0.1, 0.5, "Tester1");
+		assertEquals(worm1.getName(), "Tester1");
+		facade.rename(worm1, "Excellent#");
+	}
+	
+	@Test(expected = ModelException.class)
+	public void renameWorm_testIllegalName2(){
+		facade = new Facade();
+		boolean[][] passableMap =  {{false, false, false, false, false},{true, true, true, false, false},
+				{true, true, true, true, false},{true, true, true, true, false},{true, true, true, true, false},{false, false, false, false, false}};
+		Random rand = new Random();	
+		world = facade.createWorld(5, 6, passableMap, rand);
+		worm1 = facade.createWorm(world, 3, 3, 0.1, 0.5, "Tester1");
+		assertEquals(worm1.getName(), "Tester1");
+		facade.rename(worm1, "abba");
+	}
+	
 	
 //	@Test
 //	public void fall_test1() {

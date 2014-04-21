@@ -204,6 +204,23 @@ import java.util.ArrayList;
  */
 public class Worm extends Movable {
 
+
+	
+	
+	/**
+	 * Creates a new worm with, given legal parameters, the requested values.
+	 * @param name
+	 * 		The name you wish to give your worm.
+	 * @param posX
+	 * 		The Position along the x axis you wish your worm to have (origin in the leftbottom corner)
+	 * @param posY
+	 * 		The Position along the y axis you wish your worm to have (origin in the leftbottom corner)
+	 * @param radius
+	 * 		The radius the worm should have
+	 * 		| radius >= 0.25 && 
+	 * @param direction
+	 * @param world
+	 */
 	public Worm(String name, double posX, double posY, double radius,
 			double direction, World world) {
 		this.world = world;
