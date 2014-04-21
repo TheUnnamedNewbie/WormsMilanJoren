@@ -474,8 +474,11 @@ public class World {
 	 *       |   new.getFoodAt(index-1) == getFoodAt(index) 
 	 */
 	public void removeAsFood(Food food) {
-		assert (food != null) && (food.getWorld() == null);
+		assert (food != null);
 		assert (hasAsFood(food));
+		if(food.getWorld() != null) {
+			food.setWorldNull();
+		}
 		foods.remove(food);
 	}
 	

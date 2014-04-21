@@ -13,18 +13,24 @@ import org.junit.Test;
 
 
 
+
+
+
 import worms.IllegalMapException;
 import worms.IllegalSizeException;
 import worms.model.Worm;
+import worms.util.Util;
 import worms.containment.World;
+import worms.entities.Food;
 
 
 public class WorldTest {
 
 	private World world;
 	//private Team team1, team2;
-	//private Worm worm1, worm2, worm3;
-	
+	private Worm worm1, worm2, worm3;
+	private static final double EPS = Util.DEFAULT_EPSILON;
+	private Food food1;
 	
 //	@BeforeClass
 //	public static void setUpBeforeClass() throws Exception {
@@ -284,35 +290,58 @@ public class WorldTest {
 	}
 	
 	
+	@Test
+	public void jumpTestFlatSurface() {
+		boolean[][] passableMap = {	{true, true, true, true, true, true, true, true, true, true},
+									{true, true, true, true, true, true, true, true, true, true},
+									{true, true, true, true, true, true, true, true, true, true},
+									{true, true, true, true, true, true, true, true, true, true},
+									{true, true, true, true, true, true, true, true, true, true},
+									{true, true, true, true, true, true, true, true, true, true},
+									{true, true, true, true, true, true, true, true, true, true},
+									{true, true, true, true, true, true, true, true, true, true},
+									{false, false, false, false, false, false, false, false, false, false}};
+		Random rand = new Random();	
+		world = new World(10, 9, passableMap, rand);
+		worm1 = new Worm("Tester1", 1, 1.52, 0.5, Math.PI/4.0 , world);
+		food1 = new Food(world, 6.589396, 1.52);
+		world.addAsFood(food1);
+		assertEquals(worm1.getPosX(), 1, EPS);
+		assertEquals(worm1.getPosY(), 1.52, EPS);
+		worm1.jump(0.01);
+		assertEquals(worm1.getPosX(), 1+5.589396, 0.2); //this doesnt work, getPosX() returns 1.0
+		assertEquals(worm1.getPosY(), 1.5, 0.2);//works... somewhat... Y cord is 0.1 in passable terrain after this. Don't know if thats acceptable or not.
+	}
+	
 	public double[] toArray(double a, double b){
 		double[] array = {a, b};
 		return array;
 	}
 	
 	
-//	
-//	@Test 
-//	public void canExist_legalCase3(){
-//		boolean[][] passableMap =  {{false, false, false, false, false},{true, true, true, true, false},
-//				{true, true, true, true, false},{true, true, true, true, false},{true, true, true, true, false}};
-//		double[] coordinates1 = {3.4, 3.4};
-//		Random rand = new Random();
-//		world = new World(5.0, 5.0, passableMap, rand);
-//		assert(world.canExist(coordinates, 0.5));
-//		
-//		}
-//	
-//	
-//	@Test 
-//	public void canExist_legalCase_Bottom(){
-//		boolean[][] passableMap =  {{false, false, false, false, false},{true, true, true, true, false},
-//				{true, true, true, true, false},{true, true, true, true, false},{true, true, true, true, false}};
-//		double[] coordinates1 = {2, 2};
-//		Random rand = new Random();
-//		world = new World(5.0, 5.0, passableMap, rand);
-//		assert(world.canExist(coordinates, 0.5));
-//		
-//		}
+	
+	@Test 
+	public void canExist_legalCase3(){
+		boolean[][] passableMap =  {{false, false, false, false, false},{true, true, true, true, false},
+				{true, true, true, true, false},{true, true, true, true, false},{true, true, true, true, false}};
+		double[] coordinates1 = {3.4, 3.4};
+		Random rand = new Random();
+		world = new World(5.0, 5.0, passableMap, rand);
+		assert(world.canExist(coordinates1, 0.5));
+	}
+	
+	
+	@Test 
+	public void canExist_legalCase_Bottom(){
+		boolean[][] passableMap =  {{false, false, false, false, false},{true, true, true, true, false},
+				{true, true, true, true, false},{true, true, true, true, false},{true, true, true, true, false}};
+		double[] coordinates1 = {2, 2};
+		Random rand = new Random();
+		world = new World(5.0, 5.0, passableMap, rand);
+		assert(world.canExist(coordinates, 0.5));
+	}
+	
+
 
 }
 	

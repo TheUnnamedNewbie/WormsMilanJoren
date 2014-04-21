@@ -121,6 +121,10 @@ public abstract class Entity {
 	public void terminate() {
 		this.terminated = true;
 	}
+	
+	public void setWorldNull(){
+		this.world = null;
+	}
 	/**
 	 * The collide method checks to see if a entity can exist at a given position.
 	 * Inheriting classes will receive more specified rules (e.g. Projectile collides with worm)

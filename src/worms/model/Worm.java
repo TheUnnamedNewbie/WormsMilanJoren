@@ -217,7 +217,7 @@ public class Worm extends Movable {
 	 * 		The Position along the y axis you wish your worm to have (origin in the leftbottom corner)
 	 * @param radius
 	 * 		The radius the worm should have
-	 * 		| radius >= 0.25 && 
+	 * 		| radius >= 0.25 && radius == Double.NaN && radius < Double.MAX_VALUE
 	 * @param direction
 	 * @param world
 	 */
