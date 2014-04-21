@@ -89,7 +89,7 @@ public abstract class Movable extends Entity {
 		double speed;
 		speed = (force/getMass())*(double)(1.0/2.0);
 		jumpSpeed[0] = speed * Math.cos(getOrientation());
-		System.out.println("speedX: "+jumpSpeed[0]);
+//		System.out.println("speedX: "+jumpSpeed[0]);
 		jumpSpeed[1] = speed * Math.sin(getOrientation());
 		returnCoordinates[0] = (jumpSpeed[0]*time) + getPosX();
 		this.getWorld();

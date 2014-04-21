@@ -443,11 +443,11 @@ public class Worm extends Movable {
 	 *       |     ( (I == index) || (getWeaponAt(I) != weapon) )
 	 */
 	public boolean canHaveAsWeaponAt(Weapon weapon, int index) {
-		if ((index < 1) || (index > getNbWeapons() + 1))
+		if ((index < 0) || (index > getNbWeapons() + 1))
 			return false;
 		if (!canHaveAsWeapon(weapon))
 			return false;
-		for (int pos = 1; pos <= getNbWeapons(); pos++)
+		for (int pos = 0; pos < getNbWeapons(); pos++)
 			if ((pos != index) && (getWeaponAt(pos) == weapon))
 				return false;
 		return true;
@@ -464,11 +464,15 @@ public class Worm extends Movable {
 	 *       |   (getWeaponAt(index).getWeapon() == this)
 	 */
 	public boolean hasProperWeapons() {
-		for (int index = 1; index <= getNbWeapons(); index++) {
-			if (!canHaveAsWeaponAt(getWeaponAt(index), index))
+		for (int index = 0; index < getNbWeapons(); index++) {
+			if (!canHaveAsWeaponAt(getWeaponAt(index), index)){
+				System.out.println("(!canHaveAsWeaponAt(getWeaponAt(index), index)) indexes are: " + index);
 				return false;
-			if (getWeaponAt(index).getWorm() != this)
+			}
+			if (getWeaponAt(index).getWorm() != this) {
+				System.out.println("(getWeaponAt(index).getWorm() != this)");
 				return false;
+			}
 		}
 		return true;
 	}
@@ -816,13 +820,13 @@ public class Worm extends Movable {
 	 */
 	public void fall() {
 		boolean canFall = canFall();
-		System.out.println("can Fall? "+canFall);
+//		System.out.println("can Fall? "+canFall);
 		if (canFall) {
 			double fallTime = fallTime();
 			if (fallTime == Double.MAX_VALUE) {
 				die();
 			} else {
-				System.out.println(fallDist(fallTime));
+//				System.out.println(fallDist(fallTime));
 				double fallDist = Math.abs(getPosY() - fallDist(fallTime));
 				damage((long) Math.floor(fallDist) * 3);
 				setPosY(getPosY() - fallDist);
