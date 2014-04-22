@@ -26,7 +26,7 @@ public class Team {
 			//System.out.println("...With \""+nameToCheck+"\"");
 			if (nameToCheck.equals(targetName)) {
 				System.out.println("Team already exists");
-				throw new IllegalArgumentException("Team already exists");
+				throw new IllegalArgumentException("Team already xists");
 				}
 			//System.out.println("OK, checking next team");
 		}

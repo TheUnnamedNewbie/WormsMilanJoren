@@ -801,7 +801,7 @@ public class Worm extends Movable {
 			////System.out.println("Is new position OK? (collision) "+getWorld().canExist(new double[]{getPosX() + Math.cos(temp[1]) * temp[0], getPosY() + Math.sin(temp[1]) * temp[0]}, getRadius()));
 			setPosX(getPosX() + Math.cos(temp[1]) * temp[0]);
 			setPosY(getPosY() + Math.sin(temp[1]) * temp[0]);
-			if (!isValidPosition(getCoordinates()))
+			if (!isValidPosition(getCoordinates()) || this.getWorld().isLegalPosition(this.getCoordinates(), this.getRadius()))
 				die();
 			//System.out.println("falling...");
 			//fall(); //I think facade makes the worms fall automatically
@@ -880,6 +880,9 @@ public class Worm extends Movable {
 			setActionPoints(0);
 			eat();
 		} else if (getActionPoints() <= 0) {throw new ExhaustionException();};
+		if (this.getWorld().isLegalPosition(this.getCoordinates(), this.getRadius())) {
+			die();
+		}
 	}
 	
 	/**
@@ -902,7 +905,10 @@ public class Worm extends Movable {
 				setPosY(getPosY() - fallDist);
 			}
 		}
-	}
+		if (this.getWorld().isLegalPosition(this.getCoordinates(), this.getRadius())) {
+			die();
+		}
+	} 
 	
 	/**
 	 * The distance (positive) a worm falls after a given time.

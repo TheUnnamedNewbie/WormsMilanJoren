@@ -64,27 +64,51 @@ public class World {
 			"Kara");
 	//private List<String> teamNames = Arrays.asList("MannLebtNurEinmahl", "Olympians", "Worms", "Derps", "Ulteamate", "Inteamate");
 	// END FIELDS
-	
+	/**
+	 * gives the value for width
+	 * @return
+	 * 		|result == this.width
+	 */
 	public double getWidth() {
 		return this.width;
 	}
-	
+	/**
+	 * Gives the value for height
+	 * @return
+	 * 		|result == this.height
+	 */
 	public double getHeight() {
 		return this.height;
 	}
-	
+	/**
+	 * returns the value for cellwidth
+	 * @return
+	 * 		|result == this.cellWidth
+	 */
 	public double getCellWidth() {
 		return this.cellWidth;
 	}
-	
+	/**
+	 * Returns teh value for cellHeights
+	 * @return
+	 * 		|result == this.cellHeight
+	 */
 	public double getCellHeight() {
 		return this.cellHeight;
 	}
-	
+	/**
+	 * Returns the current worm
+	 * @return
+	 * 		|result == this.currentWorm
+	 */
 	public Worm getCurrentWorm() {
 		return this.currentWorm;
 	}
-	
+	/**
+	 * Sets the current worm to the given worm
+	 * @post
+	 * 		|this.getCurrentWorm() == worm
+	 */
 	public void setCurrentWorm(Worm worm) {
 		this.currentWorm = worm;
 	}
@@ -108,6 +132,9 @@ public class World {
 	
 	/**
 	 * Return the number of worms of this world.
+	 * 
+	 * @return
+	 * 		| result == worms.size();
 	 */
 	@Basic
 	public int getNbWorms() {
@@ -302,6 +329,8 @@ public class World {
 	
 	/**
 	 * Return the number of foods of this world.
+	 * @return
+	 * 		| result == this.foods.size()
 	 */
 	@Basic
 	public int getNbFoods() {
@@ -1038,5 +1067,13 @@ public class World {
 		setCurrentWorm(newWorm);
 		newWorm.restore();
 		newWorm.heal(10);
+	}
+	
+	public boolean isLegalPosition(double[] coordinates, double radius) {
+		if((coordinates[0] + radius >= this.getWidth()) || (coordinates[0] - radius < 0)
+			|| (coordinates[1] + radius >= this.getHeight()) || (coordinates[1] - radius < 0)) {
+			return false;
+		} else {return true;}
+	}
 	}
 }
