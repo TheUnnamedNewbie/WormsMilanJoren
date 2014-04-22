@@ -869,14 +869,14 @@ public class Worm extends Movable {
 			double target = getPosY() - fallDist(time);
 			if (!isValidPosition(getPosX(), target))
 				return Double.MAX_VALUE;
-			if (!isValidPosition(getPosX(), target) || getWorld().isAdjacent(new double[]{getPosX(), target}, this))
+			if (!isValidPosition(getPosX(), target) || getWorld().isAdjacent(new double[]{getPosX(), target}, this) || (collides(new double[]{getPosX(),target}, getRadius())))
 				return time;
 			time += timestep;
 		}
 	}
 	
 	public boolean canFall() {
-		return !getWorld().isAdjacent(getCoordinates(), this);
+		return (!getWorld().isAdjacent(getCoordinates(), this) && !collides(getCoordinates(), getRadius()));
 	}
 	
 	/**
@@ -893,18 +893,8 @@ public class Worm extends Movable {
 	 * 
 	 */
 	public void grow() {
-		//System.out.println("Old radius = "+getRadius());
 		setRadius(getRadius()*1.1);
-		//System.out.println("New radius = "+getRadius());
 	}
-	
-	/**
-	 * or:
-	 * public void grow(Food meal) {
-	 * 		setRadius(getRadius()*1.1);
-	 * 		meal.eat();
-	 * }
-	 */
 	
 	 /**
 	  * The cycle function makes the worm equip the next weapon in its inventory
@@ -926,6 +916,7 @@ public class Worm extends Movable {
 			if (getWorld().distance(this, food) < (0.2 + getRadius())) {
 				grow();
 				getWorld().removeAsFood(food);
+				food.terminate();
 			}
 		}
 	}
@@ -939,6 +930,9 @@ public class Worm extends Movable {
 		if (isValidActionPoints(getActionPoints()-APcost))
 			getEquipped().shoot(yield);
 			setActionPoints(getActionPoints()-APcost);
+//			Projectile projectile = getWorld().getProjectile();
+//			getWorld().setProjectile(null);
+//			projectile.terminate();
 	}
 	
 	/**
@@ -946,6 +940,7 @@ public class Worm extends Movable {
 	 * @param amount
 	 */
 	public void damage(long amount) {
+		System.out.println("BOOM HEADSHOT!");
 		if (amount > 0) {
 			long targetHP = getHitPoints() - amount;
 			if (isValidHitPoints(targetHP))
@@ -978,7 +973,8 @@ public class Worm extends Movable {
 	 * The Die method terminates the worm after removing it from its world
 	 */
 	private void die() {
-		getWorld().nextWorm();
+		if (getWorld().getCurrentWorm()==this)
+			getWorld().nextWorm();
 		getWorld().removeAsWorm(this);
 		terminate();
 	}

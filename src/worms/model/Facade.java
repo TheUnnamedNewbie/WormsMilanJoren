@@ -299,8 +299,7 @@ public class Facade implements IFacade {
 	
 	public void startNextTurn(World world) {
 		world.nextWorm();
-		//TODO Check if there needs to be more than just cycling the worm
-		//e.g.: removing active projectiles, cleaning up stuff.
+		world.setProjectile(null); //Just to be sure
 	}
 	
 }

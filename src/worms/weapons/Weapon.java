@@ -6,6 +6,7 @@ public abstract class Weapon {
 	
 	protected Worm worm;
 	protected long cost;
+	protected String name;
 	
 	public Worm getWorm() {
 		return this.worm;
@@ -16,7 +17,7 @@ public abstract class Weapon {
 	}
 	
 	public String getName() {
-		return "Weapon";
+		return this.name;
 	}
 	
 	public long getCost() {

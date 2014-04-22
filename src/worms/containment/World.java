@@ -709,7 +709,7 @@ public class World {
 	}
 	
 	public void setProjectile(Projectile target) throws TooManyProjectilesException{
-		if (target != null && getProjectile() != null){
+		if (target != null && getProjectile() != null && target != getProjectile()){
 			throw new TooManyProjectilesException();
 		}
 		this.projectile = target;
@@ -872,7 +872,7 @@ public class World {
 		if (joinTeam) {
 			int teamIndex = 0;
 			if (getNbTeams() > 1)
-				teamIndex = random.nextInt(getNbTeams()-1);
+				teamIndex = random.nextInt(getNbTeams());
 			if (teamIndex >= 0 && getNbTeams()>0)
 				team = getTeamAt(teamIndex);
 		}
@@ -887,7 +887,7 @@ public class World {
 		addAsWorm(randomWorm);
 		print("Added the worm in worms");
 		if (joinTeam && (getNbTeams() > 0)) {
-			//System.out.println("team name: "+team.getName());
+			System.out.println("team name: "+team.getName());
 			randomWorm.join(team); //No problem with nullpointer because if(condition)
 		}
 	}

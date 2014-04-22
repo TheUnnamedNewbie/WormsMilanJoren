@@ -7,6 +7,7 @@ public class Rifle extends Weapon {
 	public Rifle(Worm owner) {
 		this.worm = owner;
 		this.cost = 10;
+		this.name = "Rifle";
 	}
 	
 	public void shoot(int yield) {
@@ -14,10 +15,6 @@ public class Rifle extends Weapon {
 		double projX = getWorm().getPosX()+(getWorm().getRadius()+projRadius)*Math.cos(getWorm().getOrientation());
 		double projY = getWorm().getPosY()+(getWorm().getRadius()+projRadius)*Math.sin(getWorm().getOrientation());
 		Projectile projectile = new Projectile(getWorm().getWorld(), projX, projY, projRadius, 7800, getWorm().getOrientation(), 1.5, 20);
-		projectile.shoot(0.01);
-	}
-	
-	public String getName() {
-		return "Rifle";
+		worm.getWorld().setProjectile(projectile);
 	}
 }

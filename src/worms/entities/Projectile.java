@@ -8,7 +8,9 @@ public class Projectile extends Movable {
 	
 	public Projectile(World world, double posX, double posY, double radius, long density, double orientation, double force, long damage) {
 		this.world = world;
+		System.out.println("Setting active projectile...");
 		getWorld().setProjectile(this);
+		System.out.println("Is active projectile? "+(this==getWorld().getProjectile()));
 		setPosX(posX);
 		setPosY(posY);
 		setRadius(radius);
@@ -39,17 +41,20 @@ public class Projectile extends Movable {
 	public void shoot(double timestep) {
 		if(canFire()){
 			double[] target = jumpStep(force, jumpTime(force, timestep)+timestep); // + timestep because we need to be in the worm in order for distance < value to work
-			setPosX(target[0]); setPosY(target[1]);
 			for (Worm worm: getWorld().getAllWorms())
-				if (getWorld().distance(this, worm) < this.getRadius()+worm.getRadius())
+				if (getWorld().distance(target, worm.getCoordinates()) < this.getRadius()+worm.getRadius())
 					worm.damage(damage);
-			getWorld().setProjectile(null); //We end with this because at this point, the projectile will have hit/collided/exited
-			terminate();
+			die();
 		}
 	}
 	
 	//TODO finish this stuff
 	public boolean canFire() {
-		return false;
+		return true;
+	}
+	
+	public void die() {
+		getWorld().setProjectile(null);
+		terminate();
 	}
 }
