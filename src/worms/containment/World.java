@@ -880,12 +880,12 @@ public class World {
 		String wormName = wormNames.get(random.nextInt(wormNames.size()-1));
 		double radius = 0.25 + random.nextDouble() / 4.0;
 		double[] randomPos = getRandomPosition2(radius);
-		print("About to create worm at coordinates");
+		//print("About to create worm at coordinates");
 		System.out.println("x: " + randomPos[0] + " y: " + randomPos[1]);
 		Worm randomWorm = new Worm(wormName, randomPos[0], randomPos[1], radius, randomAngleOrient, this);
-		print("successfully created");
+		//print("successfully created");
 		addAsWorm(randomWorm);
-		print("Added the worm in worms");
+		//print("Added the worm in worms");
 		if (joinTeam && (getNbTeams() > 0)) {
 			System.out.println("team name: "+team.getName());
 			randomWorm.join(team); //No problem with nullpointer because if(condition)

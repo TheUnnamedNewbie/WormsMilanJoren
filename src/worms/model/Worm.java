@@ -367,6 +367,7 @@ public class Worm extends Movable {
 	/**
 	 * This the actual weapon in inventory.
 	 * @return the currently equipped weapon
+	 * 		| result == this.inventory.get(currentWeapon)
 	 */
 	public Weapon getEquipped() {
 		return inventory.get(currentWeapon);
@@ -374,6 +375,7 @@ public class Worm extends Movable {
 	
 	/**
 	 * @post The currently equipped weapon is set to the given.
+	 * 		| new.getCurrentWeapon() == weapon
 	 */
 	public void setEquipped(Weapon weapon) {
 		setCurrentWeapon(inventory.indexOf(weapon));
@@ -381,16 +383,34 @@ public class Worm extends Movable {
 
 	/**
 	 * This is the index of Equipped in inventory.
+	 * @return
+	 * 		the index the current weapon is at
+	 * 		| result == this.currentWeapon
 	 */
 	@Basic
 	public int getCurrentWeapon(){
 		return this.currentWeapon;
 	}
 	
+	/**
+	 * the index of the current weapon is set to the given
+	 * @param index
+	 * 		the value current weapon is to be set to
+	 * @post 
+	 * 		the value if the current weapon is set to index
+	 * 		| new.getCurrentWeapon == index
+	 */
 	public void setCurrentWeapon(int index) {
 		currentWeapon = index;
 	}
-
+	
+	
+	/**
+	 * returns the world.
+	 * @return
+	 * 		the world
+	 * 		| result == this.world
+	 */
 	@Basic
 	public World getWorld() {
 		return this.world;
@@ -414,7 +434,11 @@ public class Worm extends Movable {
 	}
 	
 	/**
-	 * Return the number of inventory of this worm.
+	 * Return the size of inventory of this worm.
+	 * @return
+	 * 		the size of the inventory stored in this worm.
+	 * 		| result == this.inventory.size()
+	 * 		
 	 */
 	@Basic
 	public int getNbWeapons() {
@@ -600,6 +624,17 @@ public class Worm extends Movable {
 	
 	//End Inventory stuff
 	
+	/**
+	 * Makes the worm join the team, if the given team is legal.
+	 * @param team
+	 * 		The team the worm has to join, if it is a legal team
+	 * @post
+	 * 		if the team is a legal team (when isProperTeam(team) returns true), the worm will join the team
+	 * 		else, nothing happens
+	 *		| if ( isProperTeam(team) ) 
+	 *		|		{team.hasAsWorm(this)
+	 *		|		 this.getTeam() == team}
+	 */
 	public void join(Team team) {
 		if (isProperTeam(team)) {
 			team.addAsWorm(this);
@@ -607,14 +642,27 @@ public class Worm extends Movable {
 		}
 	}
 	
+	/**
+	 * Check if the team is a legal team:
+	 * 		the team shall not be a null object
+	 * 		the team shall be part of the same world as the worm that askes for the propperness of the team
+	 * @param team
+	 * 		the team that is to be evaluated
+	 * @return
+	 * 		true if the team is not a null object, and when the team is in the same world as the worm that calls the method.
+	 * 		| result == ( team != null ) && (team.getWorld() == this.getWorld)
+	 */
 	public boolean isProperTeam(Team team) {
-		if (team == null)
-			return false;
-		if (team.getWorld() != getWorld())
-			return false;
-		return true;
+		return (team != null && team.getWorld() == this.getWorld());
 	}
 	
+	/**
+	 * 
+	 * @return
+	 * 		Returns the team this worm is member of
+	 * 		| result == this.team
+	 * 
+	 */
 	@Basic
 	public Team getTeam() {
 		return this.team;
@@ -658,6 +706,7 @@ public class Worm extends Movable {
 		return ((points >= 0) && (points <= getMaxHitPoints()));
 	}
 
+	//TODO Milan, I don't know how best to document those name thingies
 	private boolean isValidName(String name) {
 		return name.matches("[A-Z][a-zA-Z0-9\\s'\"]+");
 	}
@@ -822,6 +871,7 @@ public class Worm extends Movable {
 	 *       | }
 	 */
 	public void jump(double timestep) throws ExhaustionException, IllegalStateException {
+		System.out.println("Calculating Jump... This could take a while.");
 		boolean canJump = canJump();
 		//System.out.println("can Jump? "+canJump);
 		if (getActionPoints() > 0 && canJump){
@@ -834,17 +884,19 @@ public class Worm extends Movable {
 	
 	/**
 	 * checks to see if it can fall, makes it fall and damages it accordingly
+	 * @post
+	 * 		if the worm can fall (canFall == true) the worm will fall for the amount calculated by fallTime(). 
+	 *		the worm will then end in Y position that is fallDist(falltime) lower than the original y coordinate.
+	 *		| if(canFall){
+	 *		|	if(!isValidPosition(old.getPosX(), 
 	 */
 	public void fall() {
-		boolean canFall = canFall();
-//		System.out.println("can Fall? "+canFall);
-		if (canFall) {
+		if (canFall()) {
 			double fallTime = fallTime();
 			if (fallTime == Double.MAX_VALUE) {
 				System.out.println("Falltime= "+ fallTime);
 				die();
 			} else {
-//				System.out.println(fallDist(fallTime));
 				double fallDist = Math.abs(getPosY() - fallDist(fallTime));
 				damage((long) Math.floor(fallDist) * 3);
 				setPosY(getPosY() - fallDist);
@@ -856,9 +908,10 @@ public class Worm extends Movable {
 	 * The distance (positive) a worm falls after a given time.
 	 * @param time The time at which point you want to check the fallen distance
 	 * @return the distance fallen after a amount of time
+	 * 		| result == ( 0.5 * World.GRAVITY * time * time)
 	 */
 	public double fallDist(double time) {
-		 this.getWorld();
+		 this.getWorld(); // WHY is this here?
 		return ((1.0/2.0) * World.GRAVITY * time * time);
 	}
 	
@@ -875,6 +928,12 @@ public class Worm extends Movable {
 		}
 	}
 	
+	/**
+	 * 
+	 * @return
+	 * 		true if the world has no adjacent terrain and it doesn't collide in it's current position.
+	 * 		| result == (!getWorld().isAdjacent(getCoordinates(), this) && !collides(getCoordinates(), getRadius()))
+	 */
 	public boolean canFall() {
 		return (!getWorld().isAdjacent(getCoordinates(), this) && !collides(getCoordinates(), getRadius()));
 	}
@@ -903,12 +962,17 @@ public class Worm extends Movable {
 	  * 	  | new.getCurrentWeapon == (this.getCurrentWeapon() + 1) % inventory.size()
 	  */
 	public void cycle() {
-		int maxIndex = inventory.size();
+		int maxIndex = inventory.size(); // waarom twee regels?
 		setCurrentWeapon((getCurrentWeapon() + 1)%maxIndex);
 	}
 	
 	/**
 	 * The eat method queries the foods in the world whether the worm can eat any and, if so, does.
+	 * @post
+	 * 		for all foods in the world, if the food is within .2 times the radius of the worm, the worm will grow, and the food will be terminated
+	 * 		|	for(Food food:this.getWorld().getAllFoods()){
+	 * 		|		if (getWorld().distance(this, food) < (0.2 + getRadius)) {
+	 * 		|			grow(); getWorld().removeAsFood(food);food.terminate();
 	 */
 	public void eat() {
 		ArrayList<Food> foods = getWorld().getAllFoods();
@@ -921,15 +985,21 @@ public class Worm extends Movable {
 		}
 	}
 	
-	/**
+	/** NOT FINISHED
 	 * Makes the worm shoot its equipped weapon with given yield if applicable
 	 * @param yield
+	 * 		the yield the weapon is to be shot at
+	 * @post
+	 * 		if the amount of actionpoints - the cost fireing the weapon (calculated with getCost() called on the equiped weapon)
+	 * 		is a valid amount, the weapon will be shot with the requested yield, and the actionpoitns will be subtracted the cost of fireing
+	 * 		| if(isValidActionPoints(getActionPoints()-APcost)){
+	 * 		|	
 	 */
 	public void shoot(int yield) {
 		long APcost = getEquipped().getCost();
-		if (isValidActionPoints(getActionPoints()-APcost))
+		if (isValidActionPoints(getActionPoints()-APcost)){
 			getEquipped().shoot(yield);
-			setActionPoints(getActionPoints()-APcost);
+			setActionPoints(getActionPoints()-APcost);}
 //			Projectile projectile = getWorld().getProjectile();
 //			getWorld().setProjectile(null);
 //			projectile.terminate();
@@ -938,6 +1008,11 @@ public class Worm extends Movable {
 	/**
 	 * Damages the worm for the given amount and kills it if necessary
 	 * @param amount
+	 * 		The amount of damage to be done.
+	 * @post
+	 * 		If the worm had sufficient healthpoints (more than amount), it's healthoints are now decreased by amount. In all other cases, the worm is now dead.
+	 * 		| if (this.getHitPoints() > amount) {new.getHitPoints() == old.getHitPoints() - amount}
+	 * 		| else {this.isTerminated() == true)
 	 */
 	public void damage(long amount) {
 		System.out.println("BOOM HEADSHOT!");
@@ -951,6 +1026,16 @@ public class Worm extends Movable {
 		}
 	}
 	
+	/**
+	 * Heals the worm the requested amount, or until it is fully healed, whatever comes first.
+	 * @param amount
+	 * 		The amount of health to be added
+	 * @post
+	 * 		if the worm's health is more than amount lower than it's maximum health, amount is to be added to it.
+	 * 		Else, the worm's health is now equal to maxhealth
+	 * 		| if((this.getHitPoints() + amount < this.getMaxHitPoints()) {new.getHitPoints == old.getHitPoints() + amount)}
+	 * 		| else(this.getHitPoints() == this.getMaxHitPoints())}
+	 */
 	public void heal(long amount) {
 		if (amount > 0) {
 			long targetHP = getHitPoints() + amount;
@@ -963,7 +1048,12 @@ public class Worm extends Movable {
 	}
 	
 	/**
+	 * 
 	 * restores the AP of a worm to full. Used at beginning of turn.
+	 * @post
+	 * 		the ActionPoitns of the worm equals the maximum amount of actionpoints
+	 * 		| new.getActionPoints() == this.getMaxActionPoints()
+	 * 
 	 */
 	public void restore() {
 		setActionPoints(getMaxActionPoints());
@@ -971,6 +1061,10 @@ public class Worm extends Movable {
 
 	/**
 	 * The Die method terminates the worm after removing it from its world
+	 * @post
+	 * 		getWorld().getWorm != this
+	 * 		getWorld().hasAsWorm(this) == false
+	 * 		this.terminated == true
 	 */
 	private void die() {
 		if (getWorld().getCurrentWorm()==this)

@@ -277,6 +277,7 @@ public class Facade implements IFacade {
 	
 	public void jump(Worm worm, double timeStep) {
 		worm.jump(timeStep);
+		System.out.println("Jump completed.");
 	}
 
 	
