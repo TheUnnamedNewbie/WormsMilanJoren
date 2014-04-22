@@ -1023,7 +1023,7 @@ public class World {
 	 * The start method puts the first worm as active worm and thus initializes the chain of events
 	 */
 	public void start() {
-		if (getNbWorms() < 2)
+		if (hasWinner())
 			throw new IllegalStateException("Not enough worms. Have at least 2");
 		else if (getCurrentWorm() == null)
 			setCurrentWorm(getWormAt(0));

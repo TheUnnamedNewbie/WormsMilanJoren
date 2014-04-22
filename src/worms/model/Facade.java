@@ -153,7 +153,6 @@ public class Facade implements IFacade {
 	}
 
 	public Collection<Food> getFood(World world) {
-		//System.out.println("returning "+world.getNbFoods()+" foods");
 		return world.getAllFoods();
 	}
 
@@ -197,7 +196,6 @@ public class Facade implements IFacade {
 	
 	public String getTeamName(Worm worm) {
 		if(worm.getTeam() == null) {
-			//System.out.println("teamname is null");
 			return null;
 		} else
 			return worm.getTeam().getName();
@@ -292,8 +290,12 @@ public class Facade implements IFacade {
 	}
 
 	
-	public void startGame(World world) {
-		world.start();
+	public void startGame(World world) throws ModelException {
+		try {
+			world.start();
+		} catch (IllegalStateException e) {
+			throw new ModelException("Have at least 2 worms in different or no teams");
+		}
 	}
 
 	
