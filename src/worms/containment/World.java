@@ -21,6 +21,8 @@ import worms.model.Worm;
  * 		there is always exactly one projectile active at any given moment.
  * 		|
  * @author Joren
+ * @author Milan
+ * 
  *
  */
 public class World {
