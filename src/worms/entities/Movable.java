@@ -3,11 +3,21 @@ package worms.entities;
 import worms.containment.World;
 import be.kuleuven.cs.som.annotate.*;
 
+/**
+ * The Movable class introduces the methods for jumping, mass and radiuses
+ * @author Milan Sanders
+ * @author Joren Vaes
+ * @invar The radius shall never exceed Double.MAX_VALUE
+ * 		 | getRadius() < Double.MAX_VALUE
+ * @invar The absolute value of the orientation shall never exceed 2*Pi
+ * 		 | Math.abs(getRadius()) <= Math.PI
+ * @invar Density shall always be larger than 0
+ * 		 | getDensity() > 0
+ */
 public abstract class Movable extends Entity {
 	
 	private double orientation;
-	protected long density; //Q: why not a private? A: gives errors. Must fix this, but is persistend accross all classes (e.g. world is always redefined)
-	//[0] = x, [1] = y.
+	protected long density;
 	
 	/**
 	 * 
@@ -17,7 +27,6 @@ public abstract class Movable extends Entity {
 	 * 		If the orientation is not of a legal type, that is, not greater than pi (inclusive) and not smaller or equal to -pi 
 	 */
 	public void setOrientation(double target) {
-		//System.out.println(target);
 		assert isValidOrientation(target);
 		this.orientation = target;
 	}
@@ -42,6 +51,7 @@ public abstract class Movable extends Entity {
 	}
 	
 	protected void setDensity(long target) {
+		assert target>0;
 		this.density = target;
 	}
 	
@@ -60,6 +70,8 @@ public abstract class Movable extends Entity {
 	
 	/**
 	 * The jumpTime method tells us how long a jump takes in seconds.
+	 * It checks in increments if the movable has collided already
+	 * Worm version (hence the AP)
 	 * @return
 	 */
 	public double jumpTime(long AP, double timestep) {
@@ -72,6 +84,12 @@ public abstract class Movable extends Entity {
 		}
 	}
 	
+	/**
+	 * Same, but projectile version (hence the Force)
+	 * @param force
+	 * @param timestep
+	 * @return
+	 */
 	public double jumpTime(double force, double timestep) {
 		double time = timestep;
 		while (true) {
@@ -82,6 +100,17 @@ public abstract class Movable extends Entity {
 		}
 	}
 	
+	
+/**
+ * Calculates the position of a movable at a given time.
+ * 
+ * First, you calculate the starting speed with the direction and the force applied.
+ * Then, for your Y position, you also take gravity into account.
+ * @param force
+ * @param time
+ * @return new double[]{((force/getMass())*(1.0/2.0) * Math.cos(getOrientation())*time) + getPosX(),
+ * 						((force/getMass())*(1.0/2.0) * Math.sin(getOrientation())*time) + getPosY() - ((1.0/2.0) * World.GRAVITY * time * time)}
+ */
 	@Raw
 	public double[] jumpStep(double force, double time) {
 		double[] returnCoordinates = new double[2];
@@ -95,14 +124,17 @@ public abstract class Movable extends Entity {
 		return returnCoordinates;
 	}
 	
+	/**
+	 * Same, but with AP for worms instead of force
+	 * @param AP
+	 * @param time
+	 * @return
+	 */
 	@Raw
 	public double[] jumpStep(long AP, double time) {
-		//System.out.println("Running jumpStep from worm");
 		double force;
 		force = (5 * AP) + (getMass() * World.GRAVITY);
-		//System.out.println("force: "+force); //CHECKED
 		double[] targetPos = jumpStep(force, time);
-		//System.out.println("Returning steps: ("+targetPos[0]+","+targetPos[1]+")");
 		return targetPos;
 	}
 	
@@ -114,8 +146,6 @@ public abstract class Movable extends Entity {
 		double checkDist = getRadius(); // How far ahead a Entity must be able to move be able to justify a jump
 		double targetX = getPosX()+Math.cos(getOrientation())*(getRadius()+checkDist);
 		double targetY = getPosY()+Math.sin(getOrientation())*(getRadius()+checkDist);
-		boolean out = !collides(new double[]{targetX, targetY}, getRadius());
-		//System.out.println("Can jump? "+out);
-		return out;
+		return !collides(new double[]{targetX, targetY}, getRadius());
 	}
 }

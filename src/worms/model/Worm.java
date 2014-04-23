@@ -1,5 +1,6 @@
 package worms.model;
 
+import worms.CoordinateOutOfBoundsException;
 import worms.ExhaustionException;
 import worms.entities.*;
 import worms.weapons.*;
@@ -204,9 +205,6 @@ import java.util.ArrayList;
  * 
  */
 public class Worm extends Movable {
-
-
-	
 	
 	/**
 	 * Creates a new worm with, given legal parameters, the requested values.
@@ -220,10 +218,12 @@ public class Worm extends Movable {
 	 * 		The radius the worm should have
 	 * 		| radius >= 0.25 && radius == Double.NaN && radius < Double.MAX_VALUE
 	 * @param direction
+	 * 		The direction in which you want your worm to start looking
 	 * @param world
+	 * 		The world in which the worm will be initialized
 	 */
 	public Worm(String name, double posX, double posY, double radius,
-			double direction, World world) {
+			double direction, World world) throws CoordinateOutOfBoundsException, IllegalArgumentException {
 		this.world = world;
 		setPosX(posX);
 		setPosY(posY);
@@ -236,19 +236,12 @@ public class Worm extends Movable {
 		inventory = new ArrayList<Weapon>();
 		addAsWeapon(new Rifle(this));
 		addAsWeapon(new Bazooka(this));
-//		System.out.println("Created worm with stats:");
-//		System.out.println("Radius: "+getRadius()+" Mass: "+getMass());
-//		System.out.println("AP: "+getActionPoints()+" max AP: "+getMaxActionPoints());
-//		System.out.println("HP: "+getHitPoints()+" max HP: "+getMaxHitPoints());
 	}
 
 	private long ActionPoints, HitPoints;
 	private String name;
-
-	
 	private int currentWeapon;
 	private ArrayList<Weapon> inventory;
-	private final World world;
 	private Team team;
 
 	/**
@@ -257,10 +250,16 @@ public class Worm extends Movable {
 	 *            The new radius for the worm
 	 * @post The radius of the worm is now set the the given value radius
 	 * 			   | new.getRadius() == radius
-	 * @post The ratio of AP to maxAP remains the same.
-	 * 			   | this.getActionPoints() // this.getMaxActionPoints() == new.getActionPoints() // new.getMaxActionPoints()
-	 * @post The ratio of HP to maxHP remains the same.
-	 * 			   | this.getHitPoints() // this.getMaxHitPoints() == new.getHitPoints() // new.getMaxHitPoints()
+	 * @post the amount of AP remains the same, unless it violates the MaxAP
+	 * 		 | if (this.getActionPoints() > new.getMaxActionPoints())
+	 * 		 |	new.getActionPoints() == new.getMaxActionPoints()
+	 * 		 | else
+	 * 		 | 	this.getActionPoints() == new.getActionPoints()
+	 * @post the amount of HP remains the same, unless it violates the MaxHP
+	 * 		 | if (this.getHitPoints() > new.getMaxHitPoints())
+	 * 		 |	new.getHitPoints() == new.getMaxHitPoints()
+	 * 		 | else
+	 * 		 | 	this.getHitPoints() == new.getHitPoints()
 	 * @throws IllegalArgumentException
 	 *             the given radius is not a legal radius.
 	 *             | ! isValidRadius(radius)
@@ -337,7 +336,6 @@ public class Worm extends Movable {
 	 *       | if (isValidActionPoints(points)) {new.getActionPoints() == points}
 	 */
 	private void setActionPoints(long points) {
-		//System.out.println("setting AP to: "+points+" is Possible? "+isValidActionPoints(points));
 		if (isValidActionPoints(points))
 			ActionPoints = points;
 	}
@@ -358,6 +356,7 @@ public class Worm extends Movable {
 	 * 		The new string the name of the worm is to be set to
 	 * @throws IllegalArgumentException
 	 * 		the new name contains Illegal characters or is to short.
+	 * 		 | ! isValidName(name)
 	 */
 	public void setName(String name) throws IllegalArgumentException {
 		if (!isValidName(name))
@@ -375,8 +374,7 @@ public class Worm extends Movable {
 	}
 	
 	/**
-	 * @post The currently equipped weapon is set to the given.
-	 * 		| new.getCurrentWeapon() == weapon
+	 * Return the actual weapon referenced by currentWeapon
 	 */
 	public void setEquipped(Weapon weapon) {
 		setCurrentWeapon(inventory.indexOf(weapon));
@@ -404,19 +402,6 @@ public class Worm extends Movable {
 	public void setCurrentWeapon(int index) {
 		currentWeapon = index;
 	}
-	
-	
-	/**
-	 * returns the world.
-	 * @return
-	 * 		the world
-	 * 		| result == this.world
-	 */
-	@Basic
-	public World getWorld() {
-		return this.world;
-	}
-	
 	//Begin Inventory stuff
 	
 	/**
@@ -472,7 +457,7 @@ public class Worm extends Movable {
 	 *         The index to check.
 	 * @return False if the given index is not positive or exceeds
 	 *         the number of inventory of this worm + 1.
-	 *       | if ( (index < 1) || (index > getNbWeapons()+1) )
+	 *       | if ( (index < 0) || (index > getNbWeapons()+1) )
 	 *       |   then result == false
 	 *         Otherwise, false if this worm cannot have the
 	 *         given weapon as one of its inventory.
@@ -481,7 +466,7 @@ public class Worm extends Movable {
 	 *         Otherwise, true if and only if the given weapon is
 	 *         not already registered at another index.
 	 *       | else result ==
-	 *       |   for each I in 1..getNbWeapons():
+	 *       |   for each I in 0..getNbWeapons()-1:
 	 *       |     ( (I == index) || (getWeaponAt(I) != weapon) )
 	 */
 	public boolean canHaveAsWeaponAt(Weapon weapon, int index) {
@@ -508,11 +493,9 @@ public class Worm extends Movable {
 	public boolean hasProperWeapons() {
 		for (int index = 0; index < getNbWeapons(); index++) {
 			if (!canHaveAsWeaponAt(getWeaponAt(index), index)){
-				System.out.println("(!canHaveAsWeaponAt(getWeaponAt(index), index)) indexes are: " + index);
 				return false;
 			}
 			if (getWeaponAt(index).getWorm() != this) {
-				System.out.println("(getWeaponAt(index).getWorm() != this)");
 				return false;
 			}
 		}
@@ -588,7 +571,6 @@ public class Worm extends Movable {
 	 */
 	public void addAsWeapon(Weapon weapon) {
 		if(!hasAsWeapon(weapon)) {
-			//System.out.println("legit worm");
 		}
 		assert (weapon != null) && (weapon.getWorm() == this);
 		assert !hasAsWeapon(weapon);
@@ -707,7 +689,16 @@ public class Worm extends Movable {
 		return ((points >= 0) && (points <= getMaxHitPoints()));
 	}
 
-	//TODO Milan, I don't know how best to document those name thingies
+	/**
+	 * Checks if the name starts with an uppercase letter
+	 * and further only contains alphanumeric characters,
+	 * single and double quotation marks and spaces.
+	 * 
+	 * This statement uses regular expressions and the 'formal' documentation tries to make this somewhat comprehendable.
+	 * A bit of AppleScript syntax trickled through in the for loop...
+	 * @param name The name that needs to be checked
+	 * @return [A..Z].contains(name[0]) && (for every char in name[1..]: [a..zA..Z0..9\ \'\"].contains(char))
+	 */
 	private boolean isValidName(String name) {
 		return name.matches("[A-Z][a-zA-Z0-9\\s'\"]+");
 	}
@@ -716,62 +707,35 @@ public class Worm extends Movable {
 	 * @param steps
 	 * 		The amount of steps the worm should move
 	 * @return
-	 * 		True if the worm can move that much steps if they are positive. 
+	 * 		True if the worm can move a step. 
 	 * 		This means that the worm has enough actionpoints, every step takes (cos(getOrientation())) + 4*sin(getOrientation()).
-	 *  	| result == (getActionPoints() >= (Math.abs(Math.cos(getOrientation())) + Math.abs(Math.sin(getOrientation())) * 4 * steps)) && (steps > 0)
+	 *  	| result == (getActionPoints() >= (Math.abs(Math.cos(getOrientation())) + Math.abs(Math.sin(getOrientation())) * 4))
 	 */
 	public boolean canMove() {
 		double currentOrientation = getOrientation();
 		double stepPoints = (Math.abs(Math.cos(currentOrientation)) + Math.abs(Math.sin(currentOrientation)) * 4);
 		return (getActionPoints() >= stepPoints);
 	}
-
-//	/**
-//	 * @param steps
-//	 * 		The amount of steps to be moved.
-//	 * @throws IllegalArgumentException
-//	 * 		If the amount of steps is smaller than 0.
-//	 * 		| (steps <= 0)
-//	 * @throws ExhaustionException
-//	 * 		If the worm does not have enough actionpoints.
-//	 * 		| (!canMove(steps))
-//	 */
-//	public void step(int steps) throws IllegalArgumentException,
-//	ExhaustionException {
-//		if (steps <= 0)
-//			throw new IllegalArgumentException();
-//		else {
-//			if (!canMove(steps))
-//				throw new ExhaustionException();
-//			else {
-//				for (int i = 0; i < steps; i++) {
-//					double currentOrientation = getOrientation();
-//					setPosX(getPosX() + Math.cos(currentOrientation)
-//							* getRadius());
-//					setPosY(getPosY() + Math.sin(currentOrientation)
-//							* getRadius());
-//					double targetAP = getActionPoints()
-//							- Math.abs(Math.cos(currentOrientation))
-//							- Math.abs(4 * Math.sin(currentOrientation));
-//					setActionPoints((long) Math.ceil(targetAP));
-//				}
-//			}
-//		}
-//	}
 	
 	/**
 	 * The step method moves the worm to a fitting location as per the assignment
 	 * (too much to explain in the comments)
 	 * 
-	 * minD is used to minimize the amount of calculations
+	 * Note: We basically look for the directions in which the worm can move the farthest
+	 * and then we see which one of these directions has the lowest divergence.
+	 * 
+	 * minD is used to minimize the amount of calculations. No point in finding less ideal positions to move to, right?
 	 * 
 	 * @throws ExhaustionException Thrown when you do not have sufficient actionpoints to complete the step
+	 * @post The worm has moved somewhere between 0.1 and getRadius() within the directional bounds getOrientation() +or- 0.7875
+	 * 		 Or he hasn't moved at all (if !canMove()).
+	 * @post If the worm is looking at the edge of the map and is standing 0.01 (==deltaD) from it, it will die.
+	 * 		 This is something that only happens if the worm tried to step off the map, or it got really unlucky and ended up 0.01 away from the map
 	 */
 	public void step() throws ExhaustionException {
 		if (canMove()) {
-			//System.out.println("Stepping...");
 			double deltaT = 0.0175; //infinitesimal angle to see how far one can move.
-			double maxT = 0.7875;
+			double maxT = 0.7875; // max divergence
 			double minD = 0.1;
 			double[] temp = new double[]{0.0, getOrientation()}; //temp is the furthest the worm can move and that direction
 			for (double count = 0.0; count < maxT; count += deltaT) {
@@ -805,6 +769,12 @@ public class Worm extends Movable {
 		} else throw new ExhaustionException();
 	}
 	
+	/**
+	 * maxDist returns the farthest a worm can move in a given direction
+	 * @param angle
+	 * @param minD
+	 * @return
+	 */
 	public double maxDist(double angle, double minD) {
 		double deltaD = 0.01; //infinitesimal distance to check how far you can move in every direction.
 		for (double dist = getRadius(); dist > minD; dist -= deltaD) {
@@ -833,6 +803,9 @@ public class Worm extends Movable {
 	 *      Is true if turning was active and thus subtracts action points.
 	 */
 	public void turn(double amount, boolean active) {
+		assert (Math.abs(amount + getOrientation()) <= Math.PI);
+		assert isValidActionPoints((long)Math.ceil(getActionPoints()
+				- (Math.abs(amount) / (2 * Math.PI)) * 60));
 		double newOrientation = getOrientation() + amount;
 		if (newOrientation > Math.PI)
 			newOrientation -= 2*Math.PI;
@@ -850,24 +823,23 @@ public class Worm extends Movable {
 	 * 
 	 * @throws ExhaustionException
 	 * 		if the worm no longer has any actionpoitns.
-	 * @post if jump is not legal, none of the coordinates should have changed. The worms actionpoints should be 0.
-	 *       | if (! isJumpLegal() ) {
+	 * @post if jump is not possible, none of the coordinates should have changed. The worms actionpoints should also remain unchanged.
+	 *       | if (! canJump() ) {
 	 *       | 	new.getPosX == old.getPosX
 	 *       | 	new.getPosY == old.getPosY
-	 *       |  new.getActionPoints() == 0
+	 *       |  new.getActionPoints() == this.getActionPoints()
 	 *       | }
-	 * @post if the jump was legal the new coordinates should be set to the
-	 *       jumpcoordinates, and the actionpoints should be 0
+	 * @post if the jump was possible the new coordinates should be set to the
+	 *       jumpstep at the jumptime, and the actionpoints should be 0
 	 *       | if (isJumpLegal() ) {
-	 *       | 	new.getPosX() == this.getJumpX()
-	 *       | 	new.getPosY() == this.getJumpY()
+	 *       | 	new.getCoordinates() == jumpStep(getActionPoints(), jumpTime(getActionPoints(), timestep))
 	 *       |  new.getActionPoints() == 0
 	 *       | }
+	 * Because there is some penetration into impassable terrain after the jump
+	 * We can use this as a means to see if the worm has jumped off the map.
 	 */
 	public void jump(double timestep) throws ExhaustionException, IllegalStateException {
-		System.out.println("Calculating Jump... This could take a while.");
 		boolean canJump = canJump();
-		//System.out.println("can Jump? "+canJump);
 		if (getActionPoints() > 0 && canJump){
 			double[] target = jumpStep(getActionPoints(), jumpTime(getActionPoints(), timestep));
 			setPosX(target[0]); setPosY(target[1]);
@@ -875,18 +847,16 @@ public class Worm extends Movable {
 			eat();
 		} else if (getActionPoints() <= 0) {throw new ExhaustionException();};
 		if (!this.getWorld().isLegalPosition(this.getCoordinates(), this.getRadius())) {
-			System.out.println("not a legal position, killing worm");
 			die();
 		}
 	}
 	
 	/**
 	 * checks to see if it can fall, makes it fall and damages it accordingly
+	 * NOTE: A worm can never legally fall.
 	 * @post
 	 * 		if the worm can fall (canFall == true) the worm will fall for the amount calculated by fallTime(). 
 	 *		the worm will then end in Y position that is fallDist(falltime) lower than the original y coordinate.
-	 *		| if(canFall){
-	 *		|	if(!isValidPosition(old.getPosX(), 
 	 */
 	public void fall() {
 		if (canFall()) {
@@ -916,6 +886,10 @@ public class Worm extends Movable {
 		return ((1.0/2.0) * World.GRAVITY * time * time);
 	}
 	
+	/**
+	 * The time for how long a worm can fall before hitting impassable terrain
+	 * @return
+	 */
 	public double fallTime() {	
 		double timestep = 0.01;
 		double time = 0.0;
@@ -932,7 +906,7 @@ public class Worm extends Movable {
 	/**
 	 * 
 	 * @return
-	 * 		true if the world has no adjacent terrain and it doesn't collide in it's current position.
+	 * 		true if the worm has no adjacent terrain and it doesn't collide in it's current position.
 	 * 		| result == (!getWorld().isAdjacent(getCoordinates(), this) && !collides(getCoordinates(), getRadius()))
 	 */
 	public boolean canFall() {
@@ -943,13 +917,7 @@ public class Worm extends Movable {
 	 * The grow function increases the radius of the worm by 10%.
 	 * @post The radius will be 1.1 times it's original size.
 	 * 		| new.getRadius() == 1.1*this.getRadius()
-	 *
-	 * Q: Do we need to explicitly say by how much AP, HP, maxAP and maxHP have gone up? I think this suffices.
-	 * TODO answer Q
-	 * @post The ratio of AP to maxAP remains the same.
-	 * 			   | this.getActionPoints() // this.getMaxActionPoints() == new.getActionPoints() // new.getMaxActionPoints()
-	 * @post The ratio of HP to maxHP remains the same.
-	 * 			   | this.getHitPoints() // this.getMaxHitPoints() == new.getHitPoints() // new.getMaxHitPoints()
+	 * AP/HP are handled by setRadius()
 	 * 
 	 */
 	public void grow() {
@@ -963,14 +931,13 @@ public class Worm extends Movable {
 	  * 	  | new.getCurrentWeapon == (this.getCurrentWeapon() + 1) % inventory.size()
 	  */
 	public void cycle() {
-		int maxIndex = inventory.size(); // waarom twee regels?
-		setCurrentWeapon((getCurrentWeapon() + 1)%maxIndex);
+		setCurrentWeapon((getCurrentWeapon() + 1)%inventory.size());
 	}
 	
 	/**
 	 * The eat method queries the foods in the world whether the worm can eat any and, if so, does.
 	 * @post
-	 * 		for all foods in the world, if the food is within .2 times the radius of the worm, the worm will grow, and the food will be terminated
+	 * 		for all foods in the world, if the food is within .2 plus the radius of the worm, the worm will grow, and the food will be terminated
 	 * 		|	for(Food food:this.getWorld().getAllFoods()){
 	 * 		|		if (getWorld().distance(this, food) < (0.2 + getRadius)) {
 	 * 		|			grow(); getWorld().removeAsFood(food);food.terminate();
@@ -986,24 +953,21 @@ public class Worm extends Movable {
 		}
 	}
 	
-	/** NOT FINISHED
+	/**
 	 * Makes the worm shoot its equipped weapon with given yield if applicable
 	 * @param yield
 	 * 		the yield the weapon is to be shot at
 	 * @post
-	 * 		if the amount of actionpoints - the cost fireing the weapon (calculated with getCost() called on the equiped weapon)
-	 * 		is a valid amount, the weapon will be shot with the requested yield, and the actionpoitns will be subtracted the cost of fireing
-	 * 		| if(isValidActionPoints(getActionPoints()-APcost)){
-	 * 		|	
+	 * 		if the amount of actionpoints - the cost firing the weapon (calculated with getCost() called on the equipped weapon)
+	 * 		is a valid amount, the weapon will be shot with the requested yield, and the actionpoints will be subtracted the cost of firing
+	 * 		| if(isValidActionPoints(getActionPoints()-APcost)) {
+	 * 		|	new.getActionPoints() == this.getActionPoints()-getEquipped().getCost()
 	 */
 	public void shoot(int yield) {
 		long APcost = getEquipped().getCost();
 		if (isValidActionPoints(getActionPoints()-APcost)){
 			getEquipped().shoot(yield);
 			setActionPoints(getActionPoints()-APcost);}
-//			Projectile projectile = getWorld().getProjectile();
-//			getWorld().setProjectile(null);
-//			projectile.terminate();
 	}
 	
 	/**
@@ -1011,7 +975,7 @@ public class Worm extends Movable {
 	 * @param amount
 	 * 		The amount of damage to be done.
 	 * @post
-	 * 		If the worm had sufficient healthpoints (more than amount), it's healthoints are now decreased by amount. In all other cases, the worm is now dead.
+	 * 		If the worm had sufficient hitpoints (more than amount), it's hitpoints are now decreased by amount. In all other cases, the worm is now dead.
 	 * 		| if (this.getHitPoints() > amount) {new.getHitPoints() == old.getHitPoints() - amount}
 	 * 		| else {this.isTerminated() == true)
 	 */
@@ -1051,19 +1015,18 @@ public class Worm extends Movable {
 	/**
 	 * 
 	 * restores the AP of a worm to full. Used at beginning of turn.
-	 * @post
-	 * 		the ActionPoitns of the worm equals the maximum amount of actionpoints
-	 * 		| new.getActionPoints() == this.getMaxActionPoints()
-	 * 
+	 * @post the ActionPoitns of the worm equals the maximum amount of actionpoints
+	 * 		 | new.getActionPoints() == this.getMaxActionPoints()
 	 */
 	public void restore() {
 		setActionPoints(getMaxActionPoints());
 	}
 
 	/**
-	 * The Die method terminates the worm after removing it from its world
+	 * The Die method terminates the worm after removing it from its world and ends the current turn if it is the current worm that dies.
 	 * @post
-	 * 		getWorld().getWorm != this
+	 * 		if (getWorld().getCurrentWorm() == this) {getWorld().nextWorm()}
+	 * 		getWorld()==null
 	 * 		getWorld().hasAsWorm(this) == false
 	 * 		this.terminated == true
 	 */

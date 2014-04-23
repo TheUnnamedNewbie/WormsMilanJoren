@@ -13,24 +13,25 @@ import worms.model.Worm;
  */
 public class Team {
 	
-	public Team(String targetName, World world) {
-		//System.out.println("Checking name \""+targetName+"\" ...");
-		//System.out.println("... For validity");
+	/**
+	 * 
+	 * @param targetName The name this team should have
+	 * @param world The world in which this team exists
+	 * @throws IllegalArgumentException
+	 * 		If the teamname already exists
+	 */
+	public Team(String targetName, World world) throws IllegalArgumentException{
 		if (!isValidName(targetName)) {
 			System.out.println("Invalid name");
 			throw new IllegalArgumentException("Invalid name");
 		}
-		//System.out.println("Valid name. Checking for already existing teams...");
 		for (Team subject: world.getAllTeams()) {
 			String nameToCheck = subject.getName();
-			//System.out.println("...With \""+nameToCheck+"\"");
 			if (nameToCheck.equals(targetName)) {
 				System.out.println("Team already exists");
-				throw new IllegalArgumentException("Team already 	xists");
+				throw new IllegalArgumentException("Team already exists");
 				}
-			//System.out.println("OK, checking next team");
 		}
-		//System.out.println("Name OK, moving on...");
 		this.name = targetName;
 		this.world = world;
 		members = new ArrayList<Worm>();
@@ -214,7 +215,6 @@ public class Team {
 		assert !hasAsWorm(worm);
 		assert (worm.getWorld() == this.getWorld());
 		assert (worm.getTeam() == null);
-		////System.out.println("Adding worm: "+worm.getName());
 		members.add(worm);
 	}
 	
@@ -246,6 +246,11 @@ public class Team {
 		members.remove(worm);
 	}
 	
+	/**
+	 * see isValidName in worms.model.Worms
+	 * @param name
+	 * @return
+	 */
 	public static boolean isValidName(String name) {
 		return name.matches("[A-Z][a-zA-Z0-9\\s'\"]+");
 	}
