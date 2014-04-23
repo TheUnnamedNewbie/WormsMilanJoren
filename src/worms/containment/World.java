@@ -15,6 +15,14 @@ import worms.model.Worm;
 
 //TODO add documentation and shizzle
 
+/**
+ * 
+ * @invar
+ * 		there is always exactly one projectile active at any given moment.
+ * 		|
+ * @author Joren
+ *
+ */
 public class World {
 	public World(double width, double height, boolean[][] map, Random random) throws IllegalMapException, IllegalSizeException {
 //		System.out.println("Initialisation width: " + width);
@@ -306,7 +314,8 @@ public class World {
 	 *       |   new.getWormAt(index-1) == getWormAt(index) 
 	 */
 	public void removeAsWorm(Worm worm) {
-		assert (worm != null) && (worm.getWorld() == null);
+		System.out.println("removing worm " + worm.getName() + " from the game");
+		assert (worm != null); //&& (worm.getWorld() == null); this cannot be called by die since die uses the getworld call
 		assert (hasAsWorm(worm));
 		worms.remove(worm);
 	}
@@ -528,6 +537,9 @@ public class World {
 	
 	/**
 	 * Return the number of teams of this world.
+	 * 
+	 *@return	the size of the arraylist of teams
+	 *		| result == this.teams.size()
 	 */
 	@Basic
 	public int getNbTeams() {
@@ -710,6 +722,15 @@ public class World {
 		return getBoolAt((int)Math.floor(x/getCellWidth()),(int)Math.floor(y/getCellHeight()));
 	}
 	
+	
+	/**
+	 * returns the passablemapvalues for the coordinates (x, y). Important: inverts the y axis
+	 * i.e. bigger value for y is higher upwards.
+	 * @param x
+	 * @param y
+	 * @return
+	 * 		| this.passableMap[passableMap.length - y - 1][x]
+	 */
 	public boolean getBoolAt(int x, int y) {
 //		//System.out.println("request bool @int:("+x+","+y+")");
 //		if (x<0 || y<0 || x>passableMap.length-1 || y>passableMap.length-1) {
@@ -720,23 +741,65 @@ public class World {
 		return passableMap[passableMap.length-y-1][x];
 	}
 		
-	
+	/**
+	 * checks for legaity of the x value
+	 * @param posX
+	 * 		the value for x that is to be checked
+	 * @return
+	 * 		true if posX is located between 0 and the width of the map, both inclusive.
+	 * 		| result == (posX <= this.getWidth()) && (posX>=0)
+	 */
 	public boolean isValidX(double posX) { 
 		return (posX <= getWidth()) && (posX >= 0);
 	}
 	
+	/**
+	 * checks if the Y position is valid
+	 * @param posY
+	 * 		the value of the y coordinate to be checked
+	 * @return
+	 * 		true if posY is located between 0 and the height of the map. Both are inclusive.
+	 * 		| result == (posX <= this.getHeight()) && (posY >= 0)
+	 */
 	public boolean isValidY(double posY) {
 		return (posY <= getHeight()) && (posY >= 0);
 	}
 	
+	/**
+	 * Checks validity of the coordinates given
+	 * @param target
+	 * 		the coordinates to be checked - notation [x, y]
+	 * @return
+	 * 		true if x is a valid x position, and y is a valid y position.
+	 * 		| result == isValidX(target[0]) && isValidY(target[1])
+	 */
 	public boolean isValidPosition(double[] target) {
 		return isValidX(target[0]) && isValidY(target[1]);
 	}
 
+	/**
+	 * returns the projectile currently in the world
+	 * @return
+	 * 		| result == this.projectile
+	 */
 	public Projectile getProjectile() {
 		return this.projectile;
 	}
 	
+	
+	/**
+	 * sets the projectile of the world to the one provided, given there is not an active projectile in the world (ie, the projectile stored by the world is a null object)
+	 * @param target
+	 * 		the projectile the projectile to be set as the current active projectile.
+	 * @post
+	 * 		if no exception was thrown, the projectile stored by the world is now equal to the one provided.
+	 * 		| new.getProjectile() == target
+	 * @throws TooManyProjectilesException
+	 * 		if both projectiles (the one stored by the world and the one provided) are both active, both null objects, or equal to eachother
+	 * 		| if (target == null && this.getProjectile() == null)
+	 * 		| if (target != null && this.getProjectile() != null)
+	 * 		| if (target == this.getProjectile)
+	 */
 	public void setProjectile(Projectile target) throws TooManyProjectilesException{
 		if (target != null && getProjectile() != null && target != getProjectile()){
 			throw new TooManyProjectilesException();
@@ -744,6 +807,15 @@ public class World {
 		this.projectile = target;
 	}
 	
+	/**
+	 * calculates the distance between to entity objects
+	 * @param a
+	 * 		the first entity
+	 * @param b
+	 * 		the second entity
+	 * @return
+	 * 		| result == Math.sqrt(Math.pow(a.getPosX() - b.getPosX()) + Math.pow(a.getPosY() - b.getPosY()))
+	 */
 	public double distance(Entity a, Entity b) {
 		return distance(a.getCoordinates(), b.getCoordinates());
 	}
@@ -771,7 +843,7 @@ public class World {
 	}
 	
 	public boolean canExist(double[] coordinates, double radius) {
-		//this is gonna be one hell of a method.
+		
 		
 		assert(coordinates[0] <= getWidth());
 		assert(coordinates[1] <= getHeight());
@@ -1070,10 +1142,14 @@ public class World {
 	}
 	
 	public boolean isLegalPosition(double[] coordinates, double radius) {
-		if((coordinates[0] + radius >= this.getWidth()) || (coordinates[0] - radius < 0)
-			|| (coordinates[1] + radius >= this.getHeight()) || (coordinates[1] - radius < 0)) {
+		if(!((coordinates[0] + radius >= this.getWidth()) || (coordinates[0] - radius < 0)
+			|| (coordinates[1] + radius >= this.getHeight()) || (coordinates[1] - radius < 0))) {
+			System.out.println((coordinates[0] + radius >= this.getWidth()));
+			System.out.println((coordinates[0] - radius < 0));
+			System.out.println((coordinates[1] + radius >= this.getHeight()));
+			System.out.println((coordinates[1] - radius < 0));
 			return false;
 		} else {return true;}
 	}
-	}
+	
 }

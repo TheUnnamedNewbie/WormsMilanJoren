@@ -195,8 +195,9 @@ import java.util.ArrayList;
  * @invar The current (at stable point) action and hit points must remain valid
  *        | isValidActionPoints(getActionPoints())
  *        | isValidHitPoints(getHitPoints())
- * @invar The radius is always at least 0.25m
+ * @invar The radius is always at least 0.25m, and never exceed Double.MAX_VALUE
  * 		  | getRadius() >= 0.25
+ * 		  | getRadius() < Double.MAX_VALUE
  * @author Milan Sanders
  * @author Joren Vaes
  * @date 18/03/2014
@@ -881,6 +882,7 @@ public class Worm extends Movable {
 			eat();
 		} else if (getActionPoints() <= 0) {throw new ExhaustionException();};
 		if (this.getWorld().isLegalPosition(this.getCoordinates(), this.getRadius())) {
+			System.out.println("not a legal position, killing worm");
 			die();
 		}
 	}
@@ -1076,6 +1078,7 @@ public class Worm extends Movable {
 		if (getWorld().getCurrentWorm()==this)
 			getWorld().nextWorm();
 		getWorld().removeAsWorm(this);
+		setWorldNull();
 		terminate();
 	}
 }
