@@ -1143,13 +1143,20 @@ public class World {
 		newWorm.heal(10);
 	}
 	
+	/**
+	 * isLegalPosition returns true if the entity is within the bounds of the world.
+	 * Difference from before: It returned false when within bounds (illogical).
+	 * @param coordinates
+	 * @param radius
+	 * @return
+	 */
 	public boolean isLegalPosition(double[] coordinates, double radius) {
-		if(!((coordinates[0] + radius >= this.getWidth()) || (coordinates[0] - radius < 0)
-			|| (coordinates[1] + radius >= this.getHeight()) || (coordinates[1] - radius < 0))) {
-			System.out.println((coordinates[0] + radius >= this.getWidth()));
-			System.out.println((coordinates[0] - radius < 0));
-			System.out.println((coordinates[1] + radius >= this.getHeight()));
-			System.out.println((coordinates[1] - radius < 0));
+		if((coordinates[0] + radius >= this.getWidth()) || (coordinates[0] - radius < 0)
+			|| (coordinates[1] + radius >= this.getHeight()) || (coordinates[1] - radius < 0)) {
+//			System.out.println((coordinates[0] + radius >= this.getWidth()));
+//			System.out.println((coordinates[0] - radius < 0));
+//			System.out.println((coordinates[1] + radius >= this.getHeight()));
+//			System.out.println((coordinates[1] - radius < 0));
 			return false;
 		} else {return true;}
 	}

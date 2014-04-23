@@ -775,9 +775,7 @@ public class Worm extends Movable {
 			double minD = 0.1;
 			double[] temp = new double[]{0.0, getOrientation()}; //temp is the furthest the worm can move and that direction
 			for (double count = 0.0; count < maxT; count += deltaT) {
-				//System.out.println("Starting new direction...");
 				double maxDistClockwise = maxDist(getOrientation() + count, minD);
-				//System.out.println("maxDist: "+maxDistClockwise);
 				if (maxDistClockwise == getRadius()) {
 					temp = new double[] {getRadius(), getOrientation() + count};
 					break;
@@ -797,16 +795,12 @@ public class Worm extends Movable {
 						minD = maxDistCounterClockwise;
 					}
 				}
-			//System.out.println("Direction depleted");
 			}
-			////System.out.println("Is new position OK? (collision) "+getWorld().canExist(new double[]{getPosX() + Math.cos(temp[1]) * temp[0], getPosY() + Math.sin(temp[1]) * temp[0]}, getRadius()));
 			setPosX(getPosX() + Math.cos(temp[1]) * temp[0]);
 			setPosY(getPosY() + Math.sin(temp[1]) * temp[0]);
-			if (!isValidPosition(getCoordinates()) || this.getWorld().isLegalPosition(this.getCoordinates(), this.getRadius()))
+			double[] coordinatesPlus = new double[]{getPosX()+Math.cos(getOrientation())*0.01,getPosY()+Math.sin(getOrientation())*0.01};
+			if (!isValidPosition(getCoordinates()) || !this.getWorld().isLegalPosition(coordinatesPlus, this.getRadius()*1.1)) //The large circle shall prevail! Close enough?
 				die();
-			//System.out.println("falling...");
-			//fall(); //I think facade makes the worms fall automatically
-			//System.out.println("fell");
 			eat();
 		} else throw new ExhaustionException();
 	}
@@ -816,7 +810,6 @@ public class Worm extends Movable {
 		for (double dist = getRadius(); dist > minD; dist -= deltaD) {
 			double targetX = getPosX()+Math.cos(angle)*dist;
 			double targetY = getPosY()+Math.sin(angle)*dist;
-			//System.out.println("Checking position: ("+targetX+","+targetY+")");
 			if (getWorld().isAdjacent(new double[]{targetX, targetY}, this))
 				return dist;
 		}
@@ -881,7 +874,7 @@ public class Worm extends Movable {
 			setActionPoints(0);
 			eat();
 		} else if (getActionPoints() <= 0) {throw new ExhaustionException();};
-		if (this.getWorld().isLegalPosition(this.getCoordinates(), this.getRadius())) {
+		if (!this.getWorld().isLegalPosition(this.getCoordinates(), this.getRadius())) {
 			System.out.println("not a legal position, killing worm");
 			die();
 		}
@@ -907,7 +900,7 @@ public class Worm extends Movable {
 				setPosY(getPosY() - fallDist);
 			}
 		}
-		if (this.getWorld().isLegalPosition(this.getCoordinates(), this.getRadius())) {
+		if (!this.getWorld().isLegalPosition(this.getCoordinates(), this.getRadius())) {
 			die();
 		}
 	} 
