@@ -13,13 +13,34 @@ import worms.TooManyProjectilesException;
 import worms.entities.*;
 import worms.model.Worm;
 
-//TODO add documentation and shizzle
 
 /**
  * 
  * @invar
  * 		there is always exactly one projectile active at any given moment.
- * 		|
+ * @invar
+ * 		the map is always of a legal type
+ * 		| isLegalMap(passableMap)
+ * @invar
+ * 		the width and height are always positive values, and never exceed Double.MAX_VALUE
+ * 		| isLegalSize(width, height)
+ * @invar
+ * 		the cellwidth and cellheight are always equal to the maps width and height devided by the number of ellements in the width and height of the passable map
+ * 		| getCellWidth() == (width/map[0].length)
+ * 		| getCellHeight() == (height/map.length) 
+ * @invar
+ * 		the arraylists foods, worms, and teams only contain objects of the type food, worm, and team respectively 
+ * 		| for(Entity element: foods) {element.isInstanceOf(food)}
+ * 		| for(Entity element: worms) {element.isInstanceOf(worm)}
+ * 		| for(Object element: teams) {element.isInstanceOf(team)}
+ * @invar
+ * 		all objects within the arraylists foods and worms shall never have coordinates outside of the map or in impassable terrain
+ * 		|for(Entity element: foods) {canExist(element.getCoordinates(), element.getRadius()) && isLegalPosition(element.getCoordinates())} 
+ * 		|for(Entity element: worms) {canExist(element.getCoordinates(), element.getRadius()) && isLegalPosition(element.getCoordinates())} 
+ * @invar
+ * 		no two worms shall ever occupy the same region of space in the world
+ * 		|for(Entity element1: worms) {for(Entity element2: worms) {distance(element1, element2) >= (element1.getRadius() + element2.getRadius())}
+ * TODO more invars
  * @author Joren
  * @author Milan
  * 
@@ -27,16 +48,15 @@ import worms.model.Worm;
  */
 public class World {
 	public World(double width, double height, boolean[][] map, Random random) throws IllegalMapException, IllegalSizeException {
-//		System.out.println("Initialisation width: " + width);
-//		System.out.println("Initialisation height: " + height);
+
 		if(!isLegalSize(width, height)) {
 			throw new IllegalSizeException();
 		}
 		this.width = width;
 		this.height = height;
 		this.projectile = null;
-		foods = new ArrayList<Food>();//Do these have to be in the constructor?
-		worms = new ArrayList<Worm>();//
+		foods = new ArrayList<Food>();
+		worms = new ArrayList<Worm>();
 		teams = new ArrayList<Team>();
 		if(!isLegalMap(map)){
 			throw new IllegalMapException();
@@ -68,12 +88,11 @@ public class World {
 	private final boolean[][] passableMap;
 	private Worm currentWorm = null;
 	public static final double GRAVITY = 9.80665;
-	//private static final double EPS = Util.DEFAULT_EPSILON;
 	private List<String> wormNames = Arrays.asList("Shari", "Shannon",
 			"Willard", "Jodi", "Santos", "Ross", "Cora", "Jacob", "Homer",
 			"Kara");
-	//private List<String> teamNames = Arrays.asList("MannLebtNurEinmahl", "Olympians", "Worms", "Derps", "Ulteamate", "Inteamate");
 	// END FIELDS
+	
 	/**
 	 * gives the value for width
 	 * @return
@@ -82,6 +101,7 @@ public class World {
 	public double getWidth() {
 		return this.width;
 	}
+	
 	/**
 	 * Gives the value for height
 	 * @return
@@ -90,6 +110,7 @@ public class World {
 	public double getHeight() {
 		return this.height;
 	}
+	
 	/**
 	 * returns the value for cellwidth
 	 * @return
@@ -98,6 +119,7 @@ public class World {
 	public double getCellWidth() {
 		return this.cellWidth;
 	}
+	
 	/**
 	 * Returns teh value for cellHeights
 	 * @return
@@ -106,6 +128,7 @@ public class World {
 	public double getCellHeight() {
 		return this.cellHeight;
 	}
+	
 	/**
 	 * Returns the current worm
 	 * @return
@@ -114,6 +137,7 @@ public class World {
 	public Worm getCurrentWorm() {
 		return this.currentWorm;
 	}
+	
 	/**
 	 * Sets the current worm to the given worm
 	 * @post
@@ -718,6 +742,24 @@ public class World {
 		teams.remove(team);
 	}
 	
+	/**
+	 * Checks if the map is passable at the given coordinates (These coordinates are doubles). 
+	 * @pre
+	 * 		the coordinates are within the legal bounds of the map, ie, the x coordinate is larger than 0, and smaller than the total width
+	 * 		and the y coordinate too is larger than 0, and smaller than the height of the map.
+	 * 		| x > 0.0
+	 * 		| y > 0.0
+	 * 		| x < width
+	 * 		| y < height
+	 * 
+	 * @param x
+	 * 		The x-coordinate (Double!)
+	 * @param y
+	 * 		The y-coordinate (Double!)
+	 * @return
+	 * 		| result == getBoolAt((int)Math.floor(x/getCellWidth()),(int)Math.floor(y/getCellHeight()))
+	 * 		
+	 */
 	public boolean isPassableAt(double x, double y){
 		assert(0.0<x); assert(x<width);
 		assert(0.0<y); assert(y<height);
@@ -734,17 +776,11 @@ public class World {
 	 * 		| this.passableMap[passableMap.length - y - 1][x]
 	 */
 	public boolean getBoolAt(int x, int y) {
-//		//System.out.println("request bool @int:("+x+","+y+")");
-//		if (x<0 || y<0 || x>passableMap.length-1 || y>passableMap.length-1) {
-//		//System.out.println("out of bounds, returning false");
-//			return true;
-//		}
-		//System.out.println("Returning bool: "+passableMap[passableMap.length-y-1][x]);
 		return passableMap[passableMap.length-y-1][x];
 	}
 		
 	/**
-	 * checks for legaity of the x value
+	 * checks for legality of the x value
 	 * @param posX
 	 * 		the value for x that is to be checked
 	 * @return
@@ -822,10 +858,24 @@ public class World {
 		return distance(a.getCoordinates(), b.getCoordinates());
 	}
 	
+	/**
+	 * calculates the distance between the two provided coordinatessets.
+	 * @param coordA
+	 * @param coordB
+	 * @return
+	 * 		| Math.sqrt(Math.pow(coordA[0] - coordB[0], 2) + Math.pow(coordA[1] - coordB[1], 2))
+	 */
 	public double distance(double[] coordA, double[] coordB) {
 		return Math.sqrt(Math.pow(coordA[0] - coordB[0], 2) + Math.pow(coordA[1] - coordB[1], 2));
 	}
 	
+	/**
+	 * Checks if the provided bolean array of arrays is a legal map, IE, each second level array is the same lenght.
+	 * @param map
+	 * @return
+	 * 		true if the length of each array in the array is the same.
+	 * 		| result == for(boolean[] collum:map){collum.length == map[0].length}
+	 */
 	public static boolean isLegalMap(boolean[][] map) {
 		int length = map[0].length;
 			for(boolean[] collum:map){
@@ -836,104 +886,101 @@ public class World {
 		return true;
 	}
 	
+	/**
+	 * returns if an object placed at the coordinates provided by the double array are adjacent to impas. terrain, given the radius provided.
+	 * @param coordinate
+	 * 		the coordinates at which adjacentness is to be checked.
+	 * @param radius
+	 * 		the radius of the object you are cheking adjacentness for
+	 * @return
+	 * 		if the object doesnt colide at its acutal radius, but does at 1.1* that radius
+	 * 		| result == (!Entity.collides(coordinate, radius, this)) && Entity.collides(coordinate, radius*1.1, this)
+	 */
 	public boolean isAdjacent(double[] coordinate, double radius) {
 		return (!Entity.collides(coordinate, radius, this)) && Entity.collides(coordinate, radius*1.1, this);
 	}
 	
+	/**
+	 * returns if an object placed at the coordinates provided by the double array are adjacent to impas. terrain, given the radius provided.
+	 * @param coordinate
+	 * 		the coordinates at which adjacentness is to be checked.
+	 * @param subject
+	 * 		The subject that is to hypothetically be placed at cooridnate.
+	 * @return
+	 * 		if the object doesnt colide at its acutal radius, but does at 1.1* that radius
+	 * 		| result == (!subject.collides(coordinate, subject.getRadius())) && subject.collides(coordinate, subject.getRadius()*1.1)
+	 */
 	public boolean isAdjacent(double[] coordinate, Entity subject) {
 		return (!subject.collides(coordinate, subject.getRadius())) && subject.collides(coordinate, subject.getRadius()*1.1);
 	}
 	
-	public boolean canExist(double[] coordinates, double radius) {
-		
-		
+	/**
+	 * Checks if a object with radius radius and coordinates coordinates could legally exist at the provided coordinates, ie, not cover any impassable terrain.
+	 * @pre
+	 * 		the coordinates are of a legal kind, IE, they are withing valid map bounds
+	 * 		|isValidPosition(coordinates)
+	 * @param coordinates
+	 * 		the coordinates to be checked at
+	 * @param radius
+	 * 		the radius of the object to be checked for Existential right.
+	 * @return
+	 * 		true if all the passable pixels covered by the object are passable, false in all other cases.
+	 * 		|	for(int i = 0; i<getWidth(); i++){
+	 * 		|		for(int j = 0; j<getHeight(); j++){
+	 * 		|			if((distance({i, j}, coordinates) < radius) && (getBoolAt({i, j}) == false)){
+	 * 		|				result == false;
+	 * 		|			}
+	 *		|		}
+	 *		|	}
+	 *		|	result == true;
+	 */
+	public boolean (double[] coordinates, double radius) {
 		assert(coordinates[0] <= getWidth());
 		assert(coordinates[1] <= getHeight());
 		assert(coordinates[0] >= 0);
 		assert(coordinates[1] >= 0);
-//		assert(entity != null);
-//		assert((entity.getPosX()-entity.getRadius())<=coordinates[0]);
-//		assert((entity.getPosX()+entity.getRadius())>=coordinates[0]);
-//		assert((entity.getPosY()-entity.getRadius())<=coordinates[0]);
-//		assert((entity.getPosY()+entity.getRadius())>=coordinates[0]);
-		//only now I realise I might have gone overboard with asserting this stuff.
-		
-		//vardec
+
 		double[] upperLeft = new double[2];
 		double[] lowerRight = new double[2];
 		int[] upperLeftCell = new int[2];
 		int[] lowerRightCell = new int[2];
 		
-		
-		//prepare to be confused with inverted coordinatesystemstuff
 		upperLeft[0] = coordinates[0] - radius;
 		upperLeft[1] = coordinates[1] - radius; 
 		lowerRight[0] = coordinates[0] + radius;
 		lowerRight[1] = coordinates[1] + radius;
-//		System.out.println(upperLeft[0]);
-//		System.out.println(upperLeft[1]);
-//		System.out.println(lowerRight[0]);
-//		System.out.println(lowerRight[1]);
-		
-		//can be merged with above later for more efficiency
+
 		upperLeftCell[0] = (int)Math.floor(upperLeft[0]/getCellWidth());
 		upperLeftCell[1] = (int)Math.floor(upperLeft[1]/getCellHeight());
 		lowerRightCell[0] = (int)Math.ceil(lowerRight[0]/getCellWidth());
 		lowerRightCell[1] = (int)Math.ceil(lowerRight[1]/getCellHeight());
-		
-		//returning false if you try to exist outside of the map
+
 		if (!isValidPosition(upperLeft) || !isValidPosition(lowerRight))
 			return false;
-		
-		//some forstuffs comes here to populate the submap with useful things
-		for(int j = upperLeftCell[0]; j < lowerRightCell[0]; j++) { //TODO check if it this is 100% correct, didn't have enough coffee yet to properly think about that
+
+		for(int j = upperLeftCell[0]; j < lowerRightCell[0]; j++) { 
 			for(int i = upperLeftCell[1]; i < lowerRightCell[1]; i++){
-				//Vardec
 				double[] absoluteCoordinate = new double[2];
 				double distanceToEntity;
-				
 				absoluteCoordinate[0] = (j * getCellWidth());
 				absoluteCoordinate[1] = (i * getCellHeight());
-				//System.out.println(absoluteCoordinate[0]);
-				//System.out.println(absoluteCoordinate[1]);
-				//System.out.println(getCellWidth());
-				
-				//prepare your butt for #mathClusterFuck
+
 				distanceToEntity = Math.sqrt(	Math.pow( (double)coordinates[0] - (double)absoluteCoordinate[0], 2) + 
 												Math.pow( (double)coordinates[1] - (double)absoluteCoordinate[1], 2));
-				
-				//System.out.println((Math.sqrt(	2.0* Math.pow( 3.0 - 2, 2))));
-				//Need to think long and hard about this one in relation to it checking all 4 adjacent cells to the absolutecoordinate
-				//System.out.println(getBoolAt(j-1,i-1));
-				//System.out.println(getBoolAt(j,i-1));
-				//System.out.println(getBoolAt(j-1,i));
-				//System.out.println(getBoolAt(j,i));
-				//System.out.println("j= " + j);
-				//System.out.println("i= " + i);
+
 				if(distanceToEntity <= (radius)){
-					//System.out.println(distanceToEntity);
 					if(getBoolAt(j-1,i-1)){
 						if(getBoolAt(j,i-1)){
 							if(getBoolAt(j,i)){
 								if(! getBoolAt(j-1,i)){
-									//System.out.println("THIS SHOULD FUCKING WORK");
 									return false;
 								}
-							} else{
-								return false;}
-						} else{
-							return false;}
-					} else{
-						return false;}
+							} else{return false;}
+						} else{return false;}
+					} else{	return false;}
 				}
 			}
 		}
-
-		
-			//TODO: Stuffs.
-			//need to check here for each point except the leftmost, upmost, rightmost, and downmost edges
-			//if the entity will cover it with the radius and if so, that the 4 adjacent are empty.
-			//might actually simply be easier to not store a submap for this.
 		return true;	
 		}
 	
@@ -943,7 +990,13 @@ public class World {
 	 * Checks to see if the world is of legal size
 	 * @param x The prospective width of the world
 	 * @param y The prospective height of the world
-	 * @return If the world is of legal size (see specifications)
+	 * @return If the world is of legal size: both coordinates are not Double.MAX_VALUE, are bigger than 0, and are numbers (so not Double.NaN)
+	 * 		| x != Double.MAX_VALUE
+	 * 		| y != Double.MAX_VALUE
+	 * 		| x > 0
+	 * 		| y > 0
+	 * 		| y == y
+	 * 		| x == x
 	 */
 	public static boolean isLegalSize(double x, double y) {
 		if(x != x) { //Testing for NaN
@@ -971,7 +1024,6 @@ public class World {
 	public void createRandomWorm() {
 		Team team = null;
 		boolean joinTeam = random.nextBoolean();
-		//System.out.println("nb teams: "+getNbTeams());
 		if (joinTeam) {
 			int teamIndex = 0;
 			if (getNbTeams() > 1)
@@ -983,24 +1035,19 @@ public class World {
 		String wormName = wormNames.get(random.nextInt(wormNames.size()-1));
 		double radius = 0.25 + random.nextDouble() / 4.0;
 		double[] randomPos = getRandomPosition2(radius);
-		//print("About to create worm at coordinates");
 		System.out.println("x: " + randomPos[0] + " y: " + randomPos[1]);
 		Worm randomWorm = new Worm(wormName, randomPos[0], randomPos[1], radius, randomAngleOrient, this);
-		//print("successfully created");
 		addAsWorm(randomWorm);
-		//print("Added the worm in worms");
 		if (joinTeam && (getNbTeams() > 0)) {
 			System.out.println("team name: "+team.getName());
-			randomWorm.join(team); //No problem with nullpointer because if(condition)
+			randomWorm.join(team); 
 		}
 	}
 	
 	public void createRandomFood() {
 		double[] randomPos = getRandomPosition2(0.2);
 		Food randomFood = new Food(this, randomPos[0], randomPos[1]);
-		//System.out.println("Created food and adding...");
 		addAsFood(randomFood);
-		//System.out.println("Added.");
 	}
 	
 	/**
@@ -1032,7 +1079,6 @@ public class World {
 				}
 			}
 		}
-		//System.out.println("found random position at"+target);
 		return target;
 	}
 
@@ -1042,25 +1088,21 @@ public class World {
 	 * @return
 	 */
 	private double[] getRandomPosition2(double deltaD) {
-		double mapBounds = deltaD; //The distance we must leave between the the edges of the map for preventing creation in the impassable edge
+		double mapBounds = deltaD; 
 		double[] target = new double[2];
-		////System.out.println("finding...");
 		while (true) {
-			//System.out.println("New strip");
 			double randomX = random.nextDouble()*(getWidth()-2*mapBounds)+mapBounds;
 			double randomY = random.nextDouble()*(getHeight()-2*mapBounds)+mapBounds;
-			boolean hasEnded = false; //has this strip been depleted;
+			boolean hasEnded = false; 
 			target = new double[]{randomX, randomY};
 			while (!hasEnded) {
-				target[1] -= deltaD /* /2.0*/;
+				target[1] -= deltaD;
 				if (target[1]<mapBounds)
 					hasEnded = true;
 				else if (isAdjacent(target, deltaD)) {
-					//System.out.println("found random position at "+"("+target[0]+","+target[1]+")");
 					return target;
 				}
 			}
-			//System.out.println("Strip depleted");
 		}
 		
 	}
@@ -1084,29 +1126,21 @@ public class World {
 	}
 	
 	public boolean hasWinner() {
-		//System.out.println("Checking winner");
 		boolean activated = false;
 		Team team = null;
 		if (getNbWorms() == 1){
-			//System.out.println("Only 1 worm, declaring winner...");
 			return true;
 		}
-		//System.out.println("More than 1 worm. Continuing check...");
 		for (Worm worm: getAllWorms()) {
 			if (!activated) {
-				//System.out.println("1st worm, setting team.");
 				team = worm.getTeam();
 				activated = true;
 			} else {
-				//System.out.println("checking \""+worm.getTeam()+"\" against set team...");
 				if (worm.getTeam() != team || worm.getTeam() == null){
-					//System.out.println("Check failed: no winner");
 					return false;
 				}
-				//System.out.println("Check succeeded. Continuing if able");
 			}
 		}
-		//System.out.println("Checked all worms. Declaring winning team...");
 		return true;
 	}
 	
@@ -1118,8 +1152,13 @@ public class World {
 			return emptyOutput;
 	}
 	
+	/**
+	 * print function for the simple purpose of use in debugging.
+	 * @param string
+	 * 		string to be printed.
+	 */
 	public void print(String string){
-		System.out.println(string);
+		System.out.println("World: " +string);
 	}
 
 	/**
@@ -1153,12 +1192,7 @@ public class World {
 	public boolean isLegalPosition(double[] coordinates, double radius) {
 		if((coordinates[0] + radius >= this.getWidth()) || (coordinates[0] - radius < 0)
 			|| (coordinates[1] + radius >= this.getHeight()) || (coordinates[1] - radius < 0)) {
-//			System.out.println((coordinates[0] + radius >= this.getWidth()));
-//			System.out.println((coordinates[0] - radius < 0));
-//			System.out.println((coordinates[1] + radius >= this.getHeight()));
-//			System.out.println((coordinates[1] - radius < 0));
 			return false;
 		} else {return true;}
 	}
-	
 }

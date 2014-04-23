@@ -199,6 +199,8 @@ import java.util.ArrayList;
  * @invar The radius is always at least 0.25m, and never exceed Double.MAX_VALUE
  * 		  | getRadius() >= 0.25
  * 		  | getRadius() < Double.MAX_VALUE
+ * @invar The worm has valid coordinates
+ * @invar 
  * @author Milan Sanders
  * @author Joren Vaes
  * @date 18/03/2014
@@ -1026,7 +1028,7 @@ public class Worm extends Movable {
 	 * The Die method terminates the worm after removing it from its world and ends the current turn if it is the current worm that dies.
 	 * @post
 	 * 		if (getWorld().getCurrentWorm() == this) {getWorld().nextWorm()}
-	 * 		getWorld()==null
+	 * 		getWorld()==null	
 	 * 		getWorld().hasAsWorm(this) == false
 	 * 		this.terminated == true
 	 */
