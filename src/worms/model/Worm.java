@@ -376,7 +376,8 @@ public class Worm extends Movable {
 	}
 	
 	/**
-	 * Return the actual weapon referenced by currentWeapon
+	 * set the equipped weapon as 
+	 * 
 	 */
 	public void setEquipped(Weapon weapon) {
 		setCurrentWeapon(inventory.indexOf(weapon));
@@ -805,7 +806,7 @@ public class Worm extends Movable {
 	 *      Is true if turning was active and thus subtracts action points.
 	 */
 	public void turn(double amount, boolean active) {
-		assert (Math.abs(amount + getOrientation()) <= Math.PI);
+		assert (Math.abs(amount + getOrientation()) <= 2 * Math.PI);
 		assert isValidActionPoints((long)Math.ceil(getActionPoints()
 				- (Math.abs(amount) / (2 * Math.PI)) * 60));
 		double newOrientation = getOrientation() + amount;

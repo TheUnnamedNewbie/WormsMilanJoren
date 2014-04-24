@@ -1,20 +1,28 @@
 package worms.weapons;
 
-import worms.entities.Projectile;
+
 import worms.model.Worm;
 
 public class Rifle extends Weapon {
+	
+	/**
+	 * constructor for a Rifle object
+	 * @param owner
+	 * 			The worm that is to own the Rifle.
+	 * 
+	 */
 	public Rifle(Worm owner) {
 		this.worm = owner;
 		this.cost = 10;
 		this.name = "Rifle";
 	}
 	
+	/**
+	 * A method to fire the Rifle, with a yield yield. It does this by calculating basic parameters and then spawning an object of the type Projectile
+	 * @param yield
+	 * 		the strength the weapon is to be shot at.
+	 */
 	public void shoot(int yield) {
-		double projRadius = Math.pow(((double)(3.0/4.0) * (0.01/7800)),(double)(1.0/3.0));
-		double projX = getWorm().getPosX()+(getWorm().getRadius()+projRadius)*Math.cos(getWorm().getOrientation());
-		double projY = getWorm().getPosY()+(getWorm().getRadius()+projRadius)*Math.sin(getWorm().getOrientation());
-		Projectile projectile = new Projectile(getWorm().getWorld(), projX, projY, projRadius, 7800, getWorm().getOrientation(), 1.5, 20);
-		worm.getWorld().setProjectile(projectile);
+		super.shoot(yield, 0.01, 1.5);
 	}
 }
