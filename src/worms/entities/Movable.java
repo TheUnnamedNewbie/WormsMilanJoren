@@ -112,7 +112,7 @@ public abstract class Movable extends Entity {
 	 * 		
 	 */
 	public double jumpTime(long AP, double timestep) {
-		if (AP <0){
+		if (AP <= 0){
 			return 0;
 		}
 		double time = timestep;
@@ -193,7 +193,7 @@ public abstract class Movable extends Entity {
  */
 	@Raw
 	public double[] jumpStep(long AP, double time){
-		if(AP < 0) {
+		if(AP <= 0) {
 			return this.getCoordinates();
 		}
 		double force;
