@@ -276,8 +276,11 @@ public class Facade implements IFacade {
 
 	
 	public void jump(Worm worm, double timeStep) {
-		worm.jump(timeStep);
-		System.out.println("Jump completed.");
+		try {
+			worm.jump(timeStep);
+		} catch (ExhaustionException e) {
+			throw new ModelException("Insufficient ActionPoints");
+		}
 	}
 
 	

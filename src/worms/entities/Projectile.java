@@ -28,10 +28,8 @@ public class Projectile extends Movable {
 	 */
 	public Projectile(World world, double posX, double posY, double radius, long density, double orientation, double force, long damage) throws CoordinateOutOfBoundsException {
 		this.world = world;
-		System.out.println("Setting active projectile...");
 		getWorld().setProjectile(this);
-		System.out.println("Is active projectile? "+(this==getWorld().getProjectile()));
-		setPosX(posX); // Here be exceptions
+		setPosX(posX); 
 		setPosY(posY);
 		setRadius(radius);
 		setDensity(density);
@@ -70,7 +68,7 @@ public class Projectile extends Movable {
 	 */
 	public void shoot(double timestep) {
 		if(canFire()){
-			double[] target = jumpStep(force, jumpTime(force, timestep)+timestep); // + timestep because we need to be in the worm in order for distance < value to work
+			double[] target = jumpStep(force, jumpTime(force, timestep)+timestep); 
 			for (Worm worm: getWorld().getAllWorms())
 				if (getWorld().distance(target, worm.getCoordinates()) < this.getRadius()+worm.getRadius())
 					worm.damage(damage);

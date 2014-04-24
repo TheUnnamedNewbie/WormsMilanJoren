@@ -842,14 +842,15 @@ public class Worm extends Movable {
 	 * We can use this as a means to see if the worm has jumped off the map.
 	 */
 	public void jump(double timestep) throws ExhaustionException, IllegalStateException {
-		boolean canJump = canJump();
-		if (getActionPoints() > 0 && canJump){
+		if (getActionPoints() <= 0) {
+			throw new ExhaustionException();
+		}
+		else if(getActionPoints() >= 0 && canJump()){
 			double[] target = jumpStep(getActionPoints(), jumpTime(getActionPoints(), timestep));
 			setPosX(target[0]); setPosY(target[1]);
 			setActionPoints(0);
 			eat();
-		} else if (getActionPoints() <= 0) {throw new ExhaustionException();};
-		if (!this.getWorld().isLegalPosition(this.getCoordinates(), this.getRadius())) {
+		} else if (!this.getWorld().isLegalPosition(this.getCoordinates(), this.getRadius())) {
 			die();
 		}
 	}
