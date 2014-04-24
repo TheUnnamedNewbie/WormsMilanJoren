@@ -5,6 +5,7 @@ import worms.model.Worm;
 
 public class Rifle extends Weapon {
 	
+	
 	/**
 	 * constructor for a Rifle object
 	 * @param owner

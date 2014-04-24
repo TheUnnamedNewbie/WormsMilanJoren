@@ -3,13 +3,13 @@ package worms.weapons;
 import worms.entities.Projectile;
 import worms.model.Worm;
 
-/**
- * An abstract class to discribe the basic parameters shared by all weapons
- * @invar the weapon always has a valid worm
- * 		| this.getWorm() != null;
- * @author Joren
- *
- */
+	/**
+	 * An abstract class to discribe the basic parameters shared by all weapons
+	 * @invar the weapon always has a valid worm
+	 * 		| this.getWorm() != null;
+	 * @author Joren
+	 *
+	 */
 public abstract class Weapon {
 	
 	protected Worm worm;

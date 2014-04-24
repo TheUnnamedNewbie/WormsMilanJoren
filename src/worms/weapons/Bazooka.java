@@ -5,6 +5,7 @@ import worms.model.Worm;
 
 public class Bazooka extends Weapon {
 	
+	
 	/**
 	 * the constructor of a object of Bazooka
 	 * @param worm
