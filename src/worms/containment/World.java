@@ -39,7 +39,7 @@ import worms.model.Worm;
  * 		|for(Entity element: worms) {canExist(element.getCoordinates(), element.getRadius()) && isLegalPosition(element.getCoordinates())} 
  * @invar
  * 		no two worms shall ever occupy the same region of space in the world
- * 		|for(Entity element1: worms) {for(Entity element2: worms) {distance(element1, element2) >= (element1.getRadius() + element2.getRadius())}
+ * 		|for(Entity element1: worms) {for(Entity element2: worms) {distance(element1, element2) >= (element1.getRadius() + element2.getRadius())}}
  * TODO more invars
  * @author Joren
  * @author Milan
@@ -47,6 +47,17 @@ import worms.model.Worm;
  *
  */
 public class World {
+	
+	/**
+	 * Constructor for a world
+	 * 
+	 * @param width The width of a world in metres
+	 * @param height The height of the world in  metres
+	 * @param map The boolean double array that gives passable and imapssable rectangles
+	 * @param random The random seed with which we need to generate random elements
+	 * @throws IllegalMapException | !isLegalMap(map)
+	 * @throws IllegalSizeException| !isLegalSize(width, height)
+	 */
 	public World(double width, double height, boolean[][] map, Random random) throws IllegalMapException, IllegalSizeException {
 
 		if(!isLegalSize(width, height)) {
@@ -67,6 +78,9 @@ public class World {
 		this.random = random;
 	}
 	
+	/**
+	 * Standard constructor
+	 */
 	public World() {
 		this.width = 1;
 		this.height = 1;
@@ -1020,7 +1034,11 @@ public class World {
 		return true;
 	}
 	
-	
+	/**
+	 * Creates a random worm using the same values the GUI used in the 1st part.
+	 * The naming uses a random value and so overlapping might be possible.
+	 * Renaming is still possible and recommended for a better gaming experience
+	 */
 	public void createRandomWorm() {
 		Team team = null;
 		boolean joinTeam = random.nextBoolean();
@@ -1034,7 +1052,7 @@ public class World {
 		double randomAngleOrient = (random.nextDouble()*(Math.PI*2.0)) - Math.PI;
 		String wormName = wormNames.get(random.nextInt(wormNames.size()-1));
 		double radius = 0.25 + random.nextDouble() / 4.0;
-		double[] randomPos = getRandomPosition2(radius);
+		double[] randomPos = getRandomPosition(radius);
 		System.out.println("x: " + randomPos[0] + " y: " + randomPos[1]);
 		Worm randomWorm = new Worm(wormName, randomPos[0], randomPos[1], radius, randomAngleOrient, this);
 		addAsWorm(randomWorm);
@@ -1045,49 +1063,17 @@ public class World {
 	}
 	
 	public void createRandomFood() {
-		double[] randomPos = getRandomPosition2(0.2);
+		double[] randomPos = getRandomPosition(0.2);
 		Food randomFood = new Food(this, randomPos[0], randomPos[1]);
 		addAsFood(randomFood);
 	}
-	
-	/**
-	 * 
-	 * @param deltaD
-	 * @return A random adjacent position
-	 */
-	@SuppressWarnings("unused")
-	private double[] getRandomPosition(double deltaD) {
-		System.out.println("width: " + getWidth());
-		double[] target = new double[]{0.0, 0.0};
-		boolean isFound = false; //is a random adjacent position found? NO! Not yet.
-		while (!isFound) {
-			double randomAnglePos = random.nextDouble()*(Math.PI/2.0);
-			double[] maxPos = getMaxPosition(randomAnglePos);
-			System.out.println("Max pos: " + maxPos[0]);
-			double maxX =maxPos[0] - Math.cos(randomAnglePos)*deltaD;//Making sure they don't start out of bounds
-			double maxY =maxPos[1] - Math.sin(randomAnglePos)*deltaD;
-			target = new double[]{maxX, maxY};
-			boolean hasEnded = false; //has this direction been depleted;
-			while (!hasEnded) {
-				target[0] -= Math.cos(randomAnglePos)*deltaD;
-				target[1] -= Math.sin(randomAnglePos)*deltaD;
-				if (!isValidPosition(target))
-					hasEnded = true;
-				else if (isAdjacent(target, deltaD)) {
-					hasEnded = true;
-					isFound = true;
-				}
-			}
-		}
-		return target;
-	}
 
 	/**
-	 * Alternative random position finder
+	 * Random position finder
 	 * @param deltaD
 	 * @return
 	 */
-	private double[] getRandomPosition2(double deltaD) {
+	private double[] getRandomPosition(double deltaD) {
 		double mapBounds = deltaD; 
 		double[] target = new double[2];
 		while (true) {
@@ -1114,6 +1100,7 @@ public class World {
 	 * @return The position at the edge of the map when looking in the given angle
 	 */
 	public double[] getMaxPosition(double angle) {
+		assert angle <= Math.PI/2; assert 0.0 < angle;
 		double diagonalAngle = Math.tan(getHeight()/getWidth());
 		if (angle < diagonalAngle) {
 			double maxY = getWidth()*Math.tan(angle);
@@ -1163,15 +1150,15 @@ public class World {
 	 * 		| else {result == new ArrayList<Worm>();
 	 */
 	public ArrayList<Worm> getWinner() {
-		ArrayList<Worm> emptyOutput = new ArrayList<Worm>();
 		if (hasWinner())
 			return getAllWorms();
 		else
-			return emptyOutput;
+			return new ArrayList<Worm>();
 	}
 	
 	/**
 	 * print function for the simple purpose of use in debugging.
+	 * #Python3
 	 * @param string
 	 * 		string to be printed.
 	 */
@@ -1199,6 +1186,7 @@ public class World {
 	
 	/**
 	 * The nextWorm function puts the next worm in line as the current worm. this worm has also had it's actionpoits restored, and 10 health added.
+	 * This is the nextTurn function
 	 * @post
 	 * 		the active worm is the next one in the list. If the old active worm was the last in the list, the new active worm is the first in the list.
 	 * 		| new.getCurrentWorm() == getWormAt(getIndexOfWorm(old.getCurrentWorm()) + 1) % getNbWorms()
@@ -1221,6 +1209,7 @@ public class World {
 	
 	/**
 	 * isLegalPosition returns true if the entity is within the bounds of the world.
+	 * not to be confused with isValidPosition
 	 * 
 	 * @param coordinates
 	 * @param radius
