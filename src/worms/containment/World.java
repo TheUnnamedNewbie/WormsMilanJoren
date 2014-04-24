@@ -934,7 +934,7 @@ public class World {
 	 *		|	}
 	 *		|	result == true;
 	 */
-	public boolean (double[] coordinates, double radius) {
+	public boolean canExist(double[] coordinates, double radius) {
 		assert(coordinates[0] <= getWidth());
 		assert(coordinates[1] <= getHeight());
 		assert(coordinates[0] >= 0);
@@ -1125,6 +1125,18 @@ public class World {
 			return new double[]{getWidth(), getHeight()};
 	}
 	
+	/**
+	 * The method returns if the world has a winner or not.
+	 * 
+	 * @return
+	 * 		True if one of the following conditions are met:
+	 * 			Only one worm is left on the map
+	 * 			All of the worms remaining on the playingfield are of the same team (this does not apply to worms with no team at all)
+	 * 		| result == 
+	 * 		| 		(getNbWorms() == 1) ||
+	 * 		|		for(Worm worm: getAllWorms()) {worm.getTeam() == getAllWorms()[0]}
+	 * 			
+	 */
 	public boolean hasWinner() {
 		boolean activated = false;
 		Team team = null;
@@ -1144,6 +1156,12 @@ public class World {
 		return true;
 	}
 	
+	/**
+	 * Returns an arraylist of the winners of the game
+	 * @return
+	 * 		| if(hasWinner){result == getAllWorms()}
+	 * 		| else {result == new ArrayList<Worm>();
+	 */
 	public ArrayList<Worm> getWinner() {
 		ArrayList<Worm> emptyOutput = new ArrayList<Worm>();
 		if (hasWinner())
@@ -1163,6 +1181,13 @@ public class World {
 
 	/**
 	 * The start method puts the first worm as active worm and thus initializes the chain of events
+	 * @throws IllegalStateException
+	 * 		if there are not enought worms in the world to start the game, i.e. there are less than 2 worms that are not in the same team.
+	 * 		| hasWinner()
+	 * @throws IllegalStateException
+	 * 		if the game has already started (the world has an active worm), and has no winner. 
+	 * 		| getCuurentWorm() != null
+	 * 
 	 */
 	public void start() {
 		if (hasWinner())
@@ -1173,7 +1198,19 @@ public class World {
 	}
 	
 	/**
-	 * The nextWorm function puts the next worm in line as the current worm
+	 * The nextWorm function puts the next worm in line as the current worm. this worm has also had it's actionpoits restored, and 10 health added.
+	 * @post
+	 * 		the active worm is the next one in the list. If the old active worm was the last in the list, the new active worm is the first in the list.
+	 * 		| new.getCurrentWorm() == getWormAt(getIndexOfWorm(old.getCurrentWorm()) + 1) % getNbWorms()
+	 * @post
+	 * 		the new active worm has 10 more hitpoints than it had before the call of the method (unless it was less than 10 hitpoints under the max hitpoints,
+	 * 		in which case it will have the maximum allowed hitpoints)
+	 * 		| if(new.getCurrentWorm().getMaxHitpoints >= (new.getCurrentWorm().getHitPoints() + 10)) {
+	 * 		|		final.getCurrentWorm().getHitPoints() == new.getCurrentWorm().getHitPoints() + 10 }
+	 * 		| else { final.getCurrentWorm().getHitPoints() == new.getCurrentWorm().getMaxHitPoints() }
+	 * @post
+	 * 		the new active worm has full actionpoints
+	 * 		| final.getCurrentWorm().getActionPoints() == new.getCurrentWorm().getMaxActionPoints()
 	 */
 	public void nextWorm() {
 		Worm newWorm = getWormAt((getIndexOfWorm(getCurrentWorm())+1)%getNbWorms());
@@ -1184,10 +1221,15 @@ public class World {
 	
 	/**
 	 * isLegalPosition returns true if the entity is within the bounds of the world.
-	 * Difference from before: It returned false when within bounds (illogical).
+	 * 
 	 * @param coordinates
 	 * @param radius
 	 * @return
+	 * 		false if an entity placed at the coordinates with the provided radius would be at least partially out of bounds.
+	 * 		| result == (coordinates[0] + radius < this.getWidth()) &&
+	 * 		|			(coordinates[0] - radius >= 0) &&
+	 * 		|			(coordinates[1] + radius < this.getHeight()) &&
+	 * 		|			(coordinates[1] - radius >= 0) 
 	 */
 	public boolean isLegalPosition(double[] coordinates, double radius) {
 		if((coordinates[0] + radius >= this.getWidth()) || (coordinates[0] - radius < 0)
