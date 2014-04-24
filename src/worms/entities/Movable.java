@@ -1,5 +1,6 @@
 package worms.entities;
 
+import worms.ExhaustionException;
 import worms.containment.World;
 import be.kuleuven.cs.som.annotate.*;
 
@@ -111,6 +112,9 @@ public abstract class Movable extends Entity {
 	 * 		
 	 */
 	public double jumpTime(long AP, double timestep) {
+		if (AP <0){
+			return 0;
+		}
 		double time = timestep;
 		while (true) {
 			double[] target = jumpStep(AP, time);
@@ -188,7 +192,10 @@ public abstract class Movable extends Entity {
  * 		| result == jumpStep((5 * AP) + (getMass() * World.GRAVITY), time)
  */
 	@Raw
-	public double[] jumpStep(long AP, double time) {
+	public double[] jumpStep(long AP, double time){
+		if(AP < 0) {
+			return this.getCoordinates();
+		}
 		double force;
 		force = (5 * AP) + (getMass() * World.GRAVITY);
 		double[] targetPos = jumpStep(force, time);
