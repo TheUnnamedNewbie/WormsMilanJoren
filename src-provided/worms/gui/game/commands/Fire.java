@@ -6,19 +6,18 @@ import worms.gui.game.sprites.ProjectileSprite;
 import worms.gui.messages.MessageType;
 import worms.model.IFacade;
 import worms.model.ModelException;
-import worms.entities.Projectile;
+import worms.model.Projectile;
 import worms.model.Worm;
 
-public class Shoot extends Command {
+public class Fire extends Command {
 	private final Worm worm;
-	private boolean finished = false;
 
 	private final int propulsionYield;
 	private Projectile projectile;
 	private double totalDuration;
 	private boolean hasJumped;
 
-	public Shoot(IFacade facade, Worm worm, int propulsionYield,
+	public Fire(IFacade facade, Worm worm, int propulsionYield,
 			PlayGameScreen screen) {
 		super(facade, screen);
 		this.worm = worm;
@@ -61,18 +60,13 @@ public class Shoot extends Command {
 	}
 
 	@Override
-	protected boolean isExecutionCompleted() {
-		return finished;
-	}
-
-	@Override
 	protected void doUpdate(double dt) {
 		try {
 			if (getElapsedTime() >= totalDuration) {
 				if (!hasJumped) {
 					hasJumped = true;
 					getFacade().jump(projectile, GUIConstants.JUMP_TIME_STEP);
-					finished = true;
+					completeExecution();
 				}
 			} else {
 				ProjectileSprite sprite = getScreen().getSpriteOfTypeFor(

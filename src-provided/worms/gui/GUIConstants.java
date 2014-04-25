@@ -51,7 +51,7 @@ public final class GUIConstants {
 	/**
 	 * Time step to use when calculating jump positions
 	 */
-	public static final double JUMP_TIME_STEP = 1e-2; //was 1e-4, but it was too heavy on a high-end system. More efficient implementation is recommended.
+	public static final double JUMP_TIME_STEP = 1e-4;
 
 	/* disable instantiations */
 	private GUIConstants() {
