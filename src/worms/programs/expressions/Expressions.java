@@ -4,7 +4,7 @@ import java.beans.Expression;
 
 public class Expressions {
 	
-	private static int line, column; 
+	private final int line, column; 
 	
 	/**
 	 * Getter for the line variable
@@ -68,7 +68,7 @@ public class Expressions {
 			if(isLegalValue(target)){
 				this.value = target;
 			}
-			else {throw new IlligalArgumentException<E>};
+			else {throw new IllegalArgumentException();}
 		}
 		
 		/**
@@ -77,7 +77,7 @@ public class Expressions {
 		 * 		the value to be stored by the litteral.
 		 */
 		public void setValue(double target) {
-			if(isLegalValue(target){
+			if(isLegalValue(target)){
 				this.value = target;
 			}
 			else {return;}
@@ -159,11 +159,11 @@ public class Expressions {
 			if(left.getClass() != right.getClass()){
 				this.value = false;
 			}
-			if(left == right) {
-				this.value = true;
-			}	else {
-				this.value = false;
-			}
+//			if(left == right) {
+//				this.value = true;
+//			}	else {
+//				this.value = false;
+//			}
 			
 			public boolean getValue() {
 				return this.value;
@@ -177,7 +177,9 @@ public class Expressions {
 				return this.right;
 			}
 			
-			
+		}
+		
+		
 			
 	}
 }
