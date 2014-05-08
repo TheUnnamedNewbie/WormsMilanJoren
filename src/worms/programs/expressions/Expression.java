@@ -99,6 +99,50 @@ public class Expression {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param target
+	 */
+	public void createSubExpressionBooleanLiteral(boolean target) {
+		if(hasSubExpression()){
+			return;
+		} else {
+			subExpression = new BooleanLiteral(target, this);
+		}
+	}
+	
+	public void createSubExpressionLogicAnd(Expression first, Expression second) {
+		if(hasSubExpression()){
+			return;
+		} else {
+			subExpression = new LogicAnd(first, second, this);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param first
+	 * @param second
+	 */
+	public void createSubExpressionLogicOr(Expression first, Expression second) {
+		if(hasSubExpression()){
+			return;
+		} else {
+			subExpression = new LogicOr(first, second, this);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param first
+	 */
+	public void createSubExpressionLogicNot(Expression first) {
+		if(hasSubExpression()){
+			return;
+		} else {
+			subExpression = new LogicNot(first, this);
+		}
+	}
 	
 	/**
 	 * DONE
