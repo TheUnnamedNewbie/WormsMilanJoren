@@ -213,7 +213,7 @@ public class Expression {
 			this.master = targetMaster;
 			this.left = first;
 			this.right = second;
-			preConValue = areLegalExpressionsLogic(first, second);
+			setLegalExpressionsLogic(first, second);
 		}
 					
 		/**
@@ -257,7 +257,7 @@ public class Expression {
 			this.master = targetMaster;
 			this.left = first;
 			this.right = first;
-			preConValue = areLegalExpressionsLogic(first, second);
+			setLegalExpressionsLogic(first, second);
 		}
 		
 		/**

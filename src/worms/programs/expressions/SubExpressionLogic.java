@@ -6,23 +6,23 @@ import worms.programs.expressions.Expression.BooleanLiteral;
 public abstract class SubExpressionLogic extends SubExpression {
 
 	
-	protected final boolean preConValue;
+	protected boolean preConValue = false;
 	protected Expression left, right;
 	
-	public boolean areLegalExpressionsLogic(Expression left, Expression right){
+	public boolean setLegalExpressionsLogic(Expression left, Expression right){
 		if(!left.hasSubExpression()){
-			return false;
+			preConValue = false;
 		} else {
 			if(!right.hasSubExpression()){
-				return false;
+				preConValue = false;
 			} else {
 				if(left.getSubExpressionType() != "BooleanLiteral"){
-					return false;
+					preConValue = false;
 				} else {
 					if(right.getSubExpressionType() != "BooleanLiteral"){
-						return false;
+						preConValue = false;
 					} else {
-						return true;
+						preConValue = true;
 					}
 				}
 			}
