@@ -23,7 +23,21 @@ public abstract class SubExpressionLogic extends SubExpression {
 						preConValue = false;
 					} else {
 						preConValue = true;
-					}
+					} 
+				}
+			}
+		}
+	}
+	
+	public boolean setLegalExpressionsLogic(Expression left){
+		if(!left.hasSubExpression()){
+			preConValue = false;
+		} else {
+				if(left.getSubExpressionType() != "BooleanLiteral"){
+					preConValue = false;
+				} else {
+						preConValue = true;
+					} 
 				}
 			}
 		}

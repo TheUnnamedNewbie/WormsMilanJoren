@@ -1,5 +1,5 @@
 package worms.programs.types;
 
-public abstract class Types {
+public class Type {
 
 }

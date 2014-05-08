@@ -281,6 +281,47 @@ public class Expression {
 		}
 	}
 	
+	
+	/**
+	 * DONE
+	 * Class for the logic Not. Still very similar to the LogicAnd and LogicOr classes. Main difference is that it has only one argument.
+	 * @author Joren
+	 *
+	 */
+	public class LogicNot extends SubExpressionLogic {
+		
+		/**
+		 * Constructor for the LogicNot Expression. 
+		 * @param parameter
+		 * 		the actual logical value to be worked with.
+		 * @param targetMaster
+		 * 		the master of the class.
+		 */
+		public LogicNot(Expression parameter, Expression targetMaster) {
+			this.master = targetMaster;
+			this.left = parameter;
+			this.right = parameter; //don't really know what to do with this... 
+			setLegalExpressionsLogic(parameter);
+		}
+		
+		/**
+		 * getter for the value of the expression. True always unless the parameter is of a BooleanLiteral type and true.
+		 * @return
+		 * 		| result == !getLeftValue()
+		 */
+		public boolean getValue() { //HOW DO WE HANDLE PRECON?
+			return !(getLeftValue());
+		}
+		
+		/** 
+		 * getter for the type. Returns "LogicNot".
+		 */
+		public String getType(){
+			return "LogicNot";
+		}
+	
+	}
+	
 		
 		
 }

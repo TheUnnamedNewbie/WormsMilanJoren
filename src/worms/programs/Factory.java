@@ -1,28 +1,36 @@
 package worms.programs;
 
 import worms.model.programs.ProgramFactory;
+import worms.programs.expressions.Expression;
+import worms.programs.statements.Statement;
+import worms.programs.types.Type;
 
-
-
-public class Factory implements ProgramFactory<E, S, T> {
+public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	
 	//DONE
-	public E createnDoubleLiteral(int line, int column, double d) {
+	public Expression createnDoubleLiteral(int line, int column, double d) {
 		return null;
 	}
 	
 	//DONE
-	public E createBooleanLiteral(int line, int column, boolean b) {
+	public Expression createBooleanLiteral(int line, int column, boolean b) {
 		return null;
 	}
 	
 	//DONE
-	public E createAnd(int line, int column, E e1, E e2) {
+	public Expression createAnd(int line, int column, Expression e1, Expression e2) {
 		return null;
 	}
 	
 	//DONE
-	public E createOr(int line, int column, E e1, E e2) {
+	public Expression createOr(int line, int column, Expression e1, Expression e2) {
 		return null;
 	}
+	
+	//DONE
+	public Expression createNot(int line, int column, Expression e) {
+		return null;
+	}
+	
+	
 }
