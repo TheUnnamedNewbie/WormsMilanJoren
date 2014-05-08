@@ -101,6 +101,7 @@ public class Expression {
 	
 	
 	/**
+	 * DONE
 	 * Class for double literal expressions. 
 	 * @author Joren
 	 * @invar the value stored is always smaller than Double.MAX_VALUE and greater than Double.MIN_VALUE.
@@ -161,6 +162,7 @@ public class Expression {
 		}
 	}
 	/**
+	 * DONE
 	 *Class for Boolean literal expressions
 	 * @author Joren
 	 *
@@ -188,6 +190,7 @@ public class Expression {
 	}
 	
 	/**
+	 * DONE
 	 * Class for Logical And expressions with two childexpressions. And expressions with more than two childexpressions are built of trees.
 	 * @author Joren
 	 * 
@@ -197,11 +200,8 @@ public class Expression {
 	 * will stop if the left argument is false)
 	 *
 	 */
-	public class LogicAnd extends SubExpression{
-			
-		private final boolean preConValue;
-		private Expression left, right;
-		
+	public class LogicAnd extends SubExpressionLogic{
+				
 		/**
 		 * Constructor for a Logical and, The value is false in all cases except when two expressions of the same type and value are given.
 		 * @param left
@@ -213,35 +213,9 @@ public class Expression {
 			this.master = targetMaster;
 			this.left = first;
 			this.right = second;
-			if(!left.hasSubExpression()){
-				this.preConValue = false;
-			} else {
-				if(!right.hasSubExpression()){
-					this.preConValue = false;
-				} else {
-					if(left.getSubExpressionType() != "BooleanLiteral"){
-						this.preConValue = false;
-					} else {
-						if(right.getSubExpressionType() != "BooleanLiteral"){
-							this.preConValue = false;
-						} else {
-							this.preConValue = true;
-						}
-					}
-				}
-			}
+			preConValue = areLegalExpressionsLogic(first, second);
 		}
-		
-		/**
-		 * getter for the value stored by the constructor. This is a value that is stored for total reasons. 
-		 * If a LogicAnd is constructed with wrong/illegal initial expressions (no subexpressions or subexpressions are not of the BooleanLiteral type)
-		 * this will be false and force all results later on to be false.
-		 * @return
-		 */
-		private boolean getPreConValue() {
-			return this.preConValue;
-		}
-		
+					
 		/**
 		 * returns the value of the and. Always false, except when the subexpressions in the and are both of the BooleanLiteral type
 		 * and both are true.
@@ -252,47 +226,6 @@ public class Expression {
 			return this.getPreConValue() && (getLeftValue() && getRightValue());
 		}
 		
-		/**
-		 * Getter for the left expression in the subExpression
-		 * @return
-		 */
-		public Expression getLeftExpression() {
-			return this.left;
-		}
-		
-		/**
-		 * Getter for the Value of the left Expression.
-		 * @return
-		 * 		|
-		 */
-		public boolean getLeftValue() {
-			if(getLeftExpression().getSubExpressionType() != "BooleanLiteral") {
-				return false;
-			} else {
-				return ((BooleanLiteral) getLeftExpression().getSubExpression()).getValue();
-			}
-		}
-		
-		/**
-		 * getter for the right expression. Identical to that of the left getter.
-		 * @return
-		 */
-		public Expression getRightExpression() {
-			return this.right;
-		}
-		
-		/**
-		 * getter for the value of the right subexpression. Identical to that of the left one.
-		 * @return
-		 */
-		public boolean getRightValue() {
-			if(getRightExpression().getSubExpressionType() != "BooleanLiteral") {
-				return false;
-			} else {
-				return ((BooleanLiteral) getRightExpression().getSubExpression()).getValue();
-			}
-		}
-		
 		/** 
 		 * Returns the type of this subexpression, in this case "LogicAnd"
 		 * @return
@@ -301,10 +234,54 @@ public class Expression {
 		public String getType(){
 			return "LogicAnd";
 		}
+	}
+	
+	/**
+	 * DONE
+	 * Class for the LogicOr. Equal to LogicAnd in almost all aspects except for getValue and getType.
+	 * @author Joren
+	 *
+	 */
+	public class LogicOr extends SubExpressionLogic{
 		
+		/**
+		 * Physically identical to the constructor of LogicAnd
+		 * @param first
+		 * 		the first of the two actual parameters for the logical or
+		 * @param second
+		 * 		the second of the two actual parameters for the logical or 
+		 * @param targetMaster
+		 * 		the parent Expression.
+		 */
+		public LogicOr(Expression first, Expression second, Expression targetMaster) {
+			this.master = targetMaster;
+			this.left = first;
+			this.right = first;
+			preConValue = areLegalExpressionsLogic(first, second);
 		}
 		
+		/**
+		 * returns the value of the or. 
+		 * False if the initialzation was not a legal one (IE both expressions were not for the type "BooleanLiteral"
+		 * True if they were both of the type "BooleanLiteral" and at least one of them is true.
+		 * @return
+		 * 		| result == (getPreConValue() && (getLeftValue() || getRightValue()))
+		 */
+		public boolean getValue() {
+			return (getPreConValue() && (getLeftValue() || getRightValue()));
+		}
 		
-			
+		/** 
+		 * Returns the type of this subexpression, in this case "LogicOr"
+		 * @return
+		 * 		| result == "LogicOr"
+		 */
+		public String getType(){
+			return "LogicOr";
+		}
 	}
+	
+		
+		
 }
+
