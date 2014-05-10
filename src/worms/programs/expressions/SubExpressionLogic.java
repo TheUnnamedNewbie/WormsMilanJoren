@@ -9,7 +9,7 @@ public abstract class SubExpressionLogic extends SubExpression {
 	protected boolean preConValue = false;
 	protected Expression left, right;
 	
-	public boolean setLegalExpressionsLogic(Expression left, Expression right){
+	public void setLegalExpressionsLogic(Expression left, Expression right){
 		if(!left.hasSubExpression()){
 			preConValue = false;
 		} else {
@@ -29,7 +29,7 @@ public abstract class SubExpressionLogic extends SubExpression {
 		}
 	}
 	
-	public boolean setLegalExpressionsLogic(Expression left){
+	public void setLegalExpressionsLogic(Expression left){
 		if(!left.hasSubExpression()){
 			preConValue = false;
 		} else {
@@ -37,11 +37,11 @@ public abstract class SubExpressionLogic extends SubExpression {
 					preConValue = false;
 				} else {
 						preConValue = true;
-					} 
-				}
-			}
+				} 
 		}
 	}
+		
+	
 	
 	/**
 	 * getter for the value stored by the constructor. This is a value that is stored for total reasons. 

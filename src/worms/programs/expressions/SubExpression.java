@@ -13,5 +13,9 @@ public abstract class SubExpression {
 	public String getType(){
 		return "SubExpression";
 	}
+	
+	public String getReturnType(){
+		return "null";
+	}
 
 }

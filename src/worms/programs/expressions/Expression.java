@@ -79,6 +79,18 @@ public class Expression {
 	}
 	
 	/**
+	 * Gives the returntype for the subExpression (so we can "stack" expressions into a tree)
+	 * @return
+	 */
+	public String getSubExpressoinReturnType() {
+		if(hasSubExpression()){
+			return this.getSubExpression().getReturnType();
+		} else {
+			return "null";
+		}
+	}
+	
+	/**
 	 * returns the subexpression stored
 	 * @return
 	 * 		| result == this.subExpression
@@ -204,6 +216,10 @@ public class Expression {
 		public String getType(){
 			return "DoubleLiteral";
 		}
+		
+		public String getReturnType(){
+			return "DoubleLiteral";
+		}
 	}
 	/**
 	 * DONE
@@ -231,6 +247,11 @@ public class Expression {
 		public String getType() {
 			return "BooleanLiteral";
 		}
+		
+		public String getReturnType() {
+			return "BooleanLiteral";
+		}
+		
 	}
 	
 	/**
@@ -365,6 +386,8 @@ public class Expression {
 		}
 	
 	}
+	
+	public class DoubleLessThan
 	
 		
 		
