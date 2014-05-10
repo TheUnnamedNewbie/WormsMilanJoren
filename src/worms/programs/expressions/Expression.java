@@ -699,5 +699,26 @@ public class Expression {
 			return "DoubleDivision";
 		}
 	}
+	
+	public class DoubleSquareRoot extends SubExpressionDoubleMathematical {
+		
+		public DoubleSquareRoot(Expression first){
+			this.left = first;
+			this.right = first;
+			setHasLegalArguments();
+		}
+		
+		public double getValue() {
+			if(!getPreConValue()){
+				return Double.NaN;
+			} else {
+				return Math.sqrt((double)left.getSubExpression().getValue());
+			}
+		}
+		
+		public String getType() {
+			return "DoubleSquareRoot";
+		}
+	}
 }
 
