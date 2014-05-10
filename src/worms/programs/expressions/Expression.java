@@ -602,7 +602,7 @@ public class Expression {
 		}
 	}
 	
-public class DoubleSubtraction extends SubExpressionDoubleMathematical {
+	public class DoubleSubtraction extends SubExpressionDoubleMathematical {
 		
 		public DoubleSubtraction(Expression first, Expression second) {
 			this.left = first;
@@ -624,5 +624,26 @@ public class DoubleSubtraction extends SubExpressionDoubleMathematical {
 		}
 	}
 
+	public class DoubleMultiplication extends SubExpressionDoubleMathematical {
+		
+		public DoubleMultiplication(Expression first, Expression second) {
+			this.left = first;
+			this.right = second;
+			setHasLegalArguments();
+		}
+		
+		@Override
+		public double getValue() {
+			if(!getPreConValue()){
+				return Double.NaN;
+			} else {
+				return ((double)left.getSubExpression().getValue() * (double)right.getSubExpression().getValue());
+			}
+		}
+		
+		public String getType() {
+			return "DoubleMultiplication";
+		}
+	}
 }
 
