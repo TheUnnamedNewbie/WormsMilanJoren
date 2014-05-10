@@ -444,6 +444,7 @@ public class Expression {
 			this.right = second;
 			setHasLegalArguments();
 		}
+		
 		@Override
 		public boolean getValue() {
 			if(!getPreConValue()){
@@ -456,9 +457,50 @@ public class Expression {
 		public String getType() {
 			return "DoubleGreaterThan";
 		}
-	}
+		
+		public class DoubleLessThanOrEqualTo extends SubExpressionDoubleCompare {
+			
+			public DoubleLessThanOrEqualTo(Expression first, Expression second){
+				this.left = first;
+				this.right = second;
+				setHasLegalArguments();
+			}
+			
+			@Override
+			public boolean getValue() {
+				if(!getPreConValue()){
+					return false;
+				} else {
+					return ((double)left.getSubExpression().getValue() <= (double)right.getSubExpression().getValue());
+				}
+			}
+			
+			public String getType() {
+				return "DoubleLessThanOrEqualTo";
+			}
+		}
+		
+		public class DoubleGreaterThanOrEqualTo extends SubExpressionDoubleCompare {
+			
+			public DoubleGreaterThanOrEqualTo(Expression first, Expression second){
+				this.left = first;
+				this.right = second;
+				setHasLegalArguments();
+			}
+			
+			@Override
+			public boolean getValue() {
+				if(!getPreConValue()){
+					return false;
+				} else {
+					return ((double)left.getSubExpression().getValue() >= (double)right.getSubExpression().getValue());
+				}
+			}
+			
+			public String getType() {
+				return "DoubleGreaterThanOrEqualTo";
+			}
+		}
 	
-		
-		
 }
 
