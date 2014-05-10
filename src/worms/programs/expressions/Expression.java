@@ -720,5 +720,28 @@ public class Expression {
 			return "DoubleSquareRoot";
 		}
 	}
+	
+	public class DoubleSine extends SubExpressionDoubleMathematical {
+		
+		public DoubleSine(Expression first){
+			this.left = first;
+			this.right = first;
+			setHasLegalArguments();
+		}
+		
+		public double getValue() {
+			if(!getPreConValue()){
+				return Double.NaN;
+			} else {
+				return Math.sin((double)left.getSubExpression().getValue());
+			}
+		}
+		
+		public String getType() {
+			return "DoubleSine";
+		}
+	}
+	
+	
 }
 
