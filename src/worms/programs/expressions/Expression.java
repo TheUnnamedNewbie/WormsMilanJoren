@@ -742,6 +742,27 @@ public class Expression {
 		}
 	}
 	
+	public class DoubleCosine extends SubExpressionDoubleMathematical {
+		
+		public DoubleCosine(Expression first){
+			this.left = first;
+			this.right = first;
+			setHasLegalArguments();
+		}
+		
+		public double getValue() {
+			if(!getPreConValue()){
+				return Double.NaN;
+			} else {
+				return Math.cos((double)left.getSubExpression().getValue());
+			}
+		}
+		
+		public String getType() {
+			return "DoubleCosine";
+		}
+	}
+	
 	
 }
 
