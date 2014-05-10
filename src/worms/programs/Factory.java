@@ -169,6 +169,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	};
 
 	/**
+	 * FRAMEWORK DONE WAITING FOR IMPLEMENTATION
 	 * Create an expression that represents the addition of the value of
 	 * expression e1 and the value of the expression e2
 	 */
@@ -177,6 +178,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	};
 
 	/**
+	 * FRAMEWORK DONE WAITING FOR IMPLEMENTATION
 	 * Create an expression that represents the subtraction of the value of
 	 * expression e1 and the value of the expression e2
 	 */
@@ -185,6 +187,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	};
 
 	/**
+	 * FRAMEWORK DONE WAITING FOR IMPLEMENTATION
 	 * Create an expression that represents the multiplication of the value of
 	 * expression e1 and the value of the expression e2
 	 */
@@ -193,6 +196,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	};
 
 	/**
+	 * FRAMEWORK DONE WAITING FOR IMPLEMENTATION
 	 * Create an expression that represents the division of the value of
 	 * expression e1 and the value of the expression e2
 	 */
@@ -201,6 +205,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	};
 
 	/**
+	 * FRAMEWORK DONE WAITING FOR IMPLEMENTATION
 	 * Create an expression that represents the square root of the value of
 	 * expression e1 and the value of the expression e2
 	 */
@@ -209,6 +214,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	};
 
 	/**
+	 * FRAMEWORK DONE WAITING FOR IMPLEMENTATION
 	 * Create an expression that represents the sine of the value of expression
 	 * e1 and the value of the expression e2
 	 */
@@ -217,6 +223,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	};
 
 	/**
+	 * FRAMEWORK DONE WAITING FOR IMPLEMENTATION
 	 * Create an expression that represents the cosine of the value of
 	 * expression e1 and the value of the expression e2
 	 */

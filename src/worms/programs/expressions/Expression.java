@@ -80,7 +80,11 @@ public class Expression {
 	
 	/**
 	 * Gives the returntype for the subExpression (so we can "stack" expressions into a tree)
-	 * @return
+	 * @return If the Expression has a subtype, it will pass the request on to the subtype. 
+	 *			Else, it will return the string containing "null".
+	 *		| if(hasSubExpression()) 
+	 *		|	result == this.getSubExpression().getReturnType()
+	 *		| else result == "null"
 	 */
 	public String getSubExpressionReturnType() {
 		if(hasSubExpression()){
@@ -91,7 +95,7 @@ public class Expression {
 	}
 	
 	/**
-	 * returns the subexpression stored
+	 * returns the subexpression stored by the Expressionobject the method is called upon.
 	 * @return
 	 * 		| result == this.subExpression
 	 */
@@ -100,8 +104,17 @@ public class Expression {
 	}
 	
 	/**
-	 * 
+	 * Method to create a subexpressio of the type DoubleLiteral, if the expression it is called upon does not yet have a subexpression.
+	 * Else it will ignore the request
 	 * @param target
+	 * 		the target value for the DoubleLiteral.
+	 * @post if the Expression did not yet have a subexpression at the time of the methodcall, it will now have a DoubleLitarl as subexpression
+	 * 		of which the value is equal to target.
+	 * 		| if(old.hasSubExpression()) {
+	 * 		| 	new.getSubExpression == old.getSubExpression
+	 * 		| else {
+	 * 		|	( new.getSubExpressionType() == "DoubleLiteral"	) &&
+	 * 		|	( new.getSubExpression().getValue() == target )
 	 */
 	public void createSubExpressionDoubleLiteral(double target){
 		if(hasSubExpression()){
@@ -112,8 +125,17 @@ public class Expression {
 	}
 	
 	/**
-	 * 
+	 * Method for creating a BooleanLiteral subexpression, with the value of target, if the expression the method is called upon does 
+	 * not yet have a subexpression. Otherwise the request is simply ignored.
 	 * @param target
+	 * 		the boolean value to be stored by the BooleanLiteral.
+	 * @post if the expression did not yet have a subexression, it will now store a BooleanLiteral with value target.
+	 * 		Else nothing has changed
+	 * 		| if(hasSubExpression()){
+	 * 		|	new.getSubExpression() == old.getSubExpression() }
+	 * 		| else {
+	 * 		|	this.getSubExpressionType() == "BooleanLIteral" &&
+	 * 		| 	this.getSubExpresison().getValue() == target }
 	 */
 	public void createSubExpressionBooleanLiteral(boolean target) {
 		if(hasSubExpression()){
@@ -123,6 +145,19 @@ public class Expression {
 		}
 	}
 	
+	/**
+	 * Method for creating a subExpression of the type LogicAnd, if the Expression it is called upon did not yet have a subexpression.
+	 * If it did, nothing is done.
+	 * @param first 
+	 * 			the first expression to be part of the LogicalAnd. Can be of any type.
+	 * @param second
+	 * 			the second expression to be part of the LogicalAnd. Can be of any type.
+	 * @post
+	 * 		if the expression did not yet have a subexpression, it will now store a LogicAnd with parameters first and second.
+	 * 		The result stored by this expression will be false in all cases except when both parameters given to have a returnType of BooleanLiteral, 
+	 * 		and both of these BooleanLiterals are true.
+	 * 		
+	 */
 	public void createSubExpressionLogicAnd(Expression first, Expression second) {
 		if(hasSubExpression()){
 			return;
