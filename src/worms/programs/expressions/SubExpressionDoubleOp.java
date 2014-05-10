@@ -1,5 +1,6 @@
 package worms.programs.expressions;
 
+
 public abstract class SubExpressionDoubleOp extends SubExpressionOp {
 	
 	public void setHasLegalArguments(){
