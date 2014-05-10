@@ -102,91 +102,121 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 		return null;
 	}
 	
-	public Expression createIsFood(int line, int column, Expression e);
+	public Expression createIsFood(int line, int column, Expression e){
+		return null;
+	};
 
 	/**
 	 * Create an expression that evaluates to the value of the variable with the
 	 * given name
 	 */
-	public Expression createVariableAccess(int line, int column, String name);
+	public Expression createVariableAccess(int line, int column, String name){
+		return null;
+	};
 
 	/**
 	 * Create an expression that checks whether the value of expression e1 is
 	 * less than the value of the expression e2
 	 */
-	public Expression createLessThan(int line, int column, Expression e1, Expression e2);
+	public Expression createLessThan(int line, int column, Expression e1, Expression e2){
+		return null;
+	};
 
 	/**
 	 * Create an expression that checks whether the value of expression e1 is
 	 * greater than the value of the expression e2
 	 */
-	public Expression createGreaterThan(int line, int column, Expression e1, Expression e2);
+	public Expression createGreaterThan(int line, int column, Expression e1, Expression e2){
+		return null;
+	};
 
 	/**
 	 * Create an expression that checks whether the value of expression e1 is
 	 * less than or equal to the value of the expression e2
 	 */
-	public Expression createLessThanOrEqualTo(int line, int column, Expression e1, Expression e2);
+	public Expression createLessThanOrEqualTo(int line, int column, Expression e1, Expression e2){
+		return null;
+	};
 
 	/**
 	 * Create an expression that checks whether the value of expression e1 is
 	 * greater than or equal to the value of the expression e2
 	 */
-	public Expression createGreaterThanOrEqualTo(int line, int column, Expression e1, Expression e2);
+	public Expression createGreaterThanOrEqualTo(int line, int column, Expression e1, Expression e2){
+		return null;
+	};
 
 	/**
 	 * Create an expression that checks whether the value of expression e1 is
 	 * equal to the value of the expression e2
 	 */
-	public Expression createEquality(int line, int column, Expression e1, Expression e2);
+	public Expression createEquality(int line, int column, Expression e1, Expression e2){
+		return null;
+	};
 
 	/**
 	 * Create an expression that checks whether the value of expression e1 is
 	 * not equal to the value of the expression e2
 	 */
-	public Expression createInequality(int line, int column, Expression e1, Expression e2);
+	public Expression createInequality(int line, int column, Expression e1, Expression e2){
+		return null;
+	};
 
 	/**
 	 * Create an expression that represents the addition of the value of
 	 * expression e1 and the value of the expression e2
 	 */
-	public Expression createAdd(int line, int column, Expression e1, Expression e2);
+	public Expression createAdd(int line, int column, Expression e1, Expression e2){
+		return null;
+	};
 
 	/**
 	 * Create an expression that represents the subtraction of the value of
 	 * expression e1 and the value of the expression e2
 	 */
-	public Expression createSubtraction(int line, int column, Expression e1, Expression e2);
+	public Expression createSubtraction(int line, int column, Expression e1, Expression e2){
+		return null;
+	};
 
 	/**
 	 * Create an expression that represents the multiplication of the value of
 	 * expression e1 and the value of the expression e2
 	 */
-	public Expression createMul(int line, int column, Expression e1, Expression e2);
+	public Expression createMul(int line, int column, Expression e1, Expression e2){
+		return null;
+	};
 
 	/**
 	 * Create an expression that represents the division of the value of
 	 * expression e1 and the value of the expression e2
 	 */
-	public Expression createDivision(int line, int column, Expression e1, Expression e2);
+	public Expression createDivision(int line, int column, Expression e1, Expression e2){
+		return null;
+	};
 
 	/**
 	 * Create an expression that represents the square root of the value of
 	 * expression e1 and the value of the expression e2
 	 */
-	public Expression createSqrt(int line, int column, Expression e);
+	public Expression createSqrt(int line, int column, Expression e){
+		return null;
+	};
 
 	/**
 	 * Create an expression that represents the sine of the value of expression
 	 * e1 and the value of the expression e2
 	 */
-	public Expression createSin(int line, int column, Expression e);
+	public Expression createSin(int line, int column, Expression e){
+		return null;
+	};
 
 	/**
 	 * Create an expression that represents the cosine of the value of
 	 * expression e1 and the value of the expression e2
 	 */
-	public Expression createCos(int line, int column, Expression e);
+	public Expression createCos(int line, int column, Expression e){
+		return null;
+	};
 
 	/* actions */
 
@@ -194,37 +224,49 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * Create a statement that represents a turn of the worm executing the
 	 * program by the value of the angle expression
 	 */
-	public S createTurn(int line, int column, Expression angle);
+	public S createTurn(int line, int column, Expression angle){
+		return null;
+	};
 
 	/**
 	 * Create a statement that represents a move of the worm executing the
 	 * program
 	 */
-	public S createMove(int line, int column);
+	public S createMove(int line, int column){
+		return null;
+	};
 
 	/**
 	 * Create a statement that represents a jump of the worm executing the
 	 * program
 	 */
-	public S createJump(int line, int column);
+	public S createJump(int line, int column){
+		return null;
+	};
 
 	/**
 	 * Create a statement that represents toggling the weapon of the worm
 	 * executing the program
 	 */
-	public S createToggleWeap(int line, int column);
+	public S createToggleWeap(int line, int column){
+		return null;
+	};
 
 	/**
 	 * Create a statement that represents firing the current weapon of the worm
 	 * executing the program, where the propulsion yield is given by the yield
 	 * expression
 	 */
-	public S createFire(int line, int column, Expression yield);
+	public S createFire(int line, int column, Expression yield){
+		return null;
+	};
 
 	/**
 	 * Create a statement that represents no action of a worm
 	 */
-	public S createSkip(int line, int column);
+	public S createSkip(int line, int column){
+		return null;
+	};
 
 	/* other statements */
 
@@ -232,21 +274,27 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * Create a statement that represents the assignment of the value of the rhs
 	 * expression to a variable with the given name
 	 */
-	public S createAssignment(int line, int column, String variableName, Expression rhs);
+	public S createAssignment(int line, int column, String variableName, Expression rhs){
+		return null;
+	};
 
 	/**
 	 * Create a statement that represents the conditional execution of the
 	 * statements then or otherwise, depending on the value of the condition
 	 * expression
 	 */
-	public S createIf(int line, int column, Expression condition, S then, S otherwise);
+	public S createIf(int line, int column, Expression condition, S then, S otherwise){
+		return null;
+	};
 
 	/**
 	 * Create a statement that represents the repeated execution of the body
 	 * statement, as long as the value of the condition expression evaluates to
 	 * true
 	 */
-	public S createWhile(int line, int column, Expression condition, S body);
+	public S createWhile(int line, int column, Expression condition, S body){
+		return null;
+	};
 
 	/**
 	 * Create a statement that represents the repeated execution of the body
@@ -254,19 +302,25 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * given name is set to a different object of the given type.
 	 */
 	public S createForeach(int line, int column, ForeachType type,
-			String variableName, S body);
+			String variableName, S body){
+		return null;
+	};
 
 	/**
 	 * Create a statement that represents the sequential execution of the given
 	 * statements
 	 */
-	public S createSequence(int line, int column, List<S> statements);
+	public S createSequence(int line, int column, List<S> statements){
+		return null;
+	};
 
 	/**
 	 * Create a statement that represents printing out the value of the
 	 * expression e
 	 */
-	public S createPrint(int line, int column, Expression e);
+	public S createPrint(int line, int column, Expression e){
+		return null;
+	};
 
 	/* types */
 
@@ -274,17 +328,23 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * Returns an object that represents the type of a global variable with
 	 * declared type 'double'.
 	 */
-	public T createDoubleType();
+	public T createDoubleType(){
+		return null;
+	};
 
 	/**
 	 * Returns an object that represents the type of a global variable with
 	 * declared type 'boolean'.
 	 */
-	public T createBooleanType();
+	public T createBooleanType(){
+		return null;
+	};
 
 	/**
 	 * Returns an object that represents the type of a global variable with
 	 * declared type 'entity'.
 	 */
-	public T createEntityType();
+	public T createEntityType(){
+		return null;
+	};
 }
