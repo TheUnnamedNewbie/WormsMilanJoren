@@ -204,6 +204,38 @@ public class Expression {
 		}
 	}
 	
+	public void createSubExpressionDoubleAddition(Expression first, Expression second){
+		if(hasSubExpression()){
+			return;
+		} else {
+			subExpression = new DoubleAddition(first, second);
+		}
+	}
+	
+	public void createSubExpressionDoubleSubtraction(Expression first, Expression second){
+		if(hasSubExpression()){
+			return;
+		} else {
+			subExpression = new DoubleSubtraction(first, second);
+		}
+	}
+	
+	public void createSubExpressionDoubleMultiplication(Expression first, Expression second){
+		if(hasSubExpression()){
+			return;
+		} else {
+			subExpression = new DoubleMultiplication(first, second);
+		}
+	}
+	
+	public void createSubExpressionDoubleDivision(Expression first, Expression second){
+		if(hasSubExpression()){
+			return;
+		} else {
+			subExpression = new DoubleDivision(first, second);
+		}
+	}
+	
 	/**
 	 * DONE
 	 * Class for double literal expressions. 
@@ -643,6 +675,28 @@ public class Expression {
 		
 		public String getType() {
 			return "DoubleMultiplication";
+		}
+	}
+	
+	public class DoubleDivision extends SubExpressionDoubleMathematical {
+		
+		public DoubleDivision(Expression first, Expression second) {
+			this.left = first;
+			this.right = second;
+			setHasLegalArguments();
+		}
+		
+		@Override
+		public double getValue() {
+			if(!getPreConValue()){
+				return Double.NaN;
+			} else {
+				return ((double)left.getSubExpression().getValue() / (double)right.getSubExpression().getValue());
+			}
+		}
+		
+		public String getType() {
+			return "DoubleDivision";
 		}
 	}
 }
