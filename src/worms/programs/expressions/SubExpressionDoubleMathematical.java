@@ -20,7 +20,7 @@ public abstract class SubExpressionDoubleMathematical extends
 	}
 	
 	public String getReturnType() {
-		return "DoubleLiteral"
+		return "DoubleLiteral";
 	}
 
 }

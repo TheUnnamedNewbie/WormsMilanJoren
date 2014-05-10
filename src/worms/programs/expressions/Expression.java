@@ -579,6 +579,28 @@ public class Expression {
 			return "DoubleInequality";
 		}
 	}
+	
+	public class DoubleAddition extends SubExpressionDoubleMathematical {
+		
+		public DoubleAddition(Expression first, Expression second) {
+			this.left = first;
+			this.right = second;
+			setHasLegalArguments();
+		}
+		
+		@Override
+		public double getValue() {
+			if(!getPreConValue()){
+				return Double.NaN;
+			} else {
+				return ((double)left.getSubExpression().getValue() + (double)right.getSubExpression().getValue());
+			}
+		}
+		
+		public String getType() {
+			return "DoubleAddition";
+		}
+	}
 
 }
 
