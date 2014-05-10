@@ -18,4 +18,7 @@ public abstract class SubExpression {
 		return "null";
 	}
 
+	public Object getValue(){
+		return null;
+	}
 }

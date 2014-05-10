@@ -1,20 +1,29 @@
 package worms.programs.expressions;
 
-public abstract class SubExpressionDoubleOp extends SubExpression {
-
-	protected Expression left, right;
-	protected boolean hasLegalArguments;
+public abstract class SubExpressionDoubleOp extends SubExpressionOp {
 	
-	public void setHasLegalArguments(Expression left, Expression right){
+	public void setHasLegalArguments(){
 		if(!left.hasSubExpression()){
-			hasLegalArguments = false;
+			preConValue = false;
 		} else {
 			if(!right.hasSubExpression()){
-				hasLegalArguments = false;
+				preConValue = false;
 			} else {
-				if(left.getSubExpressionType() != "DoubleLiteral")
-			}
+				if(left.getSubExpressionReturnType() != "DoubleLiteral"){
+					preConValue = false;
+				} else {
+					if(right.getSubExpressionReturnType() != "DoubleLiteral"){
+						preConValue = false;
+					} else {
+						preConValue = true;
+					}
+				}
+			} 
 		}
+	}
+	
+	public boolean getHasLegalArguments() {
+		return this.preConValue;
 	}
 	
 }

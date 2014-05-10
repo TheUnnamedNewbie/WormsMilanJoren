@@ -82,7 +82,7 @@ public class Expression {
 	 * Gives the returntype for the subExpression (so we can "stack" expressions into a tree)
 	 * @return
 	 */
-	public String getSubExpressoinReturnType() {
+	public String getSubExpressionReturnType() {
 		if(hasSubExpression()){
 			return this.getSubExpression().getReturnType();
 		} else {
@@ -156,6 +156,21 @@ public class Expression {
 		}
 	}
 	
+	public void createSubExpressionDoubleLessThan(Expression first, Expression second){
+		if(hasSubExpression()){
+			return;
+		} else {
+			subExpression = new DoubleLessThan(first, second);
+		}
+	}
+	
+	public void createSubExpressionDoubleGreaterThan(Expression first, Expression second){
+		if(hasSubExpression()){
+			return;
+		} else {
+			subExpression = new DoubleGreaterThan(first, second);
+		}
+	}
 	/**
 	 * DONE
 	 * Class for double literal expressions. 
@@ -278,7 +293,7 @@ public class Expression {
 			this.master = targetMaster;
 			this.left = first;
 			this.right = second;
-			setLegalExpressionsLogic(first, second);
+			setLegalExpressionsLogic();
 		}
 					
 		/**
@@ -298,6 +313,10 @@ public class Expression {
 		 */
 		public String getType(){
 			return "LogicAnd";
+		}
+		
+		public String getReturnType() {
+			return "BooleanLiteral";
 		}
 	}
 	
@@ -322,7 +341,7 @@ public class Expression {
 			this.master = targetMaster;
 			this.left = first;
 			this.right = first;
-			setLegalExpressionsLogic(first, second);
+			setLegalExpressionsLogic();
 		}
 		
 		/**
@@ -343,6 +362,10 @@ public class Expression {
 		 */
 		public String getType(){
 			return "LogicOr";
+		}
+		
+		public String getReturnType(){
+			return "BooleanLiteral";
 		}
 	}
 	
@@ -384,10 +407,56 @@ public class Expression {
 		public String getType(){
 			return "LogicNot";
 		}
+		
+		public String getReturnType(){
+			return "BooleanLiteral";
+		}
 	
 	}
 	
-	public class DoubleLessThan
+	public class DoubleLessThan extends SubExpressionDoubleCompare {
+		
+		public DoubleLessThan(Expression first, Expression second){
+			this.left = first;
+			this.right = second;
+			setHasLegalArguments();
+		}
+		
+		@Override
+		public boolean getValue() {
+			if(!getPreConValue()){
+				return false;
+			} else {
+				return ((double)left.getSubExpression().getValue() < (double)right.getSubExpression().getValue());
+			}
+		}
+		
+		public String getType() {
+			return "DoubleLessThan";
+		}
+	
+	}
+	
+	public class DoubleGreaterThan extends SubExpressionDoubleCompare {
+		
+		public DoubleGreaterThan(Expression first, Expression second){
+			this.left = first;
+			this.right = second;
+			setHasLegalArguments();
+		}
+		@Override
+		public boolean getValue() {
+			if(!getPreConValue()){
+				return false;
+			} else {
+				return ((double)left.getSubExpression().getValue() > (double)right.getSubExpression().getValue());
+			}
+		}
+		
+		public String getType() {
+			return "DoubleGreaterThan";
+		}
+	}
 	
 		
 		
