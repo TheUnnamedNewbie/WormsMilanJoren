@@ -171,6 +171,23 @@ public class Expression {
 			subExpression = new DoubleGreaterThan(first, second);
 		}
 	}
+	
+	public void createSubExpressionDoubleLessThanOrEqualTo(Expression first, Expression second){
+		if(hasSubExpression()){
+			return;
+		} else {
+			subExpression = new DoubleLessThanOrEqualTo(first, second);
+		}
+	}
+	
+	public void createSubExpressionDoubleGreaterThanOrEqualTo(Expression first, Expression second){
+		if(hasSubExpression()){
+			return;
+		} else {
+			subExpression = new DoubleGreaterThanOrEqualTo(first, second);
+		}
+	}
+	
 	/**
 	 * DONE
 	 * Class for double literal expressions. 
