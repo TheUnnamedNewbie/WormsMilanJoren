@@ -236,6 +236,29 @@ public class Expression {
 		}
 	}
 	
+	public void createSubExpressionDoubleSquareRoot(Expression first, Expression second){
+		if(hasSubExpression()){
+			return;
+		} else {
+			subExpression = new DoubleSquareRoot(first, second);
+		}
+	}
+	
+	public void createSubExpressionDoubleSine(Expression first, Expression second){
+		if(hasSubExpression()){
+			return;
+		} else {
+			subExpression = new DoubleSine(first, second);
+		}
+	}
+	
+	public void createSubExpressionDoubleCosine(Expression first, Expression second){
+		if(hasSubExpression()){
+			return;
+		} else {
+			subExpression = new DoubleCosine(first, second);
+		}
+	}
 	/**
 	 * DONE
 	 * Class for double literal expressions. 
