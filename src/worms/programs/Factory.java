@@ -115,6 +115,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	};
 
 	/**
+	 * FRAMEWORK DONE WAITING FOR IMPLEMENTATION
 	 * Create an expression that checks whether the value of expression e1 is
 	 * less than the value of the expression e2
 	 */
@@ -123,6 +124,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	};
 
 	/**
+	 * FRAMEWORK DONE WAITING FOR IMPLEMENTATION
 	 * Create an expression that checks whether the value of expression e1 is
 	 * greater than the value of the expression e2
 	 */
@@ -131,6 +133,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	};
 
 	/**
+	 * FRAMEWORK DONE WAITING FOR IMPLEMENTATION
 	 * Create an expression that checks whether the value of expression e1 is
 	 * less than or equal to the value of the expression e2
 	 */
@@ -139,6 +142,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	};
 
 	/**
+	 * FRAMEWORK DONE WAITING FOR IMPLEMENTATION
 	 * Create an expression that checks whether the value of expression e1 is
 	 * greater than or equal to the value of the expression e2
 	 */
@@ -147,6 +151,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	};
 
 	/**
+	 * FRAMEWORK DONE WAITING FOR IMPLEMENTATION
 	 * Create an expression that checks whether the value of expression e1 is
 	 * equal to the value of the expression e2
 	 */
@@ -155,6 +160,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	};
 
 	/**
+	 * FRAMEWORK DONE WAITING FOR IMPLEMENTATION
 	 * Create an expression that checks whether the value of expression e1 is
 	 * not equal to the value of the expression e2
 	 */

@@ -188,6 +188,22 @@ public class Expression {
 		}
 	}
 	
+	public void createSubExpressionDoubleEquality(Expression first, Expression second){
+		if(hasSubExpression()){
+			return;
+		} else {
+			subExpression = new DoubleEquality(first, second);
+		}
+	}
+	
+	public void createSubExpressionDoubleInequality(Expression first, Expression second){
+		if(hasSubExpression()){
+			return;
+		} else {
+			subExpression = new DoubleInequality(first, second);
+		}
+	}
+	
 	/**
 	 * DONE
 	 * Class for double literal expressions. 
@@ -474,50 +490,95 @@ public class Expression {
 		public String getType() {
 			return "DoubleGreaterThan";
 		}
+	}
 		
-		public class DoubleLessThanOrEqualTo extends SubExpressionDoubleCompare {
-			
-			public DoubleLessThanOrEqualTo(Expression first, Expression second){
-				this.left = first;
-				this.right = second;
-				setHasLegalArguments();
-			}
-			
-			@Override
-			public boolean getValue() {
-				if(!getPreConValue()){
-					return false;
-				} else {
-					return ((double)left.getSubExpression().getValue() <= (double)right.getSubExpression().getValue());
-				}
-			}
-			
-			public String getType() {
-				return "DoubleLessThanOrEqualTo";
+	public class DoubleLessThanOrEqualTo extends SubExpressionDoubleCompare {
+		
+		public DoubleLessThanOrEqualTo(Expression first, Expression second){
+			this.left = first;
+			this.right = second;
+			setHasLegalArguments();
+		}
+		
+		@Override
+		public boolean getValue() {
+			if(!getPreConValue()){
+				return false;
+			} else {
+				return ((double)left.getSubExpression().getValue() <= (double)right.getSubExpression().getValue());
 			}
 		}
 		
-		public class DoubleGreaterThanOrEqualTo extends SubExpressionDoubleCompare {
-			
-			public DoubleGreaterThanOrEqualTo(Expression first, Expression second){
-				this.left = first;
-				this.right = second;
-				setHasLegalArguments();
-			}
-			
-			@Override
-			public boolean getValue() {
-				if(!getPreConValue()){
-					return false;
-				} else {
-					return ((double)left.getSubExpression().getValue() >= (double)right.getSubExpression().getValue());
-				}
-			}
-			
-			public String getType() {
-				return "DoubleGreaterThanOrEqualTo";
-			}
+		public String getType() {
+			return "DoubleLessThanOrEqualTo";
 		}
+	}
 	
+	public class DoubleGreaterThanOrEqualTo extends SubExpressionDoubleCompare {
+		
+		public DoubleGreaterThanOrEqualTo(Expression first, Expression second){
+			this.left = first;
+			this.right = second;
+			setHasLegalArguments();
+		}
+		
+		@Override
+		public boolean getValue() {
+			if(!getPreConValue()){
+				return false;
+			} else {
+				return ((double)left.getSubExpression().getValue() >= (double)right.getSubExpression().getValue());
+			}
+		}
+		
+		public String getType() {
+			return "DoubleGreaterThanOrEqualTo";
+		}
+	}
+	
+	public class DoubleEquality extends SubExpressionDoubleCompare {
+		
+		public DoubleEquality(Expression first, Expression second){
+			this.left = first;
+			this.right = second;
+			setHasLegalArguments();
+		}
+		
+		@Override
+		public boolean getValue() {
+			if(!getPreConValue()){
+				return false;
+			} else {
+				return ((double)left.getSubExpression().getValue() == (double)right.getSubExpression().getValue());
+			}
+		}
+		
+		public String getType() {
+			return "DoubleEquality";
+		}
+	}
+
+	public class DoubleInequality extends SubExpressionDoubleCompare {
+	
+		public DoubleInequality(Expression first, Expression second){
+			this.left = first;
+			this.right = second;
+			setHasLegalArguments();
+		}
+		
+		@Override
+		public boolean getValue() {
+			if(!getPreConValue()){
+				return false;
+			} else {
+				return ((double)left.getSubExpression().getValue() != (double)right.getSubExpression().getValue());
+			}
+		}
+		
+		public String getType() {
+			return "DoubleInequality";
+		}
+	}
+
 }
 
