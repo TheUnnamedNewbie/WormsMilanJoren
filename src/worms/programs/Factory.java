@@ -237,7 +237,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * Create a statement that represents a turn of the worm executing the
 	 * program by the value of the angle expression
 	 */
-	public S createTurn(int line, int column, Expression angle){
+	public Statement createTurn(int line, int column, Expression angle){
 		return null;
 	}; 
 
@@ -245,7 +245,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * Create a statement that represents a move of the worm executing the
 	 * program
 	 */
-	public S createMove(int line, int column){
+	public Statement createMove(int line, int column){
 		return null;
 	};
 
@@ -253,7 +253,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * Create a statement that represents a jump of the worm executing the
 	 * program
 	 */
-	public S createJump(int line, int column){
+	public Statement createJump(int line, int column){
 		return null;
 	};
 
@@ -261,7 +261,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * Create a statement that represents toggling the weapon of the worm
 	 * executing the program
 	 */
-	public S createToggleWeap(int line, int column){
+	public Statement createToggleWeap(int line, int column){
 		return null;
 	};
 
@@ -270,14 +270,14 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * executing the program, where the propulsion yield is given by the yield
 	 * expression
 	 */
-	public S createFire(int line, int column, Expression yield){
+	public Statement createFire(int line, int column, Expression yield){
 		return null;
 	};
 
 	/**
 	 * Create a statement that represents no action of a worm
 	 */
-	public S createSkip(int line, int column){
+	public Statement createSkip(int line, int column){
 		return null;
 	};
 
@@ -287,7 +287,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * Create a statement that represents the assignment of the value of the rhs
 	 * expression to a variable with the given name
 	 */
-	public S createAssignment(int line, int column, String variableName, Expression rhs){
+	public Statement createAssignment(int line, int column, String variableName, Expression rhs){
 		return null;
 	};
 
@@ -296,7 +296,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * statements then or otherwise, depending on the value of the condition
 	 * expression
 	 */
-	public S createIf(int line, int column, Expression condition, S then, S otherwise){
+	public Statement createIf(int line, int column, Expression condition, Statement then, Statement otherwise){
 		return null;
 	};
 
@@ -305,7 +305,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * statement, as long as the value of the condition expression evaluates to
 	 * true
 	 */
-	public S createWhile(int line, int column, Expression condition, S body){
+	public Statement createWhile(int line, int column, Expression condition, Statement body){
 		return null;
 	};
 
@@ -314,8 +314,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * statement, where for each execution the value of the variable with the
 	 * given name is set to a different object of the given type.
 	 */
-	public S createForeach(int line, int column, ForeachType type,
-			String variableName, S body){
+	public Statement createForeach(int line, int column, ForeachType type,
+			String variableName, Statement body){
 		return null;
 	};
 
@@ -323,7 +323,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * Create a statement that represents the sequential execution of the given
 	 * statements
 	 */
-	public S createSequence(int line, int column, List<S> statements){
+	public Statement createSequence(int line, int column, List<Statement> statements){
 		return null;
 	};
 
@@ -331,7 +331,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * Create a statement that represents printing out the value of the
 	 * expression e
 	 */
-	public S createPrint(int line, int column, Expression e){
+	public Statement createPrint(int line, int column, Expression e){
 		return null;
 	};
 
