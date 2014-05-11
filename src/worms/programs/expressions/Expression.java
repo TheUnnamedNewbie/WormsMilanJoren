@@ -113,8 +113,7 @@ public class Expression {
 	 * 		| if(old.hasSubExpression()) {
 	 * 		| 	new.getSubExpression == old.getSubExpression
 	 * 		| else {
-	 * 		|	( new.getSubExpressionType() == "DoubleLiteral"	) &&
-	 * 		|	( new.getSubExpression().getValue() == target )
+	 * 		|	( new.getSubExpressionType() == "DoubleLiteral"	) 
 	 */
 	public void createSubExpressionDoubleLiteral(double target){
 		if(hasSubExpression()){
@@ -156,7 +155,10 @@ public class Expression {
 	 * 		if the expression did not yet have a subexpression, it will now store a LogicAnd with parameters first and second.
 	 * 		The result stored by this expression will be false in all cases except when both parameters given to have a returnType of BooleanLiteral, 
 	 * 		and both of these BooleanLiterals are true.
-	 * 		
+	 * 		| if(old.hasSubExpression()){
+	 * 		| 	new.getSubExpression() == old.getSubExpression()}
+	 * 		| else {
+	 * 		| 	new.getSubExpressionType() == "LogicAnd"
 	 */
 	public void createSubExpressionLogicAnd(Expression first, Expression second) {
 		if(hasSubExpression()){
@@ -167,9 +169,20 @@ public class Expression {
 	}
 	
 	/**
-	 * 
-	 * @param first
+	 * Method for creating a subExpression of the type LogicOrd, if the Expression it is called upon did not yet have a subexpression.
+	 * If it did, nothing is done.
+	 * @param first 
+	 * 			the first expression to be part of the LogicalOr. Can be of any type.
 	 * @param second
+	 * 			the second expression to be part of the LogicalOr. Can be of any type.
+	 * @post
+	 * 		if the expression did not yet have a subexpression, it will now store a LogicOr with parameters first and second.
+	 * 		The result stored by this expression will be false in all cases except when both parameters given to have a returnType of BooleanLiteral, 
+	 * 		and one of these Booleans results is true
+	 * 		| if(old.hasSubExpression()){
+	 * 		| 	new.getSubExpression() == old.getSubExpression()}
+	 * 		| else {
+	 * 		| 	new.getSubExpressionType() == "LogicOr"
 	 */
 	public void createSubExpressionLogicOr(Expression first, Expression second) {
 		if(hasSubExpression()){
@@ -180,8 +193,17 @@ public class Expression {
 	}
 	
 	/**
-	 * 
+	 * Creates a new SubExpression of the type LogicNot with parameter first, if the Expression it is called upon does not yet have a SubExpresison.
+	 * If it does, It ignores the request.
 	 * @param first
+	 * 		The Parameter to be stored and used by the expression.
+	 * @post If the Expression had a SubExpression already, nothing changed.
+	 * 		Else, the Expression now stores a LogicNot with parameter first.
+	 * 		| if(old.hasSubExpression()){
+	 * 		|		new.getSubExpresion() == old.getSubExpresion()
+	 *		| else {
+	 *		|		new.getSubExpression().getType() == "LogicNot"
+	 * 
 	 */
 	public void createSubExpressionLogicNot(Expression first) {
 		if(hasSubExpression()){
@@ -191,6 +213,11 @@ public class Expression {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param first
+	 * @param second
+	 */
 	public void createSubExpressionDoubleLessThan(Expression first, Expression second){
 		if(hasSubExpression()){
 			return;

@@ -239,7 +239,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 */
 	public S createTurn(int line, int column, Expression angle){
 		return null;
-	};
+	}; 
 
 	/**
 	 * Create a statement that represents a move of the worm executing the
