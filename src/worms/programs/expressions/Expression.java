@@ -1,5 +1,7 @@
 package worms.programs.expressions;
 
+import worms.entities.Entity;
+
 
 public class Expression {
 	
@@ -321,6 +323,23 @@ public class Expression {
 			subExpression = new DoubleCosine(first, second);
 		}
 	}
+	
+	public void createSubExpressionEntity(Entity parameter) {
+		if(hasSubExpression()){
+			return;
+		} else {
+			subExpression = new EntityExp(parameter);
+		}
+	}
+	
+	public void createSubExpressionNull() {
+		if(hasSubExpression()){
+			return;
+		} else {
+			subExpression = new NullLiteral();
+		}
+	}
+	
 	/**
 	 * DONE
 	 * Class for double literal expressions. 
@@ -848,6 +867,32 @@ public class Expression {
 		}
 	}
 	
+	public class EntityExp extends SubExpression {
+		private Entity content;
+		
+		public EntityExp(Entity parameter) {
+			this.content = parameter;
+		}
+		
+		public Entity getValue() {
+			return this.content;
+		}
+		
+		public String getType() {
+			return "Entity";
+		}
+	}
 	
+	public class NullLiteral extends SubExpression {
+		public NullLiteral() {}
+		
+		public Object getValue() { //Object, right?
+			return null;
+		}
+		
+		public String getType() {
+			return "null"; //"null", right?
+		}
+	}
 }
 

@@ -2,6 +2,11 @@ package worms.programs;
 
 import java.util.List;
 
+import worms.containment.Team;
+import worms.entities.Entity;
+import worms.entities.Food;
+import worms.entities.Movable;
+import worms.model.Worm;
 import worms.model.programs.ProgramFactory;
 import worms.model.programs.ProgramFactory.ForeachType;
 import worms.programs.expressions.Expression;
@@ -11,7 +16,7 @@ import worms.programs.types.Type;
 public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	
 	//DONE
-	public Expression createnDoubleLiteral(int line, int column, double d) {
+	public Expression createDoubleLiteral(int line, int column, double d) {
 		Expression temporary;
 		temporary = new Expression(line, column);
 		temporary.createSubExpressionDoubleLiteral(d);
@@ -51,47 +56,103 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	}
 	
 	public Expression createNull(int line, int column) {
-		return null;
+		Expression temporary;
+		temporary = new Expression(line, column);
+		temporary.createSubExpressionNull();
+		return temporary;
 	}
 	
 	public Expression createSelf(int line, int column){
-		return null;
+		Expression temporary;
+		temporary = new Expression(line, column);
+		Entity target = null; //TODO pointer goes here
+		temporary.createSubExpressionEntity(target);
+		return temporary;
 	}
 	
 	public Expression createGetX(int line, int column, Expression exp){
-		return null;
+		Expression temporary;
+		temporary = new Expression(line, column);
+		//TODO Assert things
+		Entity value = (Entity) exp.getSubExpression().getValue();
+		temporary.createSubExpressionDoubleLiteral(value.getPosX());
+		return temporary;
 	}
 	
 	public Expression createGetY(int line, int column, Expression exp){
-		return null;
+		Expression temporary;
+		temporary = new Expression(line, column);
+		//TODO Assert things
+		Entity value = (Entity) exp.getSubExpression().getValue();
+		temporary.createSubExpressionDoubleLiteral(value.getPosY());
+		return temporary;
 	}
 
 	public Expression createGetRadius(int line, int column, Expression exp){
-		return null;
+		Expression temporary;
+		temporary = new Expression(line, column);
+		//TODO Assert things
+		Entity value = (Entity) exp.getSubExpression().getValue();
+		temporary.createSubExpressionDoubleLiteral(value.getRadius());
+		return temporary;
 	}
 	
 	public Expression createGetDir(int line, int column, Expression exp){
-		return null;
+		Expression temporary;
+		temporary = new Expression(line, column);
+		//TODO Assert things
+		Movable value = (Movable) exp.getSubExpression().getValue();
+		temporary.createSubExpressionDoubleLiteral(value.getOrientation());
+		return temporary;
 	}
 
 	public Expression createGetAP(int line, int column, Expression exp){
-		return null;
+		Expression temporary;
+		temporary = new Expression(line, column);
+		//TODO Assert things
+		Worm value = (Worm) exp.getSubExpression().getValue();
+		temporary.createSubExpressionDoubleLiteral(value.getActionPoints()); //auto-convert from long to double? probably!
+		return temporary;
 	}
 	
 	public Expression createGetMaxAP(int line, int column, Expression exp){
-		return null;
+		Expression temporary;
+		temporary = new Expression(line, column);
+		//TODO Assert things
+		Worm value = (Worm) exp.getSubExpression().getValue();
+		temporary.createSubExpressionDoubleLiteral(value.getMaxActionPoints()); //auto-convert from long to double? probably!
+		return temporary;
 	}
 	
-	public Expression creategetHP(int line, int column, Expression exp){
-		return null;
+	public Expression createGetHP(int line, int column, Expression exp){
+		Expression temporary;
+		temporary = new Expression(line, column);
+		//TODO Assert things
+		Worm value = (Worm) exp.getSubExpression().getValue();
+		temporary.createSubExpressionDoubleLiteral(value.getHitPoints()); //auto-convert from long to double? probably!
+		return temporary;
 	}
 	
 	public Expression createGetMaxHP(int line, int column, Expression exp) {
-		return null;
+		Expression temporary;
+		temporary = new Expression(line, column);
+		//TODO Assert things
+		Worm value = (Worm) exp.getSubExpression().getValue();
+		temporary.createSubExpressionDoubleLiteral(value.getMaxHitPoints()); //auto-convert from long to double? probably!
+		return temporary;
 	}
 
 	public Expression createSameTeam(int line, int column, Expression exp){
-		return null;
+		//getting team from given
+		Team team1 = ((Worm) exp.getSubExpression().getValue()).getTeam();
+		// Get team from currently executing
+		Team team2 = null; //...
+		boolean target_value = (team1.getName()==team2.getName());
+		//create and return expression
+		Expression temporary;
+		temporary = new Expression(line, column);
+		temporary.createSubExpressionBooleanLiteral(target_value);
+		return temporary;
 	}
 	
 	public Expression createSearchObj(int line, int column, Expression exp){
@@ -99,265 +160,209 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	}
 	
 	public Expression createIsWorm(int line, int column, Expression exp){
-		return null;
+		boolean target_value = Worm.class.isInstance(exp.getSubExpression().getValue());
+		//create and return expression
+		Expression temporary;
+		temporary = new Expression(line, column);
+		temporary.createSubExpressionBooleanLiteral(target_value);
+		return temporary;
 	}
 	
-	public Expression createIsFood(int line, int column, Expression e){
+	public Expression createIsFood(int line, int column, Expression exp) {
+		boolean target_value = Food.class.isInstance(exp.getSubExpression().getValue());
+		//create and return expression
+		Expression temporary;
+		temporary = new Expression(line, column);
+		temporary.createSubExpressionBooleanLiteral(target_value);
+		return temporary;
+	}
+
+	@Override
+	public Expression createVariableAccess(int line, int column, String name) {
+		// TODO Auto-generated method stub
 		return null;
-	};
+	}
 
-	/**
-	 * Create an expression that evaluates to the value of the variable with the
-	 * given name
-	 */
-	public Expression createVariableAccess(int line, int column, String name){
+	@Override
+	public Expression createLessThan(int line, int column, Expression e1,
+			Expression e2) {
+		// TODO Auto-generated method stub
 		return null;
-	};
+	}
 
-	/**
-	 * FRAMEWORK DONE WAITING FOR IMPLEMENTATION
-	 * Create an expression that checks whether the value of expression e1 is
-	 * less than the value of the expression e2
-	 */
-	public Expression createLessThan(int line, int column, Expression e1, Expression e2){
+	@Override
+	public Expression createGreaterThan(int line, int column, Expression e1,
+			Expression e2) {
+		// TODO Auto-generated method stub
 		return null;
-	};
+	}
 
-	/**
-	 * FRAMEWORK DONE WAITING FOR IMPLEMENTATION
-	 * Create an expression that checks whether the value of expression e1 is
-	 * greater than the value of the expression e2
-	 */
-	public Expression createGreaterThan(int line, int column, Expression e1, Expression e2){
+	@Override
+	public Expression createLessThanOrEqualTo(int line, int column,
+			Expression e1, Expression e2) {
+		// TODO Auto-generated method stub
 		return null;
-	};
+	}
 
-	/**
-	 * FRAMEWORK DONE WAITING FOR IMPLEMENTATION
-	 * Create an expression that checks whether the value of expression e1 is
-	 * less than or equal to the value of the expression e2
-	 */
-	public Expression createLessThanOrEqualTo(int line, int column, Expression e1, Expression e2){
+	@Override
+	public Expression createGreaterThanOrEqualTo(int line, int column,
+			Expression e1, Expression e2) {
+		// TODO Auto-generated method stub
 		return null;
-	};
+	}
 
-	/**
-	 * FRAMEWORK DONE WAITING FOR IMPLEMENTATION
-	 * Create an expression that checks whether the value of expression e1 is
-	 * greater than or equal to the value of the expression e2
-	 */
-	public Expression createGreaterThanOrEqualTo(int line, int column, Expression e1, Expression e2){
+	@Override
+	public Expression createEquality(int line, int column, Expression e1,
+			Expression e2) {
+		// TODO Auto-generated method stub
 		return null;
-	};
+	}
 
-	/**
-	 * FRAMEWORK DONE WAITING FOR IMPLEMENTATION
-	 * Create an expression that checks whether the value of expression e1 is
-	 * equal to the value of the expression e2
-	 */
-	public Expression createEquality(int line, int column, Expression e1, Expression e2){
+	@Override
+	public Expression createInequality(int line, int column, Expression e1,
+			Expression e2) {
+		// TODO Auto-generated method stub
 		return null;
-	};
+	}
 
-	/**
-	 * FRAMEWORK DONE WAITING FOR IMPLEMENTATION
-	 * Create an expression that checks whether the value of expression e1 is
-	 * not equal to the value of the expression e2
-	 */
-	public Expression createInequality(int line, int column, Expression e1, Expression e2){
+	@Override
+	public Expression createAdd(int line, int column, Expression e1,
+			Expression e2) {
+		// TODO Auto-generated method stub
 		return null;
-	};
+	}
 
-	/**
-	 * FRAMEWORK DONE WAITING FOR IMPLEMENTATION
-	 * Create an expression that represents the addition of the value of
-	 * expression e1 and the value of the expression e2
-	 */
-	public Expression createAdd(int line, int column, Expression e1, Expression e2){
+	@Override
+	public Expression createSubtraction(int line, int column, Expression e1,
+			Expression e2) {
+		// TODO Auto-generated method stub
 		return null;
-	};
+	}
 
-	/**
-	 * FRAMEWORK DONE WAITING FOR IMPLEMENTATION
-	 * Create an expression that represents the subtraction of the value of
-	 * expression e1 and the value of the expression e2
-	 */
-	public Expression createSubtraction(int line, int column, Expression e1, Expression e2){
+	@Override
+	public Expression createMul(int line, int column, Expression e1,
+			Expression e2) {
+		// TODO Auto-generated method stub
 		return null;
-	};
+	}
 
-	/**
-	 * FRAMEWORK DONE WAITING FOR IMPLEMENTATION
-	 * Create an expression that represents the multiplication of the value of
-	 * expression e1 and the value of the expression e2
-	 */
-	public Expression createMul(int line, int column, Expression e1, Expression e2){
+	@Override
+	public Expression createDivision(int line, int column, Expression e1,
+			Expression e2) {
+		// TODO Auto-generated method stub
 		return null;
-	};
+	}
 
-	/**
-	 * FRAMEWORK DONE WAITING FOR IMPLEMENTATION
-	 * Create an expression that represents the division of the value of
-	 * expression e1 and the value of the expression e2
-	 */
-	public Expression createDivision(int line, int column, Expression e1, Expression e2){
+	@Override
+	public Expression createSqrt(int line, int column, Expression e) {
+		// TODO Auto-generated method stub
 		return null;
-	};
+	}
 
-	/**
-	 * FRAMEWORK DONE WAITING FOR IMPLEMENTATION
-	 * Create an expression that represents the square root of the value of
-	 * expression e1 and the value of the expression e2
-	 */
-	public Expression createSqrt(int line, int column, Expression e){
+	@Override
+	public Expression createSin(int line, int column, Expression e) {
+		// TODO Auto-generated method stub
 		return null;
-	};
+	}
 
-	/**
-	 * FRAMEWORK DONE WAITING FOR IMPLEMENTATION
-	 * Create an expression that represents the sine of the value of expression
-	 * e1 and the value of the expression e2
-	 */
-	public Expression createSin(int line, int column, Expression e){
+	@Override
+	public Expression createCos(int line, int column, Expression e) {
+		// TODO Auto-generated method stub
 		return null;
-	};
+	}
 
-	/**
-	 * FRAMEWORK DONE WAITING FOR IMPLEMENTATION
-	 * Create an expression that represents the cosine of the value of
-	 * expression e1 and the value of the expression e2
-	 */
-	public Expression createCos(int line, int column, Expression e){
+	@Override
+	public Statement createTurn(int line, int column, Expression angle) {
+		// TODO Auto-generated method stub
 		return null;
-	};
+	}
 
-	/* actions */
-
-	/**
-	 * Create a statement that represents a turn of the worm executing the
-	 * program by the value of the angle expression
-	 */
-	public Statement createTurn(int line, int column, Expression angle){
+	@Override
+	public Statement createMove(int line, int column) {
+		// TODO Auto-generated method stub
 		return null;
-	}; 
+	}
 
-	/**
-	 * Create a statement that represents a move of the worm executing the
-	 * program
-	 */
-	public Statement createMove(int line, int column){
+	@Override
+	public Statement createJump(int line, int column) {
+		// TODO Auto-generated method stub
 		return null;
-	};
+	}
 
-	/**
-	 * Create a statement that represents a jump of the worm executing the
-	 * program
-	 */
-	public Statement createJump(int line, int column){
+	@Override
+	public Statement createToggleWeap(int line, int column) {
+		// TODO Auto-generated method stub
 		return null;
-	};
+	}
 
-	/**
-	 * Create a statement that represents toggling the weapon of the worm
-	 * executing the program
-	 */
-	public Statement createToggleWeap(int line, int column){
+	@Override
+	public Statement createFire(int line, int column, Expression yield) {
+		// TODO Auto-generated method stub
 		return null;
-	};
+	}
 
-	/**
-	 * Create a statement that represents firing the current weapon of the worm
-	 * executing the program, where the propulsion yield is given by the yield
-	 * expression
-	 */
-	public Statement createFire(int line, int column, Expression yield){
+	@Override
+	public Statement createSkip(int line, int column) {
+		// TODO Auto-generated method stub
 		return null;
-	};
+	}
 
-	/**
-	 * Create a statement that represents no action of a worm
-	 */
-	public Statement createSkip(int line, int column){
+	@Override
+	public Statement createAssignment(int line, int column,
+			String variableName, Expression rhs) {
+		// TODO Auto-generated method stub
 		return null;
-	};
+	}
 
-	/* other statements */
-
-	/**
-	 * Create a statement that represents the assignment of the value of the rhs
-	 * expression to a variable with the given name
-	 */
-	public Statement createAssignment(int line, int column, String variableName, Expression rhs){
+	@Override
+	public Statement createIf(int line, int column, Expression condition,
+			Statement then, Statement otherwise) {
+		// TODO Auto-generated method stub
 		return null;
-	};
+	}
 
-	/**
-	 * Create a statement that represents the conditional execution of the
-	 * statements then or otherwise, depending on the value of the condition
-	 * expression
-	 */
-	public Statement createIf(int line, int column, Expression condition, Statement then, Statement otherwise){
+	@Override
+	public Statement createWhile(int line, int column, Expression condition,
+			Statement body) {
+		// TODO Auto-generated method stub
 		return null;
-	};
+	}
 
-	/**
-	 * Create a statement that represents the repeated execution of the body
-	 * statement, as long as the value of the condition expression evaluates to
-	 * true
-	 */
-	public Statement createWhile(int line, int column, Expression condition, Statement body){
+	@Override
+	public Statement createForeach(int line, int column,
+			worms.model.programs.ProgramFactory.ForeachType type,
+			String variableName, Statement body) {
+		// TODO Auto-generated method stub
 		return null;
-	};
+	}
 
-	/**
-	 * Create a statement that represents the repeated execution of the body
-	 * statement, where for each execution the value of the variable with the
-	 * given name is set to a different object of the given type.
-	 */
-	public Statement createForeach(int line, int column, ForeachType type,
-			String variableName, Statement body){
+	@Override
+	public Statement createSequence(int line, int column,
+			List<Statement> statements) {
+		// TODO Auto-generated method stub
 		return null;
-	};
+	}
 
-	/**
-	 * Create a statement that represents the sequential execution of the given
-	 * statements
-	 */
-	public Statement createSequence(int line, int column, List<Statement> statements){
+	@Override
+	public Statement createPrint(int line, int column, Expression e) {
+		// TODO Auto-generated method stub
 		return null;
-	};
+	}
 
-	/**
-	 * Create a statement that represents printing out the value of the
-	 * expression e
-	 */
-	public Statement createPrint(int line, int column, Expression e){
+	@Override
+	public Type createDoubleType() {
+		// TODO Auto-generated method stub
 		return null;
-	};
+	}
 
-	/* types */
-
-	/**
-	 * Returns an object that represents the type of a global variable with
-	 * declared type 'double'.
-	 */
-	public T createDoubleType(){
+	@Override
+	public Type createBooleanType() {
+		// TODO Auto-generated method stub
 		return null;
-	};
+	}
 
-	/**
-	 * Returns an object that represents the type of a global variable with
-	 * declared type 'boolean'.
-	 */
-	public T createBooleanType(){
+	@Override
+	public Type createEntityType() {
+		// TODO Auto-generated method stub
 		return null;
-	};
-
-	/**
-	 * Returns an object that represents the type of a global variable with
-	 * declared type 'entity'.
-	 */
-	public T createEntityType(){
-		return null;
-	};
-}
+	}
