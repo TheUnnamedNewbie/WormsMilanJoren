@@ -1,5 +1,6 @@
 package worms.programs;
 
+import java.util.HashMap;
 import java.util.List;
 
 import worms.containment.Team;
@@ -14,6 +15,8 @@ import worms.programs.statements.Statement;
 import worms.programs.types.Type;
 
 public class Factory implements ProgramFactory<Expression, Statement, Type> {
+	
+	private HashMap<String, Expression> vars = new HashMap<String, Expression>();
 	
 	//DONE
 	public Expression createDoubleLiteral(int line, int column, double d) {
@@ -65,7 +68,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	public Expression createSelf(int line, int column){
 		Expression temporary;
 		temporary = new Expression(line, column);
-		Entity target = null; //TODO pointer goes here
+		Entity target = DefaultActionHandler.getFacade().getCurrentWorm(); //HOW!?
+		target = null; //TODO pointer goes here
 		temporary.createSubExpressionEntity(target);
 		return temporary;
 	}
@@ -146,7 +150,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 		//getting team from given
 		Team team1 = ((Worm) exp.getSubExpression().getValue()).getTeam();
 		// Get team from currently executing
-		Team team2 = null; //...
+		Team team2 = null; //... again with the 'how do wet get to the game?'
 		boolean target_value = (team1.getName()==team2.getName());
 		//create and return expression
 		Expression temporary;
@@ -179,8 +183,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 
 	@Override
 	public Expression createVariableAccess(int line, int column, String name) {
-		// TODO Auto-generated method stub
-		return null;
+		return vars.get(name); //right?
 	}
 
 	@Override
@@ -310,7 +313,9 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	@Override
 	public Statement createAssignment(int line, int column,
 			String variableName, Expression rhs) {
-		// TODO Auto-generated method stub
+		vars.put(variableName, rhs);
+		//how the hell do we represent this thing that has happened by a statement
+		//(and not void, as would be custom)!?
 		return null;
 	}
 
@@ -366,3 +371,4 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 		// TODO Auto-generated method stub
 		return null;
 	}
+}

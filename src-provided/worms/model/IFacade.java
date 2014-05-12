@@ -3,6 +3,9 @@ package worms.model;
 import java.util.Collection;
 import java.util.Random;
 
+import worms.containment.World;
+import worms.entities.Food;
+import worms.entities.Projectile;
 import worms.gui.game.IActionHandler;
 import worms.model.programs.ParseOutcome;
 

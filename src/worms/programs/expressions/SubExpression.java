@@ -18,8 +18,8 @@ public abstract class SubExpression {
 	public String getReturnType(){
 		return "null";
 	}
-
-	public Object getValue(){
+	
+	public Object getValue() {
 		return null;
 	}
 }
