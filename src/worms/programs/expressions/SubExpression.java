@@ -1,5 +1,6 @@
 package worms.programs.expressions;
 
+import worms.entities.Entity;
 import worms.programs.expressions.Expression;
 
 public abstract class SubExpression {

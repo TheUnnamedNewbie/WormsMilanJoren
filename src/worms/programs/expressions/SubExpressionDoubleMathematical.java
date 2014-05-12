@@ -7,7 +7,7 @@ public abstract class SubExpressionDoubleMathematical extends
 		if(getLeftExpression().getSubExpressionReturnType() != "DoubleLiteral") {
 			return Double.NaN;
 		} else {
-			return ((DoubleLiteral) getLeftExpression().getSubExpression()).getValue();
+			return ((Expression.DoubleLiteral) getLeftExpression().getSubExpression()).getValue();
 		}
 	}
 	
@@ -15,7 +15,7 @@ public abstract class SubExpressionDoubleMathematical extends
 		if(getRightExpression().getSubExpressionReturnType() != "DoubleLiteral") {
 			return Double.NaN;
 		} else {
-			return ((DoubleLiteral) getRightExpression().getSubExpression()).getValue();
+			return ((Expression.DoubleLiteral) getRightExpression().getSubExpression()).getValue();
 		}
 	}
 	

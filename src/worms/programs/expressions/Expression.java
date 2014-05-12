@@ -1,5 +1,6 @@
 package worms.programs.expressions;
 
+import be.kuleuven.cs.som.annotate.Immutable;
 import worms.entities.Entity;
 
 
@@ -885,10 +886,6 @@ public class Expression {
 	
 	public class NullLiteral extends SubExpression {
 		public NullLiteral() {}
-		
-		public Object getValue() { //Object, right?
-			return null;
-		}
 		
 		public String getType() {
 			return "null"; //"null", right?

@@ -7,7 +7,7 @@ public abstract class SubExpressionDoubleCompare extends SubExpressionDoubleOp {
 		if(getLeftExpression().getSubExpressionReturnType() != "DoubleLiteral") {
 			return false;
 		} else {
-			return ((BooleanLiteral) getLeftExpression().getSubExpression()).getValue();
+			return ((Expression.BooleanLiteral) getLeftExpression().getSubExpression()).getValue();
 		}
 	}
 	
@@ -15,7 +15,7 @@ public abstract class SubExpressionDoubleCompare extends SubExpressionDoubleOp {
 		if(getRightExpression().getSubExpressionReturnType() != "DoubleLiteral") {
 			return false;
 		} else {
-			return ((BooleanLiteral) getRightExpression().getSubExpression()).getValue();
+			return ((Expression.BooleanLiteral) getRightExpression().getSubExpression()).getValue();
 		}
 	}
 	

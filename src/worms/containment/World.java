@@ -1052,7 +1052,7 @@ public class World {
 		double randomAngleOrient = (random.nextDouble()*(Math.PI*2.0)) - Math.PI;
 		String wormName = wormNames.get(random.nextInt(wormNames.size()-1));
 		double radius = 0.25 + random.nextDouble() / 4.0;
-		double[] randomPos = getRandomPositi	on(radius);
+		double[] randomPos = getRandomPosition(radius);
 		Worm randomWorm = new Worm(wormName, randomPos[0], randomPos[1], radius, randomAngleOrient, this);
 		addAsWorm(randomWorm);
 		if (joinTeam && (getNbTeams() > 0)) {
