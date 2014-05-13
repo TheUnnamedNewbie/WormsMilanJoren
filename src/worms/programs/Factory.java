@@ -7,6 +7,7 @@ import worms.containment.Team;
 import worms.entities.Entity;
 import worms.entities.Food;
 import worms.entities.Movable;
+import worms.gui.GameState;
 import worms.model.Worm;
 import worms.model.programs.ProgramFactory;
 import worms.model.programs.ProgramFactory.ForeachType;
@@ -189,89 +190,123 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	@Override
 	public Expression createLessThan(int line, int column, Expression e1,
 			Expression e2) {
-		// TODO Auto-generated method stub
-		return null;
+		Expression temporary;
+		temporary = new Expression(line, column);
+		temporary.createSubExpressionDoubleLessThan(e1, e2);
+		return temporary;
 	}
 
 	@Override
 	public Expression createGreaterThan(int line, int column, Expression e1,
 			Expression e2) {
-		// TODO Auto-generated method stub
-		return null;
+		Expression temporary;
+		temporary = new Expression(line, column);
+		temporary.createSubExpressionDoubleGreaterThan(e1, e2);
+		return temporary;
 	}
 
 	@Override
 	public Expression createLessThanOrEqualTo(int line, int column,
 			Expression e1, Expression e2) {
-		// TODO Auto-generated method stub
-		return null;
+		Expression temporary;
+		temporary = new Expression(line, column);
+		temporary.createSubExpressionDoubleLessThanOrEqualTo(e1, e2);
+		return temporary;
 	}
 
 	@Override
 	public Expression createGreaterThanOrEqualTo(int line, int column,
 			Expression e1, Expression e2) {
-		// TODO Auto-generated method stub
-		return null;
+		Expression temporary;
+		temporary = new Expression(line, column);
+		temporary.createSubExpressionDoubleGreaterThanOrEqualTo(e1, e2);
+		return temporary;
 	}
 
 	@Override
 	public Expression createEquality(int line, int column, Expression e1,
 			Expression e2) {
-		// TODO Auto-generated method stub
-		return null;
+		Expression temporary;
+		temporary = new Expression(line, column);
+		if ((e1.getSubExpression().getType()=="DoubleLiteral") && (e2.getSubExpression().getType()=="DoubleLiteral"))
+			temporary.createSubExpressionDoubleEquality(e1, e2);
+		else if ((e1.getSubExpression().getType()=="BooleanLiteral") && (e2.getSubExpression().getType()=="BooleanLiteral")) {
+			//create XNOR or BooleanEquality
+		}
+		return temporary;
 	}
 
 	@Override
 	public Expression createInequality(int line, int column, Expression e1,
 			Expression e2) {
-		// TODO Auto-generated method stub
-		return null;
+		Expression temporary;
+		temporary = new Expression(line, column);
+		if ((e1.getSubExpression().getType()=="DoubleLiteral") && (e2.getSubExpression().getType()=="DoubleLiteral"))
+			temporary.createSubExpressionDoubleInequality(e1, e2);
+		else if ((e1.getSubExpression().getType()=="BooleanLiteral") && (e2.getSubExpression().getType()=="BooleanLiteral")) {
+			//create XOR or not(BooleanEquality) or booleanInequality
+		}
+		return temporary;
 	}
 
 	@Override
 	public Expression createAdd(int line, int column, Expression e1,
 			Expression e2) {
-		// TODO Auto-generated method stub
-		return null;
+		Expression temporary;
+		temporary = new Expression(line, column);
+		temporary.createSubExpressionDoubleAddition(e1, e2);
+		return temporary;
 	}
 
 	@Override
 	public Expression createSubtraction(int line, int column, Expression e1,
 			Expression e2) {
-		// TODO Auto-generated method stub
-		return null;
+		Expression temporary;
+		temporary = new Expression(line, column);
+		temporary.createSubExpressionDoubleSubstraction(e1, e2);
+		return temporary;
 	}
 
 	@Override
 	public Expression createMul(int line, int column, Expression e1,
 			Expression e2) {
-		// TODO Auto-generated method stub
-		return null;
+		Expression temporary;
+		temporary = new Expression(line, column);
+		temporary.createSubExpressionDoubleMultiplication(e1, e2);
+		return temporary;
 	}
 
 	@Override
 	public Expression createDivision(int line, int column, Expression e1,
 			Expression e2) {
-		// TODO Auto-generated method stub
-		return null;
+		Expression temporary;
+		temporary = new Expression(line, column);
+		temporary.createSubExpressionDoubleDivision(e1, e2);
+		return temporary;
 	}
 
 	@Override
 	public Expression createSqrt(int line, int column, Expression e) {
-		// TODO Auto-generated method stub
-		return null;
+		Expression temporary;
+		temporary = new Expression(line, column);
+		temporary.createSubExpressionDoubleSquareRoot(e, e);
+		return temporary;
 	}
 
 	@Override
 	public Expression createSin(int line, int column, Expression e) {
-		// TODO Auto-generated method stub
-		return null;
+		Expression temporary;
+		temporary = new Expression(line, column);
+		temporary.createSubExpressionDoubleSine(e, e);
+		return temporary;
 	}
 
 	@Override
 	public Expression createCos(int line, int column, Expression e) {
-		// TODO Auto-generated method stub
-		return null;
+		Expression temporary;
+		temporary = new Expression(line, column);
+		temporary.createSubExpressionDoubleCosine(e, e);
+		return temporary;
 	}
 
 	@Override
