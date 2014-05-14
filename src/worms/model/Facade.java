@@ -8,6 +8,7 @@ import worms.ExhaustionException;
 import worms.entities.*;
 import worms.gui.game.IActionHandler;
 import worms.model.programs.ParseOutcome;
+import worms.programs.Program;
 import worms.containment.*;
 
 /**
@@ -313,19 +314,18 @@ public class Facade implements IFacade {
 	@Override
 	public void addNewWorm(World world, Program program) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public Worm createWorm(World world, double x, double y, double direction,
 			double radius, String name, Program program) {
 		if (program == null) {
-			createWorm(world, x, y, direction,
+			return createWorm(world, x, y, direction,
 			radius, name);
 		} else {
-			//Make program controlled worm
+			return new ProgrammedWorm(world, x, y, direction,
+			radius, name, program);
 		}
-		//Or, make this distinction in Worm itself? or smth...
 	}
 
 	@Override

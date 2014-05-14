@@ -19,6 +19,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	
 	private HashMap<String, Expression> vars = new HashMap<String, Expression>();
 	
+	//constructor? With the worm calling it definitely.
+	
 	//DONE
 	public Expression createDoubleLiteral(int line, int column, double d) {
 		Expression temporary;
@@ -151,7 +153,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 		//getting team from given
 		Team team1 = ((Worm) exp.getSubExpression().getValue()).getTeam();
 		// Get team from currently executing
-		Team team2 = null; //... again with the 'how do wet get to the game?'
+		Team team2 = null; //... again with the 'how do wet get to the game?' TODO
 		boolean target_value = (team1.getName()==team2.getName());
 		//create and return expression
 		Expression temporary;
@@ -231,7 +233,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 		if ((e1.getSubExpression().getType()=="DoubleLiteral") && (e2.getSubExpression().getType()=="DoubleLiteral"))
 			temporary.createSubExpressionDoubleEquality(e1, e2);
 		else if ((e1.getSubExpression().getType()=="BooleanLiteral") && (e2.getSubExpression().getType()=="BooleanLiteral")) {
-			//create XNOR or BooleanEquality
+			temporary.createSubExpressionLogicXNOR(e1, e2);
 		}
 		return temporary;
 	}
@@ -244,7 +246,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 		if ((e1.getSubExpression().getType()=="DoubleLiteral") && (e2.getSubExpression().getType()=="DoubleLiteral"))
 			temporary.createSubExpressionDoubleInequality(e1, e2);
 		else if ((e1.getSubExpression().getType()=="BooleanLiteral") && (e2.getSubExpression().getType()=="BooleanLiteral")) {
-			//create XOR or not(BooleanEquality) or booleanInequality
+			temporary.createSubExpressionLogicXOR(e1, e2);
 		}
 		return temporary;
 	}
@@ -263,7 +265,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 			Expression e2) {
 		Expression temporary;
 		temporary = new Expression(line, column);
-		temporary.createSubExpressionDoubleSubstraction(e1, e2);
+		temporary.createSubExpressionDoubleSubtraction(e1, e2);
 		return temporary;
 	}
 
@@ -289,7 +291,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	public Expression createSqrt(int line, int column, Expression e) {
 		Expression temporary;
 		temporary = new Expression(line, column);
-		temporary.createSubExpressionDoubleSquareRoot(e, e);
+		temporary.createSubExpressionDoubleSquareRoot(e);
 		return temporary;
 	}
 
@@ -297,7 +299,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	public Expression createSin(int line, int column, Expression e) {
 		Expression temporary;
 		temporary = new Expression(line, column);
-		temporary.createSubExpressionDoubleSine(e, e);
+		temporary.createSubExpressionDoubleSine(e);
 		return temporary;
 	}
 
@@ -305,7 +307,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	public Expression createCos(int line, int column, Expression e) {
 		Expression temporary;
 		temporary = new Expression(line, column);
-		temporary.createSubExpressionDoubleCosine(e, e);
+		temporary.createSubExpressionDoubleCosine(e);
 		return temporary;
 	}
 

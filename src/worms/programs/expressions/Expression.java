@@ -216,6 +216,22 @@ public class Expression {
 		}
 	}
 	
+	public void createSubExpressionLogicXOR(Expression first, Expression second) {
+		if(hasSubExpression()){
+			return;
+		} else {
+			subExpression = new LogicXOR(first, second, this);
+		}
+	}
+	
+	public void createSubExpressionLogicXNOR(Expression first, Expression second) {
+		if(hasSubExpression()){
+			return;
+		} else {
+			subExpression = new LogicXNOR(first, second, this);
+		}
+	}
+	
 	/**
 	 * 
 	 * @param first
@@ -301,27 +317,27 @@ public class Expression {
 		}
 	}
 	
-	public void createSubExpressionDoubleSquareRoot(Expression first, Expression second){
+	public void createSubExpressionDoubleSquareRoot(Expression first){
 		if(hasSubExpression()){
 			return;
 		} else {
-			subExpression = new DoubleSquareRoot(first, second);
+			subExpression = new DoubleSquareRoot(first);
 		}
 	}
 	
-	public void createSubExpressionDoubleSine(Expression first, Expression second){
+	public void createSubExpressionDoubleSine(Expression first){
 		if(hasSubExpression()){
 			return;
 		} else {
-			subExpression = new DoubleSine(first, second);
+			subExpression = new DoubleSine(first);
 		}
 	}
 	
-	public void createSubExpressionDoubleCosine(Expression first, Expression second){
+	public void createSubExpressionDoubleCosine(Expression first){
 		if(hasSubExpression()){
 			return;
 		} else {
-			subExpression = new DoubleCosine(first, second);
+			subExpression = new DoubleCosine(first);
 		}
 	}
 	
@@ -472,7 +488,7 @@ public class Expression {
 		 * @return
 		 * 		| result == (this.getPreConValue() && (getLeftValue() && getRightValue()))
 		 */
-		public boolean getValue() {
+		public Boolean getValue() {
 			return this.getPreConValue() && (getLeftValue() && getRightValue());
 		}
 		
@@ -582,6 +598,102 @@ public class Expression {
 			return "BooleanLiteral";
 		}
 	
+	}
+	
+	/**
+	 * DONE
+	 * Class for the LogicXOR.
+	 * @author Milan
+	 *
+	 */
+	public class LogicXOR extends SubExpressionLogic{
+		
+		/**
+		 * @param first
+		 * 		the first of the two actual parameters for the logical xor
+		 * @param second
+		 * 		the second of the two actual parameters for the logical xor 
+		 * @param targetMaster
+		 * 		the parent Expression.
+		 */
+		public LogicXOR(Expression first, Expression second, Expression targetMaster) {
+			this.master = targetMaster;
+			this.left = first;
+			this.right = first;
+			setLegalExpressionsLogic();
+		}
+		
+		/**
+		 * returns the value of the xor. 
+		 * False if the initialization was not a legal one (IE both expressions were not for the type "BooleanLiteral"
+		 * True if they were both of the type "BooleanLiteral" and at least one of them is true.
+		 * @return
+		 * 		| result == (getPreConValue() && (getLeftValue() || getRightValue()))
+		 */
+		public boolean getValue() {
+			return (getPreConValue() && ((getLeftValue() && !getRightValue()) || (!getLeftValue() && getRightValue())));
+		}
+		
+		/** 
+		 * Returns the type of this subexpression, in this case "LogicXOR"
+		 * @return
+		 * 		| result == "LogicXOR"
+		 */
+		public String getType(){
+			return "LogicXOR";
+		}
+		
+		public String getReturnType(){
+			return "BooleanLiteral";
+		}
+	}
+	
+	/**
+	 * DONE
+	 * Class for the LogicXNOR.
+	 * @author Milan
+	 *
+	 */
+	public class LogicXNOR extends SubExpressionLogic{
+		
+		/**
+		 * @param first
+		 * 		the first of the two actual parameters for the logical xnor
+		 * @param second
+		 * 		the second of the two actual parameters for the logical xnor 
+		 * @param targetMaster
+		 * 		the parent Expression.
+		 */
+		public LogicXNOR(Expression first, Expression second, Expression targetMaster) {
+			this.master = targetMaster;
+			this.left = first;
+			this.right = first;
+			setLegalExpressionsLogic();
+		}
+		
+		/**
+		 * returns the value of the xnor. 
+		 * False if the initialization was not a legal one (IE both expressions were not for the type "BooleanLiteral"
+		 * True if they were both of the type "BooleanLiteral" and at least one of them is true.
+		 * @return
+		 * 		| result == (getPreConValue() && (getLeftValue() || getRightValue()))
+		 */
+		public boolean getValue() {
+			return (getPreConValue() && ((getLeftValue() && getRightValue()) || (!getLeftValue() && !getRightValue())));
+		}
+		
+		/** 
+		 * Returns the type of this subexpression, in this case "LogicXNOR"
+		 * @return
+		 * 		| result == "LogicXNOR"
+		 */
+		public String getType(){
+			return "LogicXNOR";
+		}
+		
+		public String getReturnType(){
+			return "BooleanLiteral";
+		}
 	}
 	
 	public class DoubleLessThan extends SubExpressionDoubleCompare {
