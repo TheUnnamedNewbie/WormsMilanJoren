@@ -311,40 +311,34 @@ public class Facade implements IFacade {
 		world.setProjectile(null); //Just to be sure
 	}
 
-	@Override
 	public void addNewWorm(World world, Program program) {
 		// TODO Auto-generated method stub
 	}
 
-	@Override
 	public Worm createWorm(World world, double x, double y, double direction,
 			double radius, String name, Program program) {
 		if (program == null) {
 			return createWorm(world, x, y, direction,
 			radius, name);
 		} else {
-			return new ProgrammedWorm(world, x, y, direction,
-			radius, name, program);
+			return new ProgrammedWorm(name, x, y, direction,
+			radius, world, program);
 		}
 	}
 
-	@Override
 	public ParseOutcome<?> parseProgram(String programText,
 			IActionHandler handler) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
 	public boolean hasProgram(Worm worm) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
 	public boolean isWellFormed(Program program) {
 		// TODO Auto-generated method stub
 		return false;
 	}
-	
 }

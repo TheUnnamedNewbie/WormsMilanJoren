@@ -1,12 +1,12 @@
 package worms.programs;
 
 import worms.gui.game.IActionHandler;
+import worms.model.ProgrammedWorm;
 import worms.model.programs.ParseOutcome;
 import worms.programs.statements.Statement;
 
 /**
  * Program contains a main Statement (which contains more statements, ...)
- * I think compiling it on creation might be good
  * @author Milan
  *
  */
@@ -17,6 +17,11 @@ public class Program {
 		this.handler = handler;
 		compile();
 	}
+	
+	private String raw; //The raw text file
+	private Statement main; //The compiled version
+	private IActionHandler handler;
+	
 	
 	/**
 	 * Compiles the raw text file and puts it in Statement. The return is cfr. Facade to reflect success/failure
@@ -29,7 +34,7 @@ public class Program {
 		return null;
 	}
 	
-	private String raw; //The raw text file
-	private Statement main; //The compiled version
-	private IActionHandler handler; //Our link to the actual gameworld has been made!
+	public IActionHandler getHandler() {
+		return this.handler;
+	}
 }

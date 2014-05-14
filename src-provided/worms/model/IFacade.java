@@ -8,6 +8,7 @@ import worms.entities.Food;
 import worms.entities.Projectile;
 import worms.gui.game.IActionHandler;
 import worms.model.programs.ParseOutcome;
+import worms.programs.Program;
 
 /**
  * Implement this interface to connect your code to the user interface.
