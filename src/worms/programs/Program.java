@@ -4,7 +4,6 @@ import java.util.Map;
 
 import worms.gui.game.IActionHandler;
 import worms.model.programs.ParseOutcome;
-import worms.model.programs.ProgramFactory;
 import worms.model.programs.ProgramParser;
 import worms.programs.expressions.Expression;
 import worms.programs.statements.Statement;

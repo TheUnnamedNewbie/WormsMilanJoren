@@ -7,6 +7,7 @@ import worms.CoordinateOutOfBoundsException;
 import worms.containment.World;
 import worms.gui.game.IActionHandler;
 import worms.programs.Program;
+import worms.programs.statements.Statement;
 import worms.programs.types.Type;
 
 /**
@@ -45,6 +46,14 @@ public class ProgrammedWorm extends Worm {
 	}
 	
 	/**
+	 * Base of our recursive call. Switch on StatementType and do stuff if required.
+	 * @param statement
+	 */
+	public void doStatement(Statement statement) {
+		
+	}
+	
+	/**
 	 * Creates access to a Expression through a string
 	 * @param name the name that points to the var
 	 * @param content the content of the var
@@ -60,8 +69,29 @@ public class ProgrammedWorm extends Worm {
 	/**
 	 * This called upon by the factory if a execute statement is encountered.
 	 * @param commandName The String that represents the command. NOTE: What with shoot(yield)?
+	 * @param value for use with fire and turn. Anything can be placed if not these (prefer null)
+	 * @throws when commandname is illegal. This is an internal error and should not be thrown. Debugging purposes only.
 	 */
-	public void execute(String commandName) {
-		//if-cascade or switch statements with the help of this.handler
+	public void execute(String commandName, Object value) {
+		if (commandName == "jump") {
+			this.handler.jump(this);
+		} else if (commandName == "move") {
+			this.handler.move(this);
+		} else if (commandName == "toggleweap") {
+			this.handler.toggleWeapon(this);
+		} else if (commandName == "skip") {
+			endTurn();
+		} else if (commandName == "fire") {
+			this.handler.fire(this, (Integer)value); //annoying...
+		} else if (commandName == "turn") {
+			this.handler.turn(this, (Double)value);
+		} else throw new IllegalAccessError("Illegal command name");
+	}
+	
+	/**
+	 * Stuff to do at the end of the turn, if any
+	 */
+	public void endTurn() {
+		//stuff!
 	}
 }
