@@ -7,7 +7,6 @@ import worms.containment.Team;
 import worms.entities.Entity;
 import worms.entities.Food;
 import worms.entities.Movable;
-import worms.gui.GameState;
 import worms.model.Worm;
 import worms.model.programs.ProgramFactory;
 import worms.model.programs.ProgramFactory.ForeachType;
@@ -19,7 +18,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	
 	private HashMap<String, Expression> vars = new HashMap<String, Expression>();
 	
-	//constructor? With the worm calling it definitely.
+	public Factory() {
+	}
 	
 	//DONE
 	public Expression createDoubleLiteral(int line, int column, double d) {
@@ -71,8 +71,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	public Expression createSelf(int line, int column){
 		Expression temporary;
 		temporary = new Expression(line, column);
-		Entity target = DefaultActionHandler.getFacade().getCurrentWorm(); //HOW!?
-		target = null; //TODO pointer goes here
+		Entity target = null; //TODO pointer goes here
 		temporary.createSubExpressionEntity(target);
 		return temporary;
 	}

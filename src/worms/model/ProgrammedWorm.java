@@ -1,13 +1,13 @@
 package worms.model;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import worms.CoordinateOutOfBoundsException;
 import worms.containment.World;
 import worms.gui.game.IActionHandler;
 import worms.programs.Program;
-import worms.programs.expressions.Expression;
-import worms.programs.statements.Statement;
+import worms.programs.types.Type;
 
 /**
  * The programmed worm also gets a program associated with it. It executes the commands as per the parser -> factory
@@ -19,26 +19,29 @@ public class ProgrammedWorm extends Worm {
 	
 	/**
 	 * Yay for auto-generated code!
-	 * cfr. super constructor
-	 * @param commands The commands this worm should execute in its turn
+	 * cfr. super constructor (Isn't there like a '@effect' thing or smth)
+	 * @param program The commands this worm should execute in its turn
 	 */
 	public ProgrammedWorm(String name, double posX, double posY, double radius,
-			double direction, World world, Program commands)
+			double direction, World world, Program program)
 			throws CoordinateOutOfBoundsException, IllegalArgumentException {
 		super(name, posX, posY, radius, direction, world);
-		this.commands = commands;
-		this.handler = commands.getHandler();
+		this.program = program;
+		this.handler = program.handler;
 	}
 	
-	private Program commands;
+	private Program program;
 	private IActionHandler handler;
-	private HashMap<String, Expression> vars = new HashMap<String, Expression>();
+	private Map<String, Type> vars = new HashMap<String, Type>();
 	
 	/**
 	 * Makes the turn cfr the program (runs the program)
+	 * 
+	 * DEV NOTE: First figure the Statement end out before attempting linking to it. The winds of change are coming...
 	 */
 	public void takeTurn() {
-		
+		//TODO Make sure the program is compiled. Must we compile if not (total)?
+		this.vars = this.program.globals;
 	}
 	
 	/**
@@ -46,11 +49,11 @@ public class ProgrammedWorm extends Worm {
 	 * @param name the name that points to the var
 	 * @param content the content of the var
 	 */
-	public void createVar(String name, Expression content) {
+	public void createVar(String name, Type content) {
 		vars.put(name, content);
 	}
 	
-	public Expression getVar(String name) {
+	public Type getVar(String name) {
 		return vars.get(name);
 	}
 	

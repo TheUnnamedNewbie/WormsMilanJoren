@@ -2,7 +2,7 @@ package worms.model.programs;
 
 import java.util.List;
 
-import worms.model.Program;
+import worms.programs.Program;
 
 /**
  * Represents the outcome of parsing a program.

@@ -395,7 +395,7 @@ public class Expression {
 		 * 		the value
 		 * 		| result == this.value
 		 */
-		public double getValue() {
+		public Double getValue() {
 			return this.value;
 		}
 		
@@ -441,7 +441,7 @@ public class Expression {
 			this.value = target;
 		}
 		
-		public boolean getValue() {
+		public Boolean getValue() {
 			return this.value;
 		}
 		
@@ -537,7 +537,7 @@ public class Expression {
 		 * @return
 		 * 		| result == (getPreConValue() && (getLeftValue() || getRightValue()))
 		 */
-		public boolean getValue() {
+		public Boolean getValue() {
 			return (getPreConValue() && (getLeftValue() || getRightValue()));
 		}
 		
@@ -583,7 +583,7 @@ public class Expression {
 		 * @return
 		 * 		| result == !getLeftValue()
 		 */
-		public boolean getValue() { //HOW DO WE HANDLE PRECON?
+		public Boolean getValue() { //HOW DO WE HANDLE PRECON?
 			return !(getLeftValue());
 		}
 		
@@ -630,7 +630,7 @@ public class Expression {
 		 * @return
 		 * 		| result == (getPreConValue() && (getLeftValue() || getRightValue()))
 		 */
-		public boolean getValue() {
+		public Boolean getValue() {
 			return (getPreConValue() && ((getLeftValue() && !getRightValue()) || (!getLeftValue() && getRightValue())));
 		}
 		
@@ -678,7 +678,7 @@ public class Expression {
 		 * @return
 		 * 		| result == (getPreConValue() && (getLeftValue() || getRightValue()))
 		 */
-		public boolean getValue() {
+		public Boolean getValue() {
 			return (getPreConValue() && ((getLeftValue() && getRightValue()) || (!getLeftValue() && !getRightValue())));
 		}
 		
@@ -705,7 +705,7 @@ public class Expression {
 		}
 		
 		@Override
-		public boolean getValue() {
+		public Boolean getValue() {
 			if(!getPreConValue()){
 				return false;
 			} else {
@@ -728,7 +728,7 @@ public class Expression {
 		}
 		
 		@Override
-		public boolean getValue() {
+		public Boolean getValue() {
 			if(!getPreConValue()){
 				return false;
 			} else {
@@ -750,7 +750,7 @@ public class Expression {
 		}
 		
 		@Override
-		public boolean getValue() {
+		public Boolean getValue() {
 			if(!getPreConValue()){
 				return false;
 			} else {
@@ -772,7 +772,7 @@ public class Expression {
 		}
 		
 		@Override
-		public boolean getValue() {
+		public Boolean getValue() {
 			if(!getPreConValue()){
 				return false;
 			} else {
@@ -794,7 +794,7 @@ public class Expression {
 		}
 		
 		@Override
-		public boolean getValue() {
+		public Boolean getValue() {
 			if(!getPreConValue()){
 				return false;
 			} else {
@@ -816,7 +816,7 @@ public class Expression {
 		}
 		
 		@Override
-		public boolean getValue() {
+		public Boolean getValue() {
 			if(!getPreConValue()){
 				return false;
 			} else {
@@ -838,7 +838,7 @@ public class Expression {
 		}
 		
 		@Override
-		public double getValue() {
+		public Double getValue() {
 			if(!getPreConValue()){
 				return Double.NaN;
 			} else {
@@ -860,7 +860,7 @@ public class Expression {
 		}
 		
 		@Override
-		public double getValue() {
+		public Double getValue() {
 			if(!getPreConValue()){
 				return Double.NaN;
 			} else {
@@ -882,7 +882,7 @@ public class Expression {
 		}
 		
 		@Override
-		public double getValue() {
+		public Double getValue() {
 			if(!getPreConValue()){
 				return Double.NaN;
 			} else {
@@ -904,7 +904,7 @@ public class Expression {
 		}
 		
 		@Override
-		public double getValue() {
+		public Double getValue() {
 			if(!getPreConValue()){
 				return Double.NaN;
 			} else {
@@ -925,7 +925,7 @@ public class Expression {
 			setHasLegalArguments();
 		}
 		
-		public double getValue() {
+		public Double getValue() {
 			if(!getPreConValue()){
 				return Double.NaN;
 			} else {
@@ -946,7 +946,7 @@ public class Expression {
 			setHasLegalArguments();
 		}
 		
-		public double getValue() {
+		public Double getValue() {
 			if(!getPreConValue()){
 				return Double.NaN;
 			} else {
@@ -967,7 +967,7 @@ public class Expression {
 			setHasLegalArguments();
 		}
 		
-		public double getValue() {
+		public Double getValue() {
 			if(!getPreConValue()){
 				return Double.NaN;
 			} else {

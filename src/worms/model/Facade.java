@@ -328,8 +328,8 @@ public class Facade implements IFacade {
 
 	public ParseOutcome<?> parseProgram(String programText,
 			IActionHandler handler) {
-		// TODO Auto-generated method stub
-		return null;
+		Program program = new Program(programText, handler);
+		return program.compile();
 	}
 
 	public boolean hasProgram(Worm worm) {
