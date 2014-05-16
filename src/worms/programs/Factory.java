@@ -9,14 +9,12 @@ import worms.entities.Food;
 import worms.entities.Movable;
 import worms.model.Worm;
 import worms.model.programs.ProgramFactory;
-import worms.model.programs.ProgramFactory.ForeachType;
 import worms.programs.expressions.Expression;
 import worms.programs.statements.Statement;
 import worms.programs.types.Type;
+import worms.programs.types.TypeType;
 
 public class Factory implements ProgramFactory<Expression, Statement, Type> {
-	
-	private HashMap<String, Expression> vars = new HashMap<String, Expression>();
 	
 	public Factory() {
 	}
@@ -79,7 +77,6 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	public Expression createGetX(int line, int column, Expression exp){
 		Expression temporary;
 		temporary = new Expression(line, column);
-		//TODO Assert things
 		Entity value = (Entity) exp.getSubExpression().getValue();
 		temporary.createSubExpressionDoubleLiteral(value.getPosX());
 		return temporary;
@@ -88,7 +85,6 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	public Expression createGetY(int line, int column, Expression exp){
 		Expression temporary;
 		temporary = new Expression(line, column);
-		//TODO Assert things
 		Entity value = (Entity) exp.getSubExpression().getValue();
 		temporary.createSubExpressionDoubleLiteral(value.getPosY());
 		return temporary;
@@ -97,7 +93,6 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	public Expression createGetRadius(int line, int column, Expression exp){
 		Expression temporary;
 		temporary = new Expression(line, column);
-		//TODO Assert things
 		Entity value = (Entity) exp.getSubExpression().getValue();
 		temporary.createSubExpressionDoubleLiteral(value.getRadius());
 		return temporary;
@@ -106,7 +101,6 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	public Expression createGetDir(int line, int column, Expression exp){
 		Expression temporary;
 		temporary = new Expression(line, column);
-		//TODO Assert things
 		Movable value = (Movable) exp.getSubExpression().getValue();
 		temporary.createSubExpressionDoubleLiteral(value.getOrientation());
 		return temporary;
@@ -115,7 +109,6 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	public Expression createGetAP(int line, int column, Expression exp){
 		Expression temporary;
 		temporary = new Expression(line, column);
-		//TODO Assert things
 		Worm value = (Worm) exp.getSubExpression().getValue();
 		temporary.createSubExpressionDoubleLiteral(value.getActionPoints()); //auto-convert from long to double? probably!
 		return temporary;
@@ -124,7 +117,6 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	public Expression createGetMaxAP(int line, int column, Expression exp){
 		Expression temporary;
 		temporary = new Expression(line, column);
-		//TODO Assert things
 		Worm value = (Worm) exp.getSubExpression().getValue();
 		temporary.createSubExpressionDoubleLiteral(value.getMaxActionPoints()); //auto-convert from long to double? probably!
 		return temporary;
@@ -133,7 +125,6 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	public Expression createGetHP(int line, int column, Expression exp){
 		Expression temporary;
 		temporary = new Expression(line, column);
-		//TODO Assert things
 		Worm value = (Worm) exp.getSubExpression().getValue();
 		temporary.createSubExpressionDoubleLiteral(value.getHitPoints()); //auto-convert from long to double? probably!
 		return temporary;
@@ -142,7 +133,6 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	public Expression createGetMaxHP(int line, int column, Expression exp) {
 		Expression temporary;
 		temporary = new Expression(line, column);
-		//TODO Assert things
 		Worm value = (Worm) exp.getSubExpression().getValue();
 		temporary.createSubExpressionDoubleLiteral(value.getMaxHitPoints()); //auto-convert from long to double? probably!
 		return temporary;
@@ -152,7 +142,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 		//getting team from given
 		Team team1 = ((Worm) exp.getSubExpression().getValue()).getTeam();
 		// Get team from currently executing
-		Team team2 = null; //... again with the 'how do wet get to the game?' TODO
+		Worm self = null;
+		Team team2 = self.getTeam();
 		boolean target_value = (team1.getName()==team2.getName());
 		//create and return expression
 		Expression temporary;
@@ -162,6 +153,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	}
 	
 	public Expression createSearchObj(int line, int column, Expression exp){
+		//TODO implement
 		return null;
 	}
 	
@@ -185,7 +177,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 
 	@Override
 	public Expression createVariableAccess(int line, int column, String name) {
-		return vars.get(name); //right?
+		//TODO implement
+		return null;
 	}
 
 	@Override
@@ -312,99 +305,118 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 
 	@Override
 	public Statement createTurn(int line, int column, Expression angle) {
-		// TODO Auto-generated method stub
-		return null;
+		Statement temporary;
+		temporary = new Statement(line, column);
+		temporary.createSubStatementAction("turn", angle);
+		return temporary;
 	}
 
 	@Override
 	public Statement createMove(int line, int column) {
-		// TODO Auto-generated method stub
-		return null;
+		Statement temporary;
+		temporary = new Statement(line, column);
+		temporary.createSubStatementAction("move", null);
+		return temporary;
 	}
 
 	@Override
 	public Statement createJump(int line, int column) {
-		// TODO Auto-generated method stub
-		return null;
+		Statement temporary;
+		temporary = new Statement(line, column);
+		temporary.createSubStatementAction("jump", null);
+		return temporary;
 	}
 
 	@Override
 	public Statement createToggleWeap(int line, int column) {
-		// TODO Auto-generated method stub
-		return null;
+		Statement temporary;
+		temporary = new Statement(line, column);
+		temporary.createSubStatementAction("toggleweap", null);
+		return temporary;
 	}
 
 	@Override
 	public Statement createFire(int line, int column, Expression yield) {
-		// TODO Auto-generated method stub
-		return null;
+		Statement temporary;
+		temporary = new Statement(line, column);
+		temporary.createSubStatementAction("fire", yield);
+		return temporary;
 	}
 
 	@Override
 	public Statement createSkip(int line, int column) {
-		// TODO Auto-generated method stub
-		return null;
+		Statement temporary;
+		temporary = new Statement(line, column);
+		temporary.createSubStatementAction("skip", null);
+		return temporary;
 	}
 
 	@Override
 	public Statement createAssignment(int line, int column,
 			String variableName, Expression rhs) {
-		vars.put(variableName, rhs);
-		//how the hell do we represent this thing that has happened by a statement
-		//(and not void, as would be custom)!?
-		return null;
+		Statement temporary;
+		temporary = new Statement(line, column);
+		temporary.createSubStatementAssign(variableName, rhs);
+		return temporary;
 	}
 
 	@Override
 	public Statement createIf(int line, int column, Expression condition,
 			Statement then, Statement otherwise) {
-		// TODO Auto-generated method stub
-		return null;
+		Statement temporary;
+		temporary = new Statement(line, column);
+		temporary.createSubStatementIf(condition, then, otherwise);
+		return temporary;
 	}
 
 	@Override
 	public Statement createWhile(int line, int column, Expression condition,
 			Statement body) {
-		// TODO Auto-generated method stub
-		return null;
+		Statement temporary;
+		temporary = new Statement(line, column);
+		temporary.createSubStatementWhile(condition, body);
+		return temporary;
 	}
 
 	@Override
 	public Statement createForeach(int line, int column,
 			worms.model.programs.ProgramFactory.ForeachType type,
 			String variableName, Statement body) {
-		// TODO Auto-generated method stub
-		return null;
+		Statement temporary;
+		temporary = new Statement(line, column);
+		temporary.createSubStatementFor(type, variableName, body);
+		return temporary;
 	}
 
 	@Override
 	public Statement createSequence(int line, int column,
 			List<Statement> statements) {
-		// TODO Auto-generated method stub
-		return null;
+		Statement temporary;
+		temporary = new Statement(line, column);
+		temporary.createSubStatementSequence(statements);
+		return temporary;
 	}
 
 	@Override
 	public Statement createPrint(int line, int column, Expression e) {
-		// TODO Auto-generated method stub
-		return null;
+		Statement temporary;
+		temporary = new Statement(line, column);
+		temporary.createSubStatementPrint(e);
+		return temporary;
 	}
 
 	@Override
 	public Type createDoubleType() {
-		// TODO Auto-generated method stub
-		return null;
+		return new Type(TypeType.DOUBLE);
 	}
 
 	@Override
 	public Type createBooleanType() {
-		// TODO Auto-generated method stub
-		return null;
+		return new Type(TypeType.BOOLEAN);
 	}
 
 	@Override
 	public Type createEntityType() {
-		// TODO Auto-generated method stub
-		return null;
+		return new Type(TypeType.ENTITY);
 	}
 }

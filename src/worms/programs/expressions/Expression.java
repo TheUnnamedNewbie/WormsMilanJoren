@@ -992,7 +992,7 @@ public class Expression {
 		}
 		
 		public String getType() {
-			return "Entity";
+			return "EntityLiteral";
 		}
 	}
 	

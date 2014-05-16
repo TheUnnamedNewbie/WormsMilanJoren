@@ -338,7 +338,6 @@ public class Facade implements IFacade {
 	}
 
 	public boolean isWellFormed(Program program) {
-		// TODO Auto-generated method stub
-		return false;
+		return program.main.isWellFormed();
 	}
 }

@@ -13,4 +13,12 @@ public abstract class SubStatement {
 		return this.type;
 	}
 	
+	public boolean isWellFormed() {
+		return false;
+	}
+	
+	public boolean containsAction() {
+		return true;
+	}
+	
 }
