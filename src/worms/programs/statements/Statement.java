@@ -3,7 +3,8 @@ package worms.programs.statements;
 import java.util.List;
 
 import worms.model.programs.ProgramFactory;
-import worms.programs.expressions.Expression;
+import worms.programs.Expressions.Expression;
+import worms.programs.types.TypeType;
 
 public class Statement {
 	
@@ -157,7 +158,7 @@ public class Statement {
 	
 	//IF
 	public void createSubStatementIf(Expression condition, Statement ifthen, Statement ifelse) {
-		assert condition.getSubExpressionReturnType() == "BooleanLiteral";
+		//COMPLAINT//assert condition.getReturnType() == TypeType.BOOLEAN;
 		this.subStatement = new IfStatement(this, condition, ifthen, ifelse);
 	}
 	
@@ -184,7 +185,7 @@ public class Statement {
 	
 	//WHILE
 	public void createSubStatementWhile(Expression condition, Statement body) {
-		assert condition.getSubExpressionReturnType() == "BooleanLiteral";
+		//COMPLAINT//assert condition.getReturnType() == TypeType.BOOLEAN;
 		this.subStatement = new WhileStatement(this, condition, body);
 	}
 	

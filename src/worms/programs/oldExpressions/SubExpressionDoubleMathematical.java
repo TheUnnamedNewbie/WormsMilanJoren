@@ -1,4 +1,4 @@
-package worms.programs.expressions;
+package worms.programs.oldExpressions;
 
 public abstract class SubExpressionDoubleMathematical extends
 		SubExpressionDoubleOp {

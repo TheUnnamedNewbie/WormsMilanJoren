@@ -1,15 +1,9 @@
 package worms.programs;
 
-import java.util.HashMap;
 import java.util.List;
 
-import worms.containment.Team;
-import worms.entities.Entity;
-import worms.entities.Food;
-import worms.entities.Movable;
-import worms.model.Worm;
 import worms.model.programs.ProgramFactory;
-import worms.programs.expressions.Expression;
+import worms.programs.Expressions.Expression;
 import worms.programs.statements.Statement;
 import worms.programs.types.Type;
 import worms.programs.types.TypeType;
@@ -39,7 +33,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	public Expression createAnd(int line, int column, Expression e1, Expression e2) {
 		Expression temporary;
 		temporary = new Expression(line, column);
-		temporary.createSubExpressionLogicAnd(e1, e2);
+		temporary.createSubExpressionAnd(e1, e2);
 		return temporary;
 	}
 	
@@ -47,7 +41,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	public Expression createOr(int line, int column, Expression e1, Expression e2) {
 		Expression temporary;
 		temporary = new Expression(line, column);
-		temporary.createSubExpressionLogicOr(e1, e2);
+		temporary.createSubExpressionOr(e1, e2);
 		return temporary;
 	}
 	
@@ -55,130 +49,114 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	public Expression createNot(int line, int column, Expression e) {
 		Expression temporary;
 		temporary = new Expression(line, column);
-		temporary.createSubExpressionLogicNot(e);
+		temporary.createSubExpressionNot(e);
 		return temporary;
 	}
 	
 	public Expression createNull(int line, int column) {
 		Expression temporary;
 		temporary = new Expression(line, column);
-		temporary.createSubExpressionNull();
+		temporary.createSubExpressionNullLiteral();
 		return temporary;
 	}
 	
 	public Expression createSelf(int line, int column){
 		Expression temporary;
 		temporary = new Expression(line, column);
-		Entity target = null; //TODO pointer goes here
-		temporary.createSubExpressionEntity(target);
+		temporary.createSubExpressionThisLiteral();
 		return temporary;
 	}
 	
 	public Expression createGetX(int line, int column, Expression exp){
 		Expression temporary;
 		temporary = new Expression(line, column);
-		Entity value = (Entity) exp.getSubExpression().getValue();
-		temporary.createSubExpressionDoubleLiteral(value.getPosX());
+		temporary.createSubExpressionGetX(exp);
 		return temporary;
 	}
 	
 	public Expression createGetY(int line, int column, Expression exp){
 		Expression temporary;
 		temporary = new Expression(line, column);
-		Entity value = (Entity) exp.getSubExpression().getValue();
-		temporary.createSubExpressionDoubleLiteral(value.getPosY());
+		temporary.createSubExpressionGetY(exp);
 		return temporary;
 	}
 
 	public Expression createGetRadius(int line, int column, Expression exp){
 		Expression temporary;
 		temporary = new Expression(line, column);
-		Entity value = (Entity) exp.getSubExpression().getValue();
-		temporary.createSubExpressionDoubleLiteral(value.getRadius());
+		temporary.createSubExpressionGetRadius(exp);
 		return temporary;
 	}
 	
 	public Expression createGetDir(int line, int column, Expression exp){
 		Expression temporary;
 		temporary = new Expression(line, column);
-		Movable value = (Movable) exp.getSubExpression().getValue();
-		temporary.createSubExpressionDoubleLiteral(value.getOrientation());
+		temporary.createSubExpressionGetOrientation(exp);
 		return temporary;
 	}
 
 	public Expression createGetAP(int line, int column, Expression exp){
 		Expression temporary;
 		temporary = new Expression(line, column);
-		Worm value = (Worm) exp.getSubExpression().getValue();
-		temporary.createSubExpressionDoubleLiteral(value.getActionPoints()); //auto-convert from long to double? probably!
+		temporary.createSubExpressionGetAP(exp);
 		return temporary;
 	}
 	
 	public Expression createGetMaxAP(int line, int column, Expression exp){
 		Expression temporary;
 		temporary = new Expression(line, column);
-		Worm value = (Worm) exp.getSubExpression().getValue();
-		temporary.createSubExpressionDoubleLiteral(value.getMaxActionPoints()); //auto-convert from long to double? probably!
+		temporary.createSubExpressionGetMaxAP(exp);
 		return temporary;
 	}
 	
 	public Expression createGetHP(int line, int column, Expression exp){
 		Expression temporary;
 		temporary = new Expression(line, column);
-		Worm value = (Worm) exp.getSubExpression().getValue();
-		temporary.createSubExpressionDoubleLiteral(value.getHitPoints()); //auto-convert from long to double? probably!
+		temporary.createSubExpressionGetHP(exp);
 		return temporary;
 	}
 	
 	public Expression createGetMaxHP(int line, int column, Expression exp) {
 		Expression temporary;
 		temporary = new Expression(line, column);
-		Worm value = (Worm) exp.getSubExpression().getValue();
-		temporary.createSubExpressionDoubleLiteral(value.getMaxHitPoints()); //auto-convert from long to double? probably!
+		temporary.createSubExpressionGetMaxHP(exp);
 		return temporary;
 	}
 
 	public Expression createSameTeam(int line, int column, Expression exp){
-		//getting team from given
-		Team team1 = ((Worm) exp.getSubExpression().getValue()).getTeam();
-		// Get team from currently executing
-		Worm self = null;
-		Team team2 = self.getTeam();
-		boolean target_value = (team1.getName()==team2.getName());
-		//create and return expression
 		Expression temporary;
 		temporary = new Expression(line, column);
-		temporary.createSubExpressionBooleanLiteral(target_value);
+		temporary.createSubExpressionSameTeam(exp);
 		return temporary;
 	}
 	
 	public Expression createSearchObj(int line, int column, Expression exp){
-		//TODO implement
-		return null;
+		Expression temporary;
+		temporary = new Expression(line, column);
+		temporary.createSubExpressionSearchObject(exp);
+		return temporary;
 	}
 	
 	public Expression createIsWorm(int line, int column, Expression exp){
-		boolean target_value = Worm.class.isInstance(exp.getSubExpression().getValue());
-		//create and return expression
 		Expression temporary;
 		temporary = new Expression(line, column);
-		temporary.createSubExpressionBooleanLiteral(target_value);
+		temporary.createSubExpressionIsWorm(exp);
 		return temporary;
 	}
 	
 	public Expression createIsFood(int line, int column, Expression exp) {
-		boolean target_value = Food.class.isInstance(exp.getSubExpression().getValue());
-		//create and return expression
 		Expression temporary;
 		temporary = new Expression(line, column);
-		temporary.createSubExpressionBooleanLiteral(target_value);
+		temporary.createSubExpressionIsFood(exp);
 		return temporary;
 	}
 
 	@Override
 	public Expression createVariableAccess(int line, int column, String name) {
-		//TODO implement
-		return null;
+		Expression temporary;
+		temporary = new Expression(line, column);
+		temporary.createSubExpressionVaribleAccess(name);
+		return temporary;
 	}
 
 	@Override
@@ -186,7 +164,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 			Expression e2) {
 		Expression temporary;
 		temporary = new Expression(line, column);
-		temporary.createSubExpressionDoubleLessThan(e1, e2);
+		temporary.createSubExpressionLessThan(e1, e2);
 		return temporary;
 	}
 
@@ -195,7 +173,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 			Expression e2) {
 		Expression temporary;
 		temporary = new Expression(line, column);
-		temporary.createSubExpressionDoubleGreaterThan(e1, e2);
+		temporary.createSubExpressionGreaterThan(e1, e2);
 		return temporary;
 	}
 
@@ -204,7 +182,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 			Expression e1, Expression e2) {
 		Expression temporary;
 		temporary = new Expression(line, column);
-		temporary.createSubExpressionDoubleLessThanOrEqualTo(e1, e2);
+		temporary.createSubExpressionLessThanOrEqual(e1, e2);
 		return temporary;
 	}
 
@@ -213,7 +191,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 			Expression e1, Expression e2) {
 		Expression temporary;
 		temporary = new Expression(line, column);
-		temporary.createSubExpressionDoubleGreaterThanOrEqualTo(e1, e2);
+		temporary.createSubExpressionGreaterThanOrEqual(e1, e2);
 		return temporary;
 	}
 
@@ -222,25 +200,37 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 			Expression e2) {
 		Expression temporary;
 		temporary = new Expression(line, column);
-		if ((e1.getSubExpression().getType()=="DoubleLiteral") && (e2.getSubExpression().getType()=="DoubleLiteral"))
+		if ((e1.getReturnType()==TypeType.DOUBLE) && (e2.getReturnType()==TypeType.DOUBLE))
 			temporary.createSubExpressionDoubleEquality(e1, e2);
-		else if ((e1.getSubExpression().getType()=="BooleanLiteral") && (e2.getSubExpression().getType()=="BooleanLiteral")) {
-			temporary.createSubExpressionLogicXNOR(e1, e2);
-		}
+		else if ((e1.getReturnType()==TypeType.BOOLEAN) && (e2.getReturnType()==TypeType.BOOLEAN))
+			temporary.createSubExpressionBooleanEquality(e1, e2);
+		else if ((e1.getReturnType()==TypeType.ENTITY) && (e2.getReturnType()==TypeType.ENTITY))
+			temporary.createSubExpressionEntityEquality(e1, e2);
+		else if ((e1.getReturnType()==null) || (e2.getReturnType()==null))
+			temporary.createSubExpressionUncheckedEquality(e1, e2);
 		return temporary;
 	}
 
 	@Override
 	public Expression createInequality(int line, int column, Expression e1,
 			Expression e2) {
-		Expression temporary;
-		temporary = new Expression(line, column);
-		if ((e1.getSubExpression().getType()=="DoubleLiteral") && (e2.getSubExpression().getType()=="DoubleLiteral"))
-			temporary.createSubExpressionDoubleInequality(e1, e2);
-		else if ((e1.getSubExpression().getType()=="BooleanLiteral") && (e2.getSubExpression().getType()=="BooleanLiteral")) {
-			temporary.createSubExpressionLogicXOR(e1, e2);
+		Expression temporary1, temporary2;
+		temporary1 = new Expression(line, column);
+		temporary2 = new Expression(line, column);
+		if ((e1.getReturnType()==TypeType.DOUBLE) && (e2.getReturnType()==TypeType.DOUBLE)) {
+			temporary1.createSubExpressionDoubleEquality(e1, e2);
+			temporary2.createSubExpressionNot(temporary1);
+		} else if ((e1.getReturnType()==TypeType.BOOLEAN) && (e2.getReturnType()==TypeType.BOOLEAN)) {
+			temporary1.createSubExpressionBooleanEquality(e1, e2);
+			temporary2.createSubExpressionNot(temporary1);
+		} else if ((e1.getReturnType()==TypeType.ENTITY) && (e2.getReturnType()==TypeType.ENTITY)) {
+			temporary1.createSubExpressionEntityEquality(e1, e2);
+			temporary2.createSubExpressionNot(temporary1);
+		} else if ((e1.getReturnType()==null) || (e2.getReturnType()==null)) {
+			temporary1.createSubExpressionUncheckedEquality(e1, e2);
+			temporary2.createSubExpressionNot(temporary1);
 		}
-		return temporary;
+		return temporary2;
 	}
 
 	@Override
@@ -248,7 +238,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 			Expression e2) {
 		Expression temporary;
 		temporary = new Expression(line, column);
-		temporary.createSubExpressionDoubleAddition(e1, e2);
+		temporary.createSubExpressionAddition(e1, e2);
 		return temporary;
 	}
 
@@ -257,7 +247,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 			Expression e2) {
 		Expression temporary;
 		temporary = new Expression(line, column);
-		temporary.createSubExpressionDoubleSubtraction(e1, e2);
+		temporary.createSubExpressionSubtraction(e1, e2);
 		return temporary;
 	}
 
@@ -266,7 +256,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 			Expression e2) {
 		Expression temporary;
 		temporary = new Expression(line, column);
-		temporary.createSubExpressionDoubleMultiplication(e1, e2);
+		temporary.createSubExpressionMultiplication(e1, e2);
 		return temporary;
 	}
 
@@ -275,7 +265,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 			Expression e2) {
 		Expression temporary;
 		temporary = new Expression(line, column);
-		temporary.createSubExpressionDoubleDivision(e1, e2);
+		temporary.createSubExpressionDivision(e1, e2);
 		return temporary;
 	}
 
@@ -283,7 +273,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	public Expression createSqrt(int line, int column, Expression e) {
 		Expression temporary;
 		temporary = new Expression(line, column);
-		temporary.createSubExpressionDoubleSquareRoot(e);
+		temporary.createSubExpressionSquareRoot(e);
 		return temporary;
 	}
 
@@ -291,7 +281,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	public Expression createSin(int line, int column, Expression e) {
 		Expression temporary;
 		temporary = new Expression(line, column);
-		temporary.createSubExpressionDoubleSine(e);
+		temporary.createSubExpressionSine(e);
 		return temporary;
 	}
 
@@ -299,7 +289,7 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	public Expression createCos(int line, int column, Expression e) {
 		Expression temporary;
 		temporary = new Expression(line, column);
-		temporary.createSubExpressionDoubleCosine(e);
+		temporary.createSubExpressionCosine(e);
 		return temporary;
 	}
 

@@ -1,6 +1,6 @@
-package worms.programs.expressions;
+package worms.programs.oldExpressions;
 
-import worms.programs.expressions.Expression;
+import worms.programs.oldExpressions.Expression;
 
 public abstract class SubExpression {
 	

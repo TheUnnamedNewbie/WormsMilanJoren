@@ -11,7 +11,7 @@ import worms.entities.Food;
 import worms.gui.game.IActionHandler;
 import worms.model.programs.ProgramFactory;
 import worms.programs.Program;
-import worms.programs.expressions.Expression;
+import worms.programs.Expressions.Expression;
 import worms.programs.statements.Statement;
 import worms.programs.types.*;
 
@@ -47,7 +47,7 @@ public class ProgrammedWorm extends Worm {
 	 * DEV NOTE: First figure the Statement end out before attempting linking to it. The winds of change are coming...
 	 */
 	public void takeTurn() {
-		//TODO Make sure the program is compiled. Must we compile if not (total)?
+		//Make sure the program is compiled. Must we compile if not (total)?
 		this.vars = this.program.globals;
 		doStatement(program.main);
 		endTurn();
@@ -73,8 +73,8 @@ public class ProgrammedWorm extends Worm {
 			break;
 		case ASSIGN:
 			Statement.AssignStatement assignSubState = (Statement.AssignStatement)statement.getSubStatement(); //believe me, you want it this way
-			String typeString = assignSubState.expr.getSubExpression().getReturnType();
-			Type targetType = popNextType(TypeType.getCorrespondingType(typeString));
+			TypeType typeName = assignSubState.expr.getReturnType();
+			Type targetType = popNextType(typeName);
 			targetType.setExpression(assignSubState.expr);
 			createVar(assignSubState.varName, targetType);
 			break;
@@ -115,7 +115,7 @@ public class ProgrammedWorm extends Worm {
 			Type bogusType = new Type(TypeType.ENTITY);
 			for (Entity targetEntity: theList) {
 				Expression targetExpression = new Expression(-1, -1);
-				targetExpression.createSubExpressionEntity(targetEntity);
+				targetExpression.createSubExpressionEntityLiteral(targetEntity);
 				bogusType.setExpression(targetExpression);
 				createVar(forSubState.variableName, bogusType);
 				
@@ -132,9 +132,7 @@ public class ProgrammedWorm extends Worm {
 	 * @return the evaluation
 	 */
 	private Object evaluateExpression(Expression expression) {
-		// if-cascades ftw!!
-		// We could work with switch, but then returntype in Expression would have to be rewritten to enums (uuugh).
-		return false;
+		return null;
 	}
 	
 	/**

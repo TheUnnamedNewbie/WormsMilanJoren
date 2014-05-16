@@ -1,5 +1,5 @@
-package worms.programs.expressions;
-import worms.programs.expressions.Expression;
+package worms.programs.oldExpressions;
+import worms.programs.oldExpressions.Expression;
 
 public abstract class SubExpressionDoubleCompare extends SubExpressionDoubleOp {
 	

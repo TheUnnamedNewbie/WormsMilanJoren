@@ -1,6 +1,6 @@
 package worms.programs.types;
 
-import worms.programs.expressions.Expression;
+import worms.programs.Expressions.Expression;
 
 public class Type {
 	public Type(TypeType type) {
