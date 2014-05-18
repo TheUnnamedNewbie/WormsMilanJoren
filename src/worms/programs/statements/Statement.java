@@ -4,7 +4,6 @@ import java.util.List;
 
 import worms.model.programs.ProgramFactory;
 import worms.programs.Expressions.Expression;
-import worms.programs.types.TypeType;
 
 public class Statement {
 	

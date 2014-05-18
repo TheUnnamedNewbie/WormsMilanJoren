@@ -11,7 +11,9 @@ import worms.IllegalMapException;
 import worms.IllegalSizeException;
 import worms.TooManyProjectilesException;
 import worms.entities.*;
+import worms.model.ProgrammedWorm;
 import worms.model.Worm;
+import worms.programs.Program;
 
 
 /**
@@ -1039,24 +1041,33 @@ public class World {
 	 * The naming uses a random value and so overlapping might be possible.
 	 * Renaming is still possible and recommended for a better gaming experience
 	 */
-	public void createRandomWorm() {
+	public void createRandomWorm(Program program) {
 		Team team = null;
 		boolean joinTeam = random.nextBoolean();
 		if (joinTeam) {
 			int teamIndex = 0;
 			if (getNbTeams() > 1)
 				teamIndex = random.nextInt(getNbTeams());
-			if (teamIndex >= 0 && getNbTeams()>0)
+			if (teamIndex >= 0 && getNbTeams() > 0)
 				team = getTeamAt(teamIndex);
 		}
-		double randomAngleOrient = (random.nextDouble()*(Math.PI*2.0)) - Math.PI;
-		String wormName = wormNames.get(random.nextInt(wormNames.size()-1));
+		double randomAngleOrient = (random.nextDouble() * (Math.PI * 2.0))
+				- Math.PI;
+		String wormName = wormNames
+				.get(random.nextInt(wormNames.size() - 1));
 		double radius = 0.25 + random.nextDouble() / 4.0;
 		double[] randomPos = getRandomPosition(radius);
-		Worm randomWorm = new Worm(wormName, randomPos[0], randomPos[1], radius, randomAngleOrient, this);
+		Worm randomWorm;
+		if (program == null) {
+			randomWorm = new Worm(wormName, randomPos[0], randomPos[1], radius,
+					randomAngleOrient, this);
+		} else {
+			randomWorm = new ProgrammedWorm(wormName, randomPos[0], randomPos[1], radius,
+					randomAngleOrient, this, program);
+		}
 		addAsWorm(randomWorm);
 		if (joinTeam && (getNbTeams() > 0)) {
-			randomWorm.join(team); 
+			randomWorm.join(team);
 		}
 	}
 	
@@ -1203,6 +1214,8 @@ public class World {
 		setCurrentWorm(newWorm);
 		newWorm.restore();
 		newWorm.heal(10);
+		if (ProgrammedWorm.class.isInstance(newWorm))
+			((ProgrammedWorm)newWorm).takeTurn();
 	}
 	
 	/**

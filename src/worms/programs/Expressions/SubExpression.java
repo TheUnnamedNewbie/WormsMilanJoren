@@ -1,5 +1,7 @@
 package worms.programs.Expressions;
 
+import worms.programs.types.TypeType;
+
 /**
  * SubExpression contains stuff for identifying the kind of expression and the main expression to which it links
  * 
@@ -20,11 +22,27 @@ public abstract class SubExpression {
 		return this.kind;
 	}
 	
+	public Object getType() {
+		return null;
+	}
+	
 	
 	/* The different types which a subexpression can be, categorized by kind */
 	
 	public enum LiteralType {
 		BOOLEAN, DOUBLE, ENTITY, THIS, NULL;
+
+		public static LiteralType getCorrespondingType(TypeType queryType) {
+			switch (queryType) {
+			case ENTITY:
+				return ENTITY;
+			case BOOLEAN:
+				return BOOLEAN;
+			case DOUBLE:
+				return DOUBLE;
+			default: return null;
+			}
+		}
 	}
 	
 	public enum BoolOpType {

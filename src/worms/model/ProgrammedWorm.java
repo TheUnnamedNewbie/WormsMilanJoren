@@ -13,6 +13,7 @@ import worms.gui.game.IActionHandler;
 import worms.model.programs.ProgramFactory;
 import worms.programs.Program;
 import worms.programs.Expressions.Expression;
+import worms.programs.Expressions.ExpressionKind;
 import worms.programs.Expressions.SubExpression;
 import worms.programs.statements.Statement;
 import worms.programs.types.*;
@@ -60,6 +61,7 @@ public class ProgrammedWorm extends Worm {
 	 * @param statement
 	 */
 	public void doStatement(Statement statement) {
+		System.out.println("executing statement of type: "+statement.getSubStatement().getType());
 		switch (statement.getSubStatement().getType()) {
 		case ACTION:
 			//Casting is OK because we know it's an actionstatement, in Python this wouldn't be a problem. Just sayin'...
@@ -74,11 +76,27 @@ public class ProgrammedWorm extends Worm {
 			}
 			break;
 		case ASSIGN:
-			Statement.AssignStatement assignSubState = (Statement.AssignStatement)statement.getSubStatement(); //believe me, you want it this way
-			TypeType typeName = assignSubState.expr.getReturnType();
-			Type targetType = popNextType(typeName);
-			targetType.setExpression(assignSubState.expr);
-			createVar(assignSubState.varName, targetType);
+			Statement.AssignStatement assignSubState = (Statement.AssignStatement)statement.getSubStatement();
+//			//make a new literal containing the value. Loosing all links to possible variables and uncertainties
+//			TypeType typeType = assignSubState.expr.getReturnType(); //TODO if null (varaccess), keep digging
+//			Expression newExpression = new Expression(0, 0); //bogus wrapper expression
+//			SubExpression.LiteralType literalType = SubExpression.LiteralType.getCorrespondingType(typeType); System.out.println("new literalType: "+literalType);
+//			Object newValue;
+//			if (!(assignSubState.expr.getSubExpression().getKind() == ExpressionKind.LITERAL)) {
+//				newValue = evaluateExpression(assignSubState.expr);
+//			} else {
+//				newValue = ((Expression.LiteralExpression)assignSubState.expr.getSubExpression()).getValue();
+//			}
+//			newExpression.createSubExpressionXLiteral(literalType, newValue);
+			if (vars.containsKey(assignSubState.varName)) {
+				//assert the types match
+				vars.get(assignSubState.varName).setExpression(/*newExpression*/assignSubState.expr);
+			} else {
+				TypeType typeName = assignSubState.expr.getReturnType();
+				Type targetType = popNextType(typeName);
+				targetType.setExpression(/*newExpression*/assignSubState.expr);
+				createVar(assignSubState.varName, targetType);
+			}
 			break;
 		case PRINT:
 			String temp = toString(((Statement.PrintStatement)statement.getSubStatement()).output);
@@ -134,12 +152,14 @@ public class ProgrammedWorm extends Worm {
 	 * @return the evaluation
 	 */
 	private Object evaluateExpression(Expression expression) {
+		//System.out.println("evaluating expression of type: "+expression.getSubExpression().getKind()+" "+expression.getSubExpression().getType());
 		switch (expression.getSubExpression().getKind()) {
 		
 		case LITERAL:
 			//trivial case, return this if type==THIS, otherwise return the value.
-			if (((Expression.LiteralExpression)expression.getSubExpression()).getType() == SubExpression.LiteralType.THIS)
+			if (((Expression.LiteralExpression)expression.getSubExpression()).getType() == SubExpression.LiteralType.THIS) {
 				return this;
+			}
 			//either null or a literal
 			return ((Expression.LiteralExpression)expression.getSubExpression()).getValue();
 			
@@ -194,7 +214,7 @@ public class ProgrammedWorm extends Worm {
 			Expression.EntityOpExpression entityOpSubExpr = ((Expression.EntityOpExpression)expression.getSubExpression());
 			switch (entityOpSubExpr.getType()) {
 			case GETX:
-				return ((Entity)evaluateExpression(expression)).getPosX();
+				return ((Worm)evaluateExpression(expression)).getPosX();
 			case GETY:
 				return ((Entity)evaluateExpression(expression)).getPosY();
 			case GETRAD:
@@ -250,6 +270,7 @@ public class ProgrammedWorm extends Worm {
 				break;
 			}
 		}
+		if (output == null) System.out.println("No types found");
 		return output;
 	}
 	
@@ -331,5 +352,9 @@ public class ProgrammedWorm extends Worm {
 	 */
 	private void endTurn() {
 		//if (NOTE): getWorld().nextWorm();
+	}
+	
+	public void generateError() {
+		Entity error = null; error.getPosX();
 	}
 }

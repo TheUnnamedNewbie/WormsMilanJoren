@@ -11,7 +11,7 @@ public class Expression {
 	}
 	
 	private final int line, column;
-	private SubExpression subExpression;
+	public SubExpression subExpression;
 	
 	public int getLine() {
 		return this.line;
@@ -178,6 +178,12 @@ public class Expression {
 	//Variable Access
 	public void createSubExpressionVaribleAccess(String variableName) {
 		this.subExpression = new VariableAccessExpression(this, variableName);
+	}
+	
+	
+	//General constructor for Literal
+	public void createSubExpressionXLiteral(LiteralType type, Object content) {
+		this.subExpression = new LiteralExpression(this, type, content);
 	}
 	
 	

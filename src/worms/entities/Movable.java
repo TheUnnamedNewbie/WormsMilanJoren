@@ -1,6 +1,5 @@
 package worms.entities;
 
-import worms.ExhaustionException;
 import worms.containment.World;
 import be.kuleuven.cs.som.annotate.*;
 

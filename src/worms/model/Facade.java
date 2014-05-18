@@ -118,7 +118,7 @@ public class Facade implements IFacade {
 
 	
 	public void addNewWorm(World world) {
-		world.createRandomWorm();
+		world.createRandomWorm(null);
 	}
 
 	
@@ -312,7 +312,8 @@ public class Facade implements IFacade {
 	}
 
 	public void addNewWorm(World world, Program program) {
-		// TODO Auto-generated method stub
+		System.out.println("has program: "+!(program==null));
+		world.createRandomWorm(program);
 	}
 
 	public Worm createWorm(World world, double x, double y, double direction,
@@ -321,6 +322,7 @@ public class Facade implements IFacade {
 			return createWorm(world, x, y, direction,
 			radius, name);
 		} else {
+			System.out.println("returning programmed worm...");
 			return new ProgrammedWorm(name, x, y, direction,
 			radius, world, program);
 		}
@@ -333,8 +335,7 @@ public class Facade implements IFacade {
 	}
 
 	public boolean hasProgram(Worm worm) {
-		// TODO Auto-generated method stub
-		return false;
+		return ProgrammedWorm.class.isInstance(worm);
 	}
 
 	public boolean isWellFormed(Program program) {
