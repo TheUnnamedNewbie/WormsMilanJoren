@@ -1224,4 +1224,20 @@ public class World {
 			return false;
 		} else {return true;}
 	}
+	
+	/**
+	 * Returns the object on the queried position. If overlapping, first worms then food.
+	 * @param queryX
+	 * @param queryY
+	 * @return the Entity if any, null otherwise.
+	 */
+	public Entity getEntityOn(double queryX, double queryY) {
+		for (Worm worm: getAllWorms()) {
+			if ((worm.getPosX()==queryX) && (worm.getPosY()==queryY))
+				return worm;
+		} for (Food food: getAllFoods()) {
+			if ((food.getPosX()==queryX) && (food.getPosY()==queryY))
+				return food;
+		} return null;
+	}
 }

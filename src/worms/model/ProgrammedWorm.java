@@ -8,10 +8,12 @@ import worms.CoordinateOutOfBoundsException;
 import worms.containment.World;
 import worms.entities.Entity;
 import worms.entities.Food;
+import worms.entities.Movable;
 import worms.gui.game.IActionHandler;
 import worms.model.programs.ProgramFactory;
 import worms.programs.Program;
 import worms.programs.Expressions.Expression;
+import worms.programs.Expressions.SubExpression;
 import worms.programs.statements.Statement;
 import worms.programs.types.*;
 
@@ -126,13 +128,98 @@ public class ProgrammedWorm extends Worm {
 	}
 	
 	/**
-	 * TODO implement
 	 * Recursive evaluation for expressions. This is gonna be a big one (similar to doStatement, but for expressions)
+	 * Turns out: NOT THAT BIG. Just makes you wonder if there isn't a God because perfection like this exists.
 	 * @param expression The expression to evaluate
 	 * @return the evaluation
 	 */
 	private Object evaluateExpression(Expression expression) {
-		return null;
+		switch (expression.getSubExpression().getKind()) {
+		
+		case LITERAL:
+			//trivial case, return this if type==THIS, otherwise return the value.
+			if (((Expression.LiteralExpression)expression.getSubExpression()).getType() == SubExpression.LiteralType.THIS)
+				return this;
+			//either null or a literal
+			return ((Expression.LiteralExpression)expression.getSubExpression()).getValue();
+			
+		case VARACCESS:
+			//trivial case, just get the type, extract expression and evaluate.
+			Type sourceType = getVar(((Expression.VariableAccessExpression)expression.getSubExpression()).varname);
+			Expression sourceExpression = sourceType.getExpression();
+			return evaluateExpression(sourceExpression);
+		case EQUALITY:
+			//still pretty darn easy
+			Expression.EqualityExpression equalitySubExpr = ((Expression.EqualityExpression)expression.getSubExpression());
+			//Assert things of types
+			return (evaluateExpression(equalitySubExpr.left) == evaluateExpression(equalitySubExpr.right));
+			
+		case BOOLOP:
+			Expression.BoolOpExpression boolOpSubExpr = ((Expression.BoolOpExpression)expression.getSubExpression());
+			switch (boolOpSubExpr.getType()) {
+			case OR:
+				return ((Boolean)evaluateExpression(boolOpSubExpr.left) || (Boolean)evaluateExpression(boolOpSubExpr.right));
+			case AND:
+				return ((Boolean)evaluateExpression(boolOpSubExpr.left) && (Boolean)evaluateExpression(boolOpSubExpr.right));
+			case NOT:
+				return !((Boolean)evaluateExpression(boolOpSubExpr.left));
+			}
+		case DOUBLEOP:
+			Expression.DoubleOpExpression doubleOpSubExpr = ((Expression.DoubleOpExpression)expression.getSubExpression());
+			switch (doubleOpSubExpr.getType()) {
+			case GREATER:
+				return ((Double)evaluateExpression(doubleOpSubExpr.left) > (Double)evaluateExpression(doubleOpSubExpr.right));
+			case GREATEREQUAL:
+				return ((Double)evaluateExpression(doubleOpSubExpr.left) >= (Double)evaluateExpression(doubleOpSubExpr.right));
+			case LESSER:
+				return ((Double)evaluateExpression(doubleOpSubExpr.left) < (Double)evaluateExpression(doubleOpSubExpr.right));
+			case LESSEREQUAL:
+				return ((Double)evaluateExpression(doubleOpSubExpr.left) <= (Double)evaluateExpression(doubleOpSubExpr.right));
+			case ADD:
+				return ((Double)evaluateExpression(doubleOpSubExpr.left) + (Double)evaluateExpression(doubleOpSubExpr.right));
+			case SUB:
+				return ((Double)evaluateExpression(doubleOpSubExpr.left) - (Double)evaluateExpression(doubleOpSubExpr.right));
+			case MUL:
+				return ((Double)evaluateExpression(doubleOpSubExpr.left) * (Double)evaluateExpression(doubleOpSubExpr.right));
+			case DIV:
+				return ((Double)evaluateExpression(doubleOpSubExpr.left) / (Double)evaluateExpression(doubleOpSubExpr.right));
+			case SQRT:
+				return Math.sqrt((Double)evaluateExpression(doubleOpSubExpr.left));
+			case SIN:
+				return Math.sin((Double)evaluateExpression(doubleOpSubExpr.left));
+			case COS:
+				return Math.cos((Double)evaluateExpression(doubleOpSubExpr.left));
+			}
+		case ENTITYOP:
+			Expression.EntityOpExpression entityOpSubExpr = ((Expression.EntityOpExpression)expression.getSubExpression());
+			switch (entityOpSubExpr.getType()) {
+			case GETX:
+				return ((Entity)evaluateExpression(expression)).getPosX();
+			case GETY:
+				return ((Entity)evaluateExpression(expression)).getPosY();
+			case GETRAD:
+				return ((Entity)evaluateExpression(expression)).getRadius();
+			case GETDIR:
+				return ((Movable)evaluateExpression(expression)).getOrientation();
+			case GETAP:
+				return ((Worm)evaluateExpression(expression)).getActionPoints();
+			case GETMAXAP:
+				return ((Worm)evaluateExpression(expression)).getMaxActionPoints();
+			case GETHP:
+				return ((Worm)evaluateExpression(expression)).getHitPoints();
+			case GETMAXHP:
+				return ((Worm)evaluateExpression(expression)).getMaxHitPoints();
+			case SAMETEAM:
+				return ((Worm)evaluateExpression(expression)).getTeam() == this.getTeam();
+			case ISWORM:
+				return Worm.class.isInstance(((Entity)evaluateExpression(expression)));
+			case ISFOOD:
+				return Food.class.isInstance(((Entity)evaluateExpression(expression)));
+			case SEARCHOBJ:
+				return searchObject((Double)evaluateExpression(expression));
+			}
+		default: return null; //because errors otherwise
+		}
 	}
 	
 	/**
@@ -201,7 +288,6 @@ public class ProgrammedWorm extends Worm {
 			this.handler.move(this);
 		} else if (commandName == "toggleweap") {
 			this.handler.toggleWeapon(this);
-		} else if (commandName == "skip") {
 			//do absolutely nothing this turn onward.
 		} else if (commandName == "fire") {
 			this.handler.fire(this, (Integer)value); //annoying...
@@ -211,9 +297,39 @@ public class ProgrammedWorm extends Worm {
 	}
 	
 	/**
+	 * Iterative search for an object in a given direction starting from this.
+	 * @param direction The direction in which you look for an entity.
+	 * @return The Entity, if any. Null otherwise.
+	 */
+	public Entity searchObject(Double direction) {
+		double startingX = getPosX()+Math.cos(getOrientation())*getRadius();
+		double startingY = getPosY()+Math.sin(getOrientation())*getRadius();
+		double deltaD = 0.1;
+		double currentX = startingX + Math.cos(getOrientation())*deltaD;
+		double currentY = startingY + Math.sin(getOrientation())*deltaD;
+		boolean hasEnded = false;
+		//while true and return null when hasEnded is also possible
+		while(!hasEnded) {
+			//search for object in currentXY
+			Entity onLocation = getWorld().getEntityOn(currentX, currentY);
+			//if found, return it
+			if (onLocation != null)
+				return onLocation;
+			//if not, keep looking
+			currentX += Math.cos(getOrientation())*deltaD;
+			currentY += Math.sin(getOrientation())*deltaD;
+			//It's gotta end sometime.
+			if (!(getWorld().isValidX(currentX) && getWorld().isValidY(currentY)))
+				hasEnded = true;
+		} return null;
+	}
+	
+	/**
 	 * Stuff to do at the end of the turn, if any
+	 * 
+	 * NOTE: Do we need to select the next turn, or does facade do this on its own?
 	 */
 	private void endTurn() {
-		//stuff!
+		//if (NOTE): getWorld().nextWorm();
 	}
 }
