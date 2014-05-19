@@ -21,7 +21,7 @@ import worms.programs.types.*;
 /**
  * The programmed worm also gets a program associated with it. It executes the commands as per the parser -> factory
  * Vars and such are kept on this side.
- * @author Milan
+ * @author Milan 'clickity-click' Sanders
  *
  */
 public class ProgrammedWorm extends Worm {
