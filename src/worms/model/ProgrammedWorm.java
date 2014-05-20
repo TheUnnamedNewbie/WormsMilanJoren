@@ -43,6 +43,7 @@ public class ProgrammedWorm extends Worm {
 	private IActionHandler handler;
 	private Map<String, Type> vars = new HashMap<String, Type>();
 	private ArrayList<Type> emptyTypes = new ArrayList<Type>();
+	private int counter;
 	
 	/**
 	 * Makes the turn cfr the program (runs the program)
@@ -61,87 +62,95 @@ public class ProgrammedWorm extends Worm {
 	 * @param statement
 	 */
 	public void doStatement(Statement statement) {
-		System.out.println("executing statement of type: "+statement.getSubStatement().getType());
-		switch (statement.getSubStatement().getType()) {
-		case ACTION:
-			//Casting is OK because we know it's an actionstatement, in Python this wouldn't be a problem. Just sayin'...
-			Statement.ActionStatement subStatement = (Statement.ActionStatement)statement.getSubStatement();
-			execute(subStatement.commandName, subStatement.value);
-			endTurn();
-			break;
-		case SEQ:
-			//again, casting is OK because of switch on StatementType
-			for (Statement currentStatement: ((Statement.SequenceStatement)statement.getSubStatement()).getSequence()) {
-				doStatement(currentStatement);
+		if(this.program.hasFailed()){
+			return;
+		} else {
+			if(getCounter() < 1000){
+				incrementCounter();
 			}
-			break;
-		case ASSIGN:
-			Statement.AssignStatement assignSubState = (Statement.AssignStatement)statement.getSubStatement();
-//			//make a new literal containing the value. Loosing all links to possible variables and uncertainties
-//			TypeType typeType = assignSubState.expr.getReturnType(); //TODO if null (varaccess), keep digging
-//			Expression newExpression = new Expression(0, 0); //bogus wrapper expression
-//			SubExpression.LiteralType literalType = SubExpression.LiteralType.getCorrespondingType(typeType); System.out.println("new literalType: "+literalType);
-//			Object newValue;
-//			if (!(assignSubState.expr.getSubExpression().getKind() == ExpressionKind.LITERAL)) {
-//				newValue = evaluateExpression(assignSubState.expr);
-//			} else {
-//				newValue = ((Expression.LiteralExpression)assignSubState.expr.getSubExpression()).getValue();
-//			}
-//			newExpression.createSubExpressionXLiteral(literalType, newValue);
-			if (vars.containsKey(assignSubState.varName)) {
-				//assert the types match
-				vars.get(assignSubState.varName).setExpression(/*newExpression*/assignSubState.expr);
-			} else {
-				TypeType typeName = assignSubState.expr.getReturnType();
-				Type targetType = popNextType(typeName);
-				targetType.setExpression(/*newExpression*/assignSubState.expr);
-				createVar(assignSubState.varName, targetType);
+			else {return;}
+			System.out.println("executing statement of type: "+statement.getSubStatement().getType());
+			switch (statement.getSubStatement().getType()) {
+			case ACTION:
+				//Casting is OK because we know it's an actionstatement, in Python this wouldn't be a problem. Just sayin'...
+				Statement.ActionStatement subStatement = (Statement.ActionStatement)statement.getSubStatement();
+				execute(subStatement.commandName, subStatement.value);
+				endTurn();
+				break;
+			case SEQ:
+				//again, casting is OK because of switch on StatementType
+				for (Statement currentStatement: ((Statement.SequenceStatement)statement.getSubStatement()).getSequence()) {
+					doStatement(currentStatement);
+				}
+				break;
+			case ASSIGN:
+				Statement.AssignStatement assignSubState = (Statement.AssignStatement)statement.getSubStatement();
+//				//make a new literal containing the value. Loosing all links to possible variables and uncertainties
+//				TypeType typeType = assignSubState.expr.getReturnType(); //TODO if null (varaccess), keep digging
+//					Expression newExpression = new Expression(0, 0); //bogus wrapper expression
+//				SubExpression.LiteralType literalType = SubExpression.LiteralType.getCorrespondingType(typeType); System.out.println("new literalType: "+literalType);
+//				Object newValue;
+//					if (!(assignSubState.expr.getSubExpression().getKind() == ExpressionKind.LITERAL)) {
+//					newValue = evaluateExpression(assignSubState.expr);
+//				} else {
+//					newValue = ((Expression.LiteralExpression)assignSubState.expr.getSubExpression()).getValue();
+//				}
+//				newExpression.createSubExpressionXLiteral(literalType, newValue);
+				if (vars.containsKey(assignSubState.varName)) {
+					//assert the types match
+					vars.get(assignSubState.varName).setExpression(/*newExpression*/assignSubState.expr);
+				} else {
+					TypeType typeName = assignSubState.expr.getReturnType();
+					Type targetType = popNextType(typeName);
+					targetType.setExpression(/*newExpression*/assignSubState.expr);
+					createVar(assignSubState.varName, targetType);
+				}
+				break;
+			case PRINT:
+				String temp = toString(((Statement.PrintStatement)statement.getSubStatement()).output);
+				this.handler.print(temp);
+				break;
+			case IF:
+				Statement.IfStatement ifSubState = (Statement.IfStatement)statement.getSubStatement();
+				boolean ifcondition = (Boolean)evaluateExpression(ifSubState.condition);
+				//work with a temp to check types or smth
+				if (ifcondition)
+					doStatement(ifSubState.ifthen);
+				else
+					doStatement(ifSubState.ifelse);
+				break;
+			case WHILE:
+				Statement.WhileStatement whileSubState = (Statement.WhileStatement)statement.getSubStatement();
+				while ((Boolean)evaluateExpression(whileSubState.condition)) {
+					doStatement(whileSubState.body);
+				}
+				break;
+			case FOR:
+				Statement.ForStatement forSubState = (Statement.ForStatement)statement.getSubStatement();
+				ArrayList<Entity> theList = new ArrayList<Entity>();
+				if (forSubState.fortype == ProgramFactory.ForeachType.WORM) {
+					for (Worm worm: getWorld().getAllWorms())
+						theList.add(worm);
+				} else if (forSubState.fortype == ProgramFactory.ForeachType.FOOD) {
+					for (Food food: getWorld().getAllFoods())
+						theList.add(food);
+				} else if (forSubState.fortype == ProgramFactory.ForeachType.ANY) {
+					for (Worm worm: getWorld().getAllWorms())
+						theList.add(worm);
+					for (Food food: getWorld().getAllFoods())
+						theList.add(food);
+				}
+				Type bogusType = new Type(TypeType.ENTITY);
+				for (Entity targetEntity: theList) {
+					Expression targetExpression = new Expression(-1, -1);
+					targetExpression.createSubExpressionEntityLiteral(targetEntity);
+					bogusType.setExpression(targetExpression);
+					createVar(forSubState.variableName, bogusType);
+					
+					doStatement(forSubState.body);
+				}
+				vars.remove(forSubState.variableName);
 			}
-			break;
-		case PRINT:
-			String temp = toString(((Statement.PrintStatement)statement.getSubStatement()).output);
-			this.handler.print(temp);
-			break;
-		case IF:
-			Statement.IfStatement ifSubState = (Statement.IfStatement)statement.getSubStatement();
-			boolean ifcondition = (Boolean)evaluateExpression(ifSubState.condition);
-			//work with a temp to check types or smth
-			if (ifcondition)
-				doStatement(ifSubState.ifthen);
-			else
-				doStatement(ifSubState.ifelse);
-			break;
-		case WHILE:
-			Statement.WhileStatement whileSubState = (Statement.WhileStatement)statement.getSubStatement();
-			while ((Boolean)evaluateExpression(whileSubState.condition)) {
-				doStatement(whileSubState.body);
-			}
-			break;
-		case FOR:
-			Statement.ForStatement forSubState = (Statement.ForStatement)statement.getSubStatement();
-			ArrayList<Entity> theList = new ArrayList<Entity>();
-			if (forSubState.fortype == ProgramFactory.ForeachType.WORM) {
-				for (Worm worm: getWorld().getAllWorms())
-					theList.add(worm);
-			} else if (forSubState.fortype == ProgramFactory.ForeachType.FOOD) {
-				for (Food food: getWorld().getAllFoods())
-					theList.add(food);
-			} else if (forSubState.fortype == ProgramFactory.ForeachType.ANY) {
-				for (Worm worm: getWorld().getAllWorms())
-					theList.add(worm);
-				for (Food food: getWorld().getAllFoods())
-					theList.add(food);
-			}
-			Type bogusType = new Type(TypeType.ENTITY);
-			for (Entity targetEntity: theList) {
-				Expression targetExpression = new Expression(-1, -1);
-				targetExpression.createSubExpressionEntityLiteral(targetEntity);
-				bogusType.setExpression(targetExpression);
-				createVar(forSubState.variableName, bogusType);
-				
-				doStatement(forSubState.body);
-			}
-			vars.remove(forSubState.variableName);
 		}
 	}
 	
@@ -356,5 +365,13 @@ public class ProgrammedWorm extends Worm {
 	
 	public void generateError() {
 		Entity error = null; error.getPosX();
+	}
+	
+	pubic int getCounter(){
+		return this.counter;
+	}
+	
+	public void incrementCounter(){
+		this.counter++;
 	}
 }
