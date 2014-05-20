@@ -24,12 +24,14 @@ public class Program {
 	public Program(String raw, IActionHandler handler) {
 		this.raw = raw;
 		this.handler = handler;
+		this.failed = false;
 	}
 	
 	private String raw; //The raw text file
 	public Statement main; //The compiled version
 	public Map<String, Type> globals;
 	public IActionHandler handler;
+	private boolean failed;
 	
 	
 	/**
@@ -49,4 +51,18 @@ public class Program {
 		globals = parser.getGlobals(); //flush this to the worm on start of turn
 		return ParseOutcome.success(this);
 	}
+	/**
+	 * getter for failed. 
+	 */
+	public boolean hasFailed(){
+		return failed;
+	}
+	
+	/**
+	 * sets failed to true. Doesn't give the option to reset since once a program has failed it won't suddonly start working again.
+	 */
+	public void setFailed(){
+		this.failed = true;
+	}
+	
 }
