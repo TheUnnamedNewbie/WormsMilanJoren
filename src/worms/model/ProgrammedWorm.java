@@ -37,6 +37,7 @@ public class ProgrammedWorm extends Worm {
 		super(name, posX, posY, radius, direction, world);
 		this.program = program;
 		this.handler = program.handler;
+		this.counter = 0;
 	}
 	
 	private Program program;
