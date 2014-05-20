@@ -33,6 +33,8 @@ public abstract class SubExpression {
 		BOOLEAN, DOUBLE, ENTITY, THIS, NULL;
 
 		public static LiteralType getCorrespondingType(TypeType queryType) {
+			if (queryType == null)
+				return NULL;
 			switch (queryType) {
 			case ENTITY:
 				return ENTITY;

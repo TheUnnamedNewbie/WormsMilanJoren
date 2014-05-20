@@ -1214,8 +1214,9 @@ public class World {
 		setCurrentWorm(newWorm);
 		newWorm.restore();
 		newWorm.heal(10);
-		if (ProgrammedWorm.class.isInstance(newWorm))
+		if (ProgrammedWorm.class.isInstance(newWorm)) { //begin the turn of the autonomous worm
 			((ProgrammedWorm)newWorm).takeTurn();
+		}
 	}
 	
 	/**

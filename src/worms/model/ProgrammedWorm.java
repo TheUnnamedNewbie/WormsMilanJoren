@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import worms.CoordinateOutOfBoundsException;
+import worms.containment.Team;
 import worms.containment.World;
 import worms.entities.Entity;
 import worms.entities.Food;
@@ -45,6 +46,7 @@ public class ProgrammedWorm extends Worm {
 	private Map<String, Type> vars = new HashMap<String, Type>();
 	private ArrayList<Type> emptyTypes = new ArrayList<Type>();
 	private int counter;
+	private boolean hasPerformedAction;
 	
 	/**
 	 * Makes the turn cfr the program (runs the program)
@@ -54,8 +56,12 @@ public class ProgrammedWorm extends Worm {
 	public void takeTurn() {
 		//Make sure the program is compiled. Must we compile if not (total)?
 		this.vars = this.program.globals;
-		doStatement(program.main);
-		endTurn();
+		hasPerformedAction = false;
+		try {
+			doStatement(program.main);
+		} catch (Exception e) {
+			program.setFailed();
+		}
 	}
 	
 	/**
@@ -63,19 +69,22 @@ public class ProgrammedWorm extends Worm {
 	 * @param statement
 	 */
 	public void doStatement(Statement statement) {
-		if(this.program.hasFailed()){
+		if (this.program.hasFailed() || this.hasPerformedAction) {
 			return;
 		} else {
 			if(getCounter() < 1000){
 				incrementCounter();
 			}
 			else {return;}
-			System.out.println("executing statement of type: "+statement.getSubStatement().getType());
+			//System.out.println("executing statement of type: "+statement.getSubStatement().getType());
 			switch (statement.getSubStatement().getType()) {
 			case ACTION:
 				//Casting is OK because we know it's an actionstatement, in Python this wouldn't be a problem. Just sayin'...
 				Statement.ActionStatement subStatement = (Statement.ActionStatement)statement.getSubStatement();
-				execute(subStatement.commandName, subStatement.value);
+				Object executionValue = null;
+				if (subStatement.value != null)
+					executionValue = evaluateExpression((Expression)subStatement.value);
+				execute(subStatement.commandName, executionValue);
 				endTurn();
 				break;
 			case SEQ:
@@ -86,24 +95,31 @@ public class ProgrammedWorm extends Worm {
 				break;
 			case ASSIGN:
 				Statement.AssignStatement assignSubState = (Statement.AssignStatement)statement.getSubStatement();
-//				//make a new literal containing the value. Loosing all links to possible variables and uncertainties
-//				TypeType typeType = assignSubState.expr.getReturnType(); //TODO if null (varaccess), keep digging
-//					Expression newExpression = new Expression(0, 0); //bogus wrapper expression
-//				SubExpression.LiteralType literalType = SubExpression.LiteralType.getCorrespondingType(typeType); System.out.println("new literalType: "+literalType);
-//				Object newValue;
-//					if (!(assignSubState.expr.getSubExpression().getKind() == ExpressionKind.LITERAL)) {
-//					newValue = evaluateExpression(assignSubState.expr);
-//				} else {
-//					newValue = ((Expression.LiteralExpression)assignSubState.expr.getSubExpression()).getValue();
-//				}
-//				newExpression.createSubExpressionXLiteral(literalType, newValue);
+				//make a new literal containing the value. Loosing all links to possible variables and uncertainties
+				Expression expressionToAssign = assignSubState.expr; // so that if getvar we can replace with the gotten.
+				TypeType typeType = expressionToAssign.getReturnType();
+				if (Expression.VariableAccessExpression.class.isInstance(expressionToAssign.subExpression)) {
+					expressionToAssign = vars.get(((Expression.VariableAccessExpression)assignSubState.expr.getSubExpression()).varname).getExpression();
+					typeType = expressionToAssign.getReturnType();
+				}
+				Expression newExpression = new Expression(0, 0); //bogus wrapper expression
+				SubExpression.LiteralType literalType = SubExpression.LiteralType.getCorrespondingType(typeType);
+				//System.out.println("new literalType: "+literalType);
+				Object newValue;
+				if (!(expressionToAssign.getSubExpression().getKind() == ExpressionKind.LITERAL)) {
+					//System.out.println("getting value for new literal");
+					newValue = evaluateExpression(expressionToAssign);
+				} else {
+					newValue = ((Expression.LiteralExpression)expressionToAssign.getSubExpression()).getValue();
+				}
+				newExpression.createSubExpressionXLiteral(literalType, newValue);
 				if (vars.containsKey(assignSubState.varName)) {
 					//assert the types match
-					vars.get(assignSubState.varName).setExpression(/*newExpression*/assignSubState.expr);
+					vars.get(assignSubState.varName).setExpression(newExpression);
 				} else {
-					TypeType typeName = assignSubState.expr.getReturnType();
+					TypeType typeName = expressionToAssign.getReturnType();
 					Type targetType = popNextType(typeName);
-					targetType.setExpression(/*newExpression*/assignSubState.expr);
+					targetType.setExpression(newExpression);
 					createVar(assignSubState.varName, targetType);
 				}
 				break;
@@ -178,6 +194,7 @@ public class ProgrammedWorm extends Worm {
 			Type sourceType = getVar(((Expression.VariableAccessExpression)expression.getSubExpression()).varname);
 			Expression sourceExpression = sourceType.getExpression();
 			return evaluateExpression(sourceExpression);
+			
 		case EQUALITY:
 			//still pretty darn easy
 			Expression.EqualityExpression equalitySubExpr = ((Expression.EqualityExpression)expression.getSubExpression());
@@ -194,6 +211,7 @@ public class ProgrammedWorm extends Worm {
 			case NOT:
 				return !((Boolean)evaluateExpression(boolOpSubExpr.left));
 			}
+			
 		case DOUBLEOP:
 			Expression.DoubleOpExpression doubleOpSubExpr = ((Expression.DoubleOpExpression)expression.getSubExpression());
 			switch (doubleOpSubExpr.getType()) {
@@ -220,34 +238,40 @@ public class ProgrammedWorm extends Worm {
 			case COS:
 				return Math.cos((Double)evaluateExpression(doubleOpSubExpr.left));
 			}
+			
 		case ENTITYOP:
+			//System.out.println("getting into case EntityOP");
 			Expression.EntityOpExpression entityOpSubExpr = ((Expression.EntityOpExpression)expression.getSubExpression());
 			switch (entityOpSubExpr.getType()) {
 			case GETX:
-				return ((Worm)evaluateExpression(expression)).getPosX();
+				return ((Entity)evaluateExpression(((Expression.EntityOpExpression)expression.subExpression).content)).getPosX();
 			case GETY:
-				return ((Entity)evaluateExpression(expression)).getPosY();
+				return ((Entity)evaluateExpression(((Expression.EntityOpExpression)expression.subExpression).content)).getPosY();
 			case GETRAD:
-				return ((Entity)evaluateExpression(expression)).getRadius();
+				return ((Entity)evaluateExpression(((Expression.EntityOpExpression)expression.subExpression).content)).getRadius();
 			case GETDIR:
-				return ((Movable)evaluateExpression(expression)).getOrientation();
+				return ((Movable)evaluateExpression(((Expression.EntityOpExpression)expression.subExpression).content)).getOrientation();
 			case GETAP:
-				return ((Worm)evaluateExpression(expression)).getActionPoints();
+				return ((Worm)evaluateExpression(((Expression.EntityOpExpression)expression.subExpression).content)).getActionPoints();
 			case GETMAXAP:
-				return ((Worm)evaluateExpression(expression)).getMaxActionPoints();
+				return ((Worm)evaluateExpression(((Expression.EntityOpExpression)expression.subExpression).content)).getMaxActionPoints();
 			case GETHP:
-				return ((Worm)evaluateExpression(expression)).getHitPoints();
+				return ((Worm)evaluateExpression(((Expression.EntityOpExpression)expression.subExpression).content)).getHitPoints();
 			case GETMAXHP:
-				return ((Worm)evaluateExpression(expression)).getMaxHitPoints();
+				return ((Worm)evaluateExpression(((Expression.EntityOpExpression)expression.subExpression).content)).getMaxHitPoints();
 			case SAMETEAM:
-				return ((Worm)evaluateExpression(expression)).getTeam() == this.getTeam();
+				Team teamToCheck = ((Worm)evaluateExpression(((Expression.EntityOpExpression)expression.subExpression).content)).getTeam();
+				if ((teamToCheck == null) || (this.getTeam() == null))
+					return false; //free-for-all
+				return teamToCheck == this.getTeam();
 			case ISWORM:
-				return Worm.class.isInstance(((Entity)evaluateExpression(expression)));
+				return Worm.class.isInstance(((Entity)evaluateExpression(((Expression.EntityOpExpression)expression.subExpression).content)));
 			case ISFOOD:
-				return Food.class.isInstance(((Entity)evaluateExpression(expression)));
+				return Food.class.isInstance(((Entity)evaluateExpression(((Expression.EntityOpExpression)expression.subExpression).content)));
 			case SEARCHOBJ:
-				return searchObject((Double)evaluateExpression(expression));
+				return searchObject((Double)evaluateExpression(((Expression.EntityOpExpression)expression.subExpression).content));
 			}
+			
 		default: return null; //because errors otherwise
 		}
 	}
@@ -280,7 +304,7 @@ public class ProgrammedWorm extends Worm {
 				break;
 			}
 		}
-		if (output == null) System.out.println("No types found");
+		if (output == null) System.out.println("No types found"); //monitoring/debug line!
 		return output;
 	}
 	
@@ -314,16 +338,22 @@ public class ProgrammedWorm extends Worm {
 	 */
 	private void execute(String commandName, Object value) {
 		if (commandName == "jump") {
+			System.out.println("jumping");
 			this.handler.jump(this);
 		} else if (commandName == "move") {
+			System.out.println("moving");
 			this.handler.move(this);
 		} else if (commandName == "toggleweap") {
+			System.out.println("toggling weapon");
 			this.handler.toggleWeapon(this);
-			//do absolutely nothing this turn onward.
 		} else if (commandName == "fire") {
-			this.handler.fire(this, (Integer)value); //annoying...
+			System.out.println("firing");
+			this.handler.fire(this, (int)Math.round((Double)value));
 		} else if (commandName == "turn") {
+			System.out.println("turning");
 			this.handler.turn(this, (Double)value);
+		} else if (commandName == "skip") {
+			System.out.println("skipping");
 		} else throw new IllegalArgumentException("Illegal command name");
 	}
 	
@@ -358,17 +388,21 @@ public class ProgrammedWorm extends Worm {
 	/**
 	 * Stuff to do at the end of the turn, if any
 	 * 
-	 * NOTE: Do we need to select the next turn, or does facade do this on its own?
+	 * NOTE: Do we need to select the next turn?
 	 */
 	private void endTurn() {
-		//if (NOTE): getWorld().nextWorm();
+		this.hasPerformedAction = true;
 	}
 	
+	/**
+	 * error-generator for checking if we reach certain points (why not a printline? uhh... ?)
+	 */
+	@SuppressWarnings("null") //the warning was bugging me
 	public void generateError() {
 		Entity error = null; error.getPosX();
 	}
 	
-	pubic int getCounter(){
+	public int getCounter(){
 		return this.counter;
 	}
 	
