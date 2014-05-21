@@ -335,7 +335,7 @@ public class WorldTest {
 	public void canExist_legalCase_Bottom(){
 		boolean[][] passableMap =  {{false, false, false, false, false},{true, true, true, true, false},
 				{true, true, true, true, false},{true, true, true, true, false},{true, true, true, true, false}};
-		double[] coordinates1 = {2, 2};
+		double[] coordinates = {2, 2};
 		Random rand = new Random();
 		world = new World(5.0, 5.0, passableMap, rand);
 		assert(world.canExist(coordinates, 0.5));

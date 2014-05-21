@@ -10,9 +10,11 @@ import java.util.Random;
 import org.junit.Before;
 import org.junit.Test;
 
+import worms.containment.World;
 import worms.gui.game.IActionHandler;
 import worms.model.programs.ParseOutcome;
 import worms.model.programs.ParseOutcome.Success;
+import worms.programs.Program;
 import worms.util.Util;
 
 public class PartialFacadeTest {
