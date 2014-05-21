@@ -4,18 +4,13 @@ import static org.junit.Assert.*;
 
 import java.util.Random;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 
 import worms.containment.Team;
 import worms.containment.World;
 import worms.weapons.Rifle;
-import worms.weapons.Bazooka; 
-import worms.model.*;
+import worms.weapons.Bazooka;
 
 import worms.util.Util;
 

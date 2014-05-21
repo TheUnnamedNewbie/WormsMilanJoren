@@ -4,11 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.Random;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 
 
@@ -28,7 +24,7 @@ public class WorldTest {
 
 	private World world;
 	//private Team team1, team2;
-	private Worm worm1, worm2, worm3;
+	private Worm worm1;
 	private static final double EPS = Util.DEFAULT_EPSILON;
 	private Food food1;
 	
@@ -148,7 +144,6 @@ public class WorldTest {
 	public void getBoolAt(){
 		boolean[][] passableMap =  {{false, false, false, false, false},{true, true, true, true, false},
 				{true, true, true, true, false},{true, true, true, true, false},{true, true, true, true, false}};
-		double[] coordinates = {2, 4};
 		Random rand = new Random();
 		world = new World(5.0, 5.0, passableMap, rand);
 		assertTrue(! world.getBoolAt(4,0));

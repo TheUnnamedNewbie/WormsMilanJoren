@@ -5,11 +5,7 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.Random;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 import worms.containment.Team;
 import worms.containment.World;
@@ -18,7 +14,7 @@ import worms.model.Worm;
 public class TeamTest {
 
 	
-	private Team team, team1, team2;
+	private Team team, team1;
 	private World world1, world2;
 	private Worm worm1, worm2, worm3, worm4;
 	private ArrayList<Worm> allworms;
