@@ -22,6 +22,21 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The column of the original code that creates the method call through the parser	
 	 * @param d
 	 * 		The value to be "stored" in the double literal
+	 * @post
+	 * 		The expression has a subexpression
+	 * 		| result.getSubExpression() != null
+	 * @post
+	 * 		The subExpression is of the class LiteralExpression
+	 * 		| result.getSubExpression().getClass() == LiteralExpression.class
+	 * @post
+	 * 		The subExpressionkind is ExpressionKind.LITERAL
+	 * 		| result.getSubExpression().getKind() == ExpressionKind.LITERAL
+	 * @post
+	 * 		The subExpressiontype is LiteralType.DOUBLE
+	 * 		| result.getSubExpression().getType() == LiteralType.DOUBLE
+	 * @post
+	 * 		The subExpression has a value of d
+	 * 		| result.getSubExpression().getValue() == d
 	 * @return
 	 * 		An expression with subtype doubleliteral
 	 * 	
@@ -40,8 +55,25 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @param b
+	 * 		The boolean value to be represented by the Expression
+	 * 	 * @post
+	 * 		The expression has a subexpression
+	 * 		| result.getSubExpression() != null
+	 * @post
+	 * 		The subExpression is of the class LiteralExpression
+	 * 		| result.getSubExpression().getClass() == LiteralExpression.class
+	 * @post
+	 * 		The subExpressionkind is ExpressionKind.LITERAL
+	 * 		| result.getSubExpression().getKind() == ExpressionKind.LITERAL
+	 * @post
+	 * 		The subExpressiontype is LiteralType.BOOLEAN
+	 * 		| result.getSubExpression().getType() == LiteralType.BOOLEAN
+	 * @post
+	 * 		The subExpression has a value of b
+	 * 		| result.getSubExpression().getValue() == b
 	 * @return
-	 * 		A ex[ression with subtype booleanliteral
+	 * 		A expression with subtype booleanliteral
 	 */
 	public Expression createBooleanLiteral(int line, int column, boolean b) {
 		Expression temporary;
@@ -56,6 +88,25 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @param e1
+	 * 		The left argument for the And operation
+	 * @param e2
+	 * 		The right argument for the And operation
+	 * 	 * @post
+	 * 		The expression has a subexpression
+	 * 		| result.getSubExpression() != null
+	 * @post
+	 * 		The subExpression is of the class BoolOpExpression
+	 * 		| result.getSubExpression().getClass() == BoolOpExpression.class
+	 * @post
+	 * 		The subExpressionkind is ExpressionKind.BOOLOP
+	 * 		| result.getSubExpression().getKind() == ExpressionKind.BOOLOP
+	 * @post
+	 * 		The subExpressiontype is BoolOpType.AND
+	 * 		| result.getSubExpression().getType() == BoolOpType.AND
+	 * @post
+	 * 		The subExpression has a value of a binary and on the left and right expression
+	 * 		| result.getSubExpression().getValue() == (e1.getValue() && e2.getValue())
 	 * @return
 	 * 		An expression with subExpressiontype AND
 	 */
@@ -73,6 +124,25 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @param e1
+	 * 		The left argument for the Or operation
+	 * @param e2
+	 * 		The right argument for the Or operation
+	 * @post
+	 * 		The expression has a subexpression
+	 * 		| result.getSubExpression() != null
+	 * @post
+	 * 		The subExpression is of the class BoolOpExpression
+	 * 		| result.getSubExpression().getClass() == BoolOpExpression.class
+	 * @post
+	 * 		The subExpressionkind is ExpressionKind.BOOLOP
+	 * 		| result.getSubExpression().getKind() == ExpressionKind.BOOLOP
+	 * @post
+	 * 		The subExpressiontype is BoolOpType.OR
+	 * 		| result.getSubExpression().getType() == BoolOpType.OR
+	 * @post
+	 * 		The subExpression has a value of a binary and on the left OR right expression
+	 * 		| result.getSubExpression().getValue() == (e1.getValue() || e2.getValue())
 	 * @return
 	 * 		An expression with subexpressiontype Or
 	 */
@@ -83,13 +153,32 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 		return temporary;
 	}
 	
-	//DONE
+
 	/**
 	 * Method to create a logical inversion
 	 * @param line
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @param e
+	 * 		The left argument for the NOT operation
+	 * @post
+	 * 		The expression has a subexpression
+	 * 		| result.getSubExpression() != null
+	 * @post
+	 * 		The subExpression is of the class BoolOpExpression
+	 * 		| result.getSubExpression().getClass() == BoolOpExpression.class
+	 * @post
+	 * 		The subExpressionkind is ExpressionKind.BOOLOP
+	 * 		| result.getSubExpression().getKind() == ExpressionKind.BOOLOP
+	 * @post
+	 * 		The subExpressiontype is BoolOpType.NOT
+	 * 		| result.getSubExpression().getType() == BoolOpType.NOT
+	 * @post
+	 * 		The subExpression is the inverse of the given expression
+	 * 		| if (e.getValue() == true) then (result.getValue() == false) else (result.getValue() == true)
+	 * @return
+	 * 		The requested expression
 	 */
 	public Expression createNot(int line, int column, Expression e) {
 		Expression temporary;
@@ -104,6 +193,20 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @post
+	 * 		The expression has a subexpression
+	 * 		| result.getSubExpression() != null
+	 * @post
+	 * 		The subExpression is of the class LiteralExpression
+	 * 		| result.getSubExpression().getClass() == LiteralExpression.class
+	 * @post
+	 * 		The subExpressionkind is ExpressionKind.LITERAL
+	 * 		| result.getSubExpression().getKind() == ExpressionKind.LITERAL
+	 * @post
+	 * 		The subExpressiontype is LiteralType.NULL
+	 * 		| result.getSubExpression().getType() == LiteralType.NULL
+	 * @result
+	 * 		The requested expression
 	 */
 	public Expression createNull(int line, int column) {
 		Expression temporary;
@@ -118,6 +221,18 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @post
+	 * 		The expression has a subexpression
+	 * 		| result.getSubExpression() != null
+	 * @post
+	 * 		The subExpression is of the class LiteralExpression
+	 * 		| result.getSubExpression().getClass() == LiteralExpression.class
+	 * @post
+	 * 		The subExpressionkind is ExpressionKind.LITERAL
+	 * 		| result.getSubExpression().getKind() == ExpressionKind.LITERAL
+	 * @post
+	 * 		The subExpressiontype is LiteralType.THIS
+	 * 		| result.getSubExpression().getType() == LiteralType.THIS
 	 * @return	
 	 * 		The requested expression
 	 */
@@ -134,6 +249,20 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @param exp
+	 * 		The expression of which the getX is to be executed
+	 * @post
+	 * 		The expression has a subexpression
+	 * 		| result.getSubExpression() != null
+	 * @post
+	 * 		The subExpression is of the class EntityOpExpression
+	 * 		| result.getSubExpression().getClass() == EntityOpExpression.class
+	 * @post
+	 * 		The subExpressionkind is ExpressionKind.ENTITYOP
+	 * 		| result.getSubExpression().getKind() == ExpressionKind.ENTITYOP
+	 * @post
+	 * 		The subExpressiontype is EntityOpType.GETX
+	 * 		| result.getSubExpression().getType() == EntityOpType.GETX
 	 * @return	
 	 * 		The requested expression
 	 */
@@ -150,6 +279,20 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @param exp
+	 * 		The expression of which the getY is to be executed
+	 * @post
+	 * 		The expression has a subexpression
+	 * 		| result.getSubExpression() != null
+	 * @post
+	 * 		The subExpression is of the class EntityOpExpression
+	 * 		| result.getSubExpression().getClass() == EntityOpExpression.class
+	 * @post
+	 * 		The subExpressionkind is ExpressionKind.ENTITYOP
+	 * 		| result.getSubExpression().getKind() == ExpressionKind.ENTITYOP
+	 * @post
+	 * 		The subExpressiontype is EntityOpType.GETY
+	 * 		| result.getSubExpression().getType() == EntityOpType.GETY
 	 * @return	
 	 * 		The requested expression
 	 */
@@ -166,6 +309,20 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @param exp
+	 * 		The expression of which the getRadius is to be executed
+	 * @post
+	 * 		The expression has a subexpression
+	 * 		| result.getSubExpression() != null
+	 * @post
+	 * 		The subExpression is of the class EntityOpExpression
+	 * 		| result.getSubExpression().getClass() == EntityOpExpression.class
+	 * @post
+	 * 		The subExpressionkind is ExpressionKind.ENTITYOP
+	 * 		| result.getSubExpression().getKind() == ExpressionKind.ENTITYOP
+	 * @post
+	 * 		The subExpressiontype is EntityOpType.GETRAD
+	 * 		| result.getSubExpression().getType() == EntityOpType.GETRAD
 	 * @return	
 	 * 		The requested expression
 	 */
@@ -182,7 +339,21 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * @param line
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
-	 * 		The column of the original code that creates the method call through the parser	
+	 * 		The column of the original code that creates the method call through the parser
+	 * @param exp
+	 * 		The expression on wich the getDirection is to be executed
+	 * @post
+	 * 		The expression has a subexpression
+	 * 		| result.getSubExpression() != null
+	 * @post
+	 * 		The subExpression is of the class EntityOpExpression
+	 * 		| result.getSubExpression().getClass() == EntityOpExpression.class
+	 * @post
+	 * 		The subExpressionkind is ExpressionKind.ENTITYOP
+	 * 		| result.getSubExpression().getKind() == ExpressionKind.ENTITYOP
+	 * @post
+	 * 		The subExpressiontype is EntityOpType.GETDIR
+	 * 		| result.getSubExpression().getType() == EntityOpType.GETDIR	
 	 * @return	
 	 * 		The requested expression
 	 */
@@ -200,6 +371,20 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @param exp
+	 * 		The expresseion on which the getAP is to be executed.
+	 * @post
+	 * 		The expression has a subexpression
+	 * 		| result.getSubExpression() != null
+	 * @post
+	 * 		The subExpression is of the class EntityOpExpression
+	 * 		| result.getSubExpression().getClass() == EntityOpExpression.class
+	 * @post
+	 * 		The subExpressionkind is ExpressionKind.ENTITYOP
+	 * 		| result.getSubExpression().getKind() == ExpressionKind.ENTITYOP
+	 * @post
+	 * 		The subExpressiontype is EntityOpType.GETAP
+	 * 		| result.getSubExpression().getType() == EntityOpType.GETAP
 	 * @return	
 	 * 		The requested expression
 	 */
@@ -217,6 +402,20 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @param exp
+	 * 		The expresseion on which the geMaxAP is to be executed.
+	 * @post
+	 * 		The expression has a subexpression
+	 * 		| result.getSubExpression() != null
+	 * @post
+	 * 		The subExpression is of the class EntityOpExpression
+	 * 		| result.getSubExpression().getClass() == EntityOpExpression.class
+	 * @post
+	 * 		The subExpressionkind is ExpressionKind.ENTITYOP
+	 * 		| result.getSubExpression().getKind() == ExpressionKind.ENTITYOP
+	 * @post
+	 * 		The subExpressiontype is EntityOpType.GETMAXAP
+	 * 		| result.getSubExpression().getType() == EntityOpType.GETMAXAP
 	 * @return	
 	 * 		The requested expression
 	 */
@@ -234,6 +433,20 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @param exp
+	 * 		The expresseion on which the getHP is to be executed.
+	 * @post
+	 * 		The expression has a subexpression
+	 * 		| result.getSubExpression() != null
+	 * @post
+	 * 		The subExpression is of the class EntityOpExpression
+	 * 		| result.getSubExpression().getClass() == EntityOpExpression.class
+	 * @post
+	 * 		The subExpressionkind is ExpressionKind.ENTITYOP
+	 * 		| result.getSubExpression().getKind() == ExpressionKind.ENTITYOP
+	 * @post
+	 * 		The subExpressiontype is EntityOpType.GETHP
+	 * 		| result.getSubExpression().getType() == EntityOpType.GETHP
 	 * @return	
 	 * 		The requested expression
 	 */
@@ -251,6 +464,20 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @param exp
+	 * 		The expresseion on which the getMaxAP is to be executed.
+	 * @post
+	 * 		The expression has a subexpression
+	 * 		| result.getSubExpression() != null
+	 * @post
+	 * 		The subExpression is of the class EntityOpExpression
+	 * 		| result.getSubExpression().getClass() == EntityOpExpression.class
+	 * @post
+	 * 		The subExpressionkind is ExpressionKind.ENTITYOP
+	 * 		| result.getSubExpression().getKind() == ExpressionKind.ENTITYOP
+	 * @post
+	 * 		The subExpressiontype is EntityOpType.GETMAXHP
+	 * 		| result.getSubExpression().getType() == EntityOpType.GETMAXHP
 	 * @return	
 	 * 		The requested expression
 	 */
@@ -267,6 +494,20 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @param exp
+	 * 		The expresseion of which is to be checked if it is in the same team as the worm executing the problem
+	 * @post
+	 * 		The expression has a subexpression
+	 * 		| result.getSubExpression() != null
+	 * @post
+	 * 		The subExpression is of the class EntityOpExpression
+	 * 		| result.getSubExpression().getClass() == EntityOpExpression.class
+	 * @post
+	 * 		The subExpressionkind is ExpressionKind.ENTITYOP
+	 * 		| result.getSubExpression().getKind() == ExpressionKind.ENTITYOP
+	 * @post
+	 * 		The subExpressiontype is EntityOpType.SAMETEAM
+	 * 		| result.getSubExpression().getType() == EntityOpType.SAMETEAM
 	 * @return	
 	 * 		The requested expression
 	 */
@@ -283,6 +524,20 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @param exp
+	 * 		The expression to be stored as searchobject
+	 * @post
+	 * 		The expression has a subexpression
+	 * 		| result.getSubExpression() != null
+	 * @post
+	 * 		The subExpression is of the class EntityOpExpression
+	 * 		| result.getSubExpression().getClass() == EntityOpExpression.class
+	 * @post
+	 * 		The subExpressionkind is ExpressionKind.ENTITYOP
+	 * 		| result.getSubExpression().getKind() == ExpressionKind.ENTITYOP
+	 * @post
+	 * 		The subExpressiontype is EntityOpType.SEARCHOBJ
+	 * 		| result.getSubExpression().getType() == EntityOpType.SEARCHOBJ
 	 * @return	
 	 * 		The requested expression
 	 */
@@ -299,6 +554,20 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @param exp
+	 * 		The expresseion of which is to be checked if it is a worm
+	 * @post
+	 * 		The expression has a subexpression
+	 * 		| result.getSubExpression() != null
+	 * @post
+	 * 		The subExpression is of the class EntityOpExpression
+	 * 		| result.getSubExpression().getClass() == EntityOpExpression.class
+	 * @post
+	 * 		The subExpressionkind is ExpressionKind.ENTITYOP
+	 * 		| result.getSubExpression().getKind() == ExpressionKind.ENTITYOP
+	 * @post
+	 * 		The subExpressiontype is EntityOpType.ISWORM
+	 * 		| result.getSubExpression().getType() == EntityOpType.ISWORM
 	 * @return	
 	 * 		The requested expression
 	 */
@@ -315,6 +584,20 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @param exp
+	 * 		The expresseion of which is to be checked if it is food
+	 * @post
+	 * 		The expression has a subexpression
+	 * 		| result.getSubExpression() != null
+	 * @post
+	 * 		The subExpression is of the class EntityOpExpression
+	 * 		| result.getSubExpression().getClass() == EntityOpExpression.class
+	 * @post
+	 * 		The subExpressionkind is ExpressionKind.ENTITYOP
+	 * 		| result.getSubExpression().getKind() == ExpressionKind.ENTITYOP
+	 * @post
+	 * 		The subExpressiontype is EntityOpType.ISFOOD
+	 * 		| result.getSubExpression().getType() == EntityOpType.ISFOOD
 	 * @return	
 	 * 		The requested expression
 	 */
@@ -331,7 +614,21 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
-	v* @return	
+	 * @param name
+	 * 		The string containing the desired name.
+	 * @post
+	 * 		The expression has a subexpression
+	 * 		| result.getSubExpression() != null
+	 * @post
+	 * 		The subExpression is of the class EntityOpExpression
+	 * 		| result.getSubExpression().getClass() == EntityOpExpression.class
+	 * @post
+	 * 		The subExpressionkind is ExpressionKind.VARACCES
+	 * 		| result.getSubExpression().getKind() == ExpressionKind.VARACCES
+	 * @post 
+	 * 		The subExpreesion has a name equal to the given name
+	 * 		| result.getSubExpression().getName() == name
+	 * @return	
 	 * 		The requested expression
 	 */
 	@Override
@@ -343,11 +640,27 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	}
 	
 	/**
-	 * Method for creating an expression representing a lessthan operator.
+	 * Method for creating an expression representing a lessthan operator, result is of the form e1 < e2
 	 * @param line
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
-	 * 		The column of the original code that creates the method call through the parser	
+	 * 		The column of the original code that creates the method call through the parser
+	 * @param e1
+	 * 		The left expression for the is less than operation
+	 * @param e2
+	 * 		The right expression for the less than operation
+	 * @post
+	 * 		The expression has a subexpression
+	 * 		| result.getSubExpression() != null
+	 * @post
+	 * 		The subExpression is of the class DoubleOpExpression
+	 * 		| result.getSubExpression().getClass() == EntityOpExpression.class
+	 * @post
+	 * 		The subExpressionkind is ExpressionKind.DOUBLEOP
+	 * 		| result.getSubExpression().getKind() == ExpressionKind.DOUBLEOP
+	 * @post
+	 * 		The subExpressiontype is DoubleOpType.LESSER
+	 * 		| result.getSubExpression().getType() == DoubleOpType.LESSER	
 	 * @return	
 	 * 		The requested expression
 	 */
@@ -366,6 +679,22 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @param e1
+	 * 		The left expression for the is greater than operation
+	 * @param e2
+	 * 		The right expression for the greater than operation
+	 * @post
+	 * 		The expression has a subexpression
+	 * 		| result.getSubExpression() != null
+	 * @post
+	 * 		The subExpression is of the class DoubleOpExpression
+	 * 		| result.getSubExpression().getClass() == EntityOpExpression.class
+	 * @post
+	 * 		The subExpressionkind is ExpressionKind.DOUBLEOP
+	 * 		| result.getSubExpression().getKind() == ExpressionKind.DOUBLEOP
+	 * @post
+	 * 		The subExpressiontype is DoubleOpType.GREATER
+	 * 		| result.getSubExpression().getType() == DoubleOpType.GREATER
 	 * @return	
 	 * 		The requested expression
 	 */
@@ -384,6 +713,22 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @param e1
+	 * 		The left expression for the is less than or equal to operation
+	 * @param e2
+	 * 		The right expression for the less than or equal to operation
+	 * @post
+	 * 		The expression has a subexpression
+	 * 		| result.getSubExpression() != null
+	 * @post
+	 * 		The subExpression is of the class DoubleOpExpression
+	 * 		| result.getSubExpression().getClass() == EntityOpExpression.class
+	 * @post
+	 * 		The subExpressionkind is ExpressionKind.DOUBLEOP
+	 * 		| result.getSubExpression().getKind() == ExpressionKind.DOUBLEOP
+	 * @post
+	 * 		The subExpressiontype is DoubleOpType.LESSEREQUAL
+	 * 		| result.getSubExpression().getType() == DoubleOpType.LESSEREQUAL
 	 * @return	
 	 * 		The requested expression
 	 */
@@ -401,7 +746,23 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * @param line
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
-	 * 		The column of the original code that creates the method call through the parser	
+	 * 		The column of the original code that creates the method call through the parser
+	 * @param e1
+	 * 		The left expression for the is greater than or equal to operation
+	 * @param e2
+	 * 		The right expression for the greater than or equal to operation
+	 * @post
+	 * 		The expression has a subexpression
+	 * 		| result.getSubExpression() != null
+	 * @post
+	 * 		The subExpression is of the class DoubleOpExpression
+	 * 		| result.getSubExpression().getClass() == EntityOpExpression.class
+	 * @post
+	 * 		The subExpressionkind is ExpressionKind.DOUBLEOP
+	 * 		| result.getSubExpression().getKind() == ExpressionKind.DOUBLEOP
+	 * @post
+	 * 		The subExpressiontype is DoubleOpType.GREATEREQUAL
+	 * 		| result.getSubExpression().getType() == DoubleOpType.GREATEREQUAL
 	 * @return	
 	 * 		The requested expression
 	 */

@@ -332,5 +332,9 @@ public class Expression {
 		}
 		
 		public String varname;
+		
+		public String getName(){
+			return this.varname;
+		}
 	}
 }
