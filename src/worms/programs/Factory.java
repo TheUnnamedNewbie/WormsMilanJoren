@@ -13,13 +13,18 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	public Factory() {
 	}
 	
-	//DONE
+
 	/**
 	 * Method to create doubleLiteral.
 	 * @param line
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @param d
+	 * 		The value to be "stored" in the double literal
+	 * @return
+	 * 		An expression with subtype doubleliteral
+	 * 	
 	 */
 	public Expression createDoubleLiteral(int line, int column, double d) {
 		Expression temporary;
@@ -28,13 +33,15 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 		return temporary;
 	}
 	
-	//DONE
+
 	/**
 	 * Method to create BooleanLiteral
 	 * @param line
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @return
+	 * 		A ex[ression with subtype booleanliteral
 	 */
 	public Expression createBooleanLiteral(int line, int column, boolean b) {
 		Expression temporary;
@@ -43,13 +50,14 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 		return temporary;
 	}
 	
-	//DONE
 	/**
 	 * Method to create a logical And expression
 	 * @param line
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @return
+	 * 		An expression with subExpressiontype AND
 	 */
 	public Expression createAnd(int line, int column, Expression e1, Expression e2) {
 		Expression temporary;
@@ -58,13 +66,15 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 		return temporary;
 	}
 	
-	//DONE
+	
 	/**
 	 * Method to create a logical Or
 	 * @param line
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @return
+	 * 		An expression with subexpressiontype Or
 	 */
 	public Expression createOr(int line, int column, Expression e1, Expression e2) {
 		Expression temporary;
@@ -108,6 +118,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @return	
+	 * 		The requested expression
 	 */
 	public Expression createSelf(int line, int column){
 		Expression temporary;
@@ -122,6 +134,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @return	
+	 * 		The requested expression
 	 */
 	public Expression createGetX(int line, int column, Expression exp){
 		Expression temporary;
@@ -136,6 +150,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @return	
+	 * 		The requested expression
 	 */
 	public Expression createGetY(int line, int column, Expression exp){
 		Expression temporary;
@@ -150,6 +166,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @return	
+	 * 		The requested expression
 	 */
 	public Expression createGetRadius(int line, int column, Expression exp){
 		Expression temporary;
@@ -165,6 +183,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @return	
+	 * 		The requested expression
 	 */
 	public Expression createGetDir(int line, int column, Expression exp){
 		Expression temporary;
@@ -180,6 +200,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @return	
+	 * 		The requested expression
 	 */
 	public Expression createGetAP(int line, int column, Expression exp){
 		Expression temporary;
@@ -195,6 +217,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @return	
+	 * 		The requested expression
 	 */
 	public Expression createGetMaxAP(int line, int column, Expression exp){
 		Expression temporary;
@@ -210,6 +234,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @return	
+	 * 		The requested expression
 	 */
 	public Expression createGetHP(int line, int column, Expression exp){
 		Expression temporary;
@@ -225,6 +251,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @return	
+	 * 		The requested expression
 	 */
 	public Expression createGetMaxHP(int line, int column, Expression exp) {
 		Expression temporary;
@@ -239,6 +267,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @return	
+	 * 		The requested expression
 	 */
 	public Expression createSameTeam(int line, int column, Expression exp){
 		Expression temporary;
@@ -253,6 +283,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @return	
+	 * 		The requested expression
 	 */
 	public Expression createSearchObj(int line, int column, Expression exp){
 		Expression temporary;
@@ -267,6 +299,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @return	
+	 * 		The requested expression
 	 */
 	public Expression createIsWorm(int line, int column, Expression exp){
 		Expression temporary;
@@ -281,6 +315,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @return	
+	 * 		The requested expression
 	 */
 	public Expression createIsFood(int line, int column, Expression exp) {
 		Expression temporary;
@@ -295,6 +331,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	v* @return	
+	 * 		The requested expression
 	 */
 	@Override
 	public Expression createVariableAccess(int line, int column, String name) {
@@ -310,6 +348,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @return	
+	 * 		The requested expression
 	 */
 	@Override
 	public Expression createLessThan(int line, int column, Expression e1,
@@ -326,6 +366,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @return	
+	 * 		The requested expression
 	 */
 	@Override
 	public Expression createGreaterThan(int line, int column, Expression e1,
@@ -342,6 +384,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @return	
+	 * 		The requested expression
 	 */
 	@Override
 	public Expression createLessThanOrEqualTo(int line, int column,
@@ -358,6 +402,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @return	
+	 * 		The requested expression
 	 */
 	@Override
 	public Expression createGreaterThanOrEqualTo(int line, int column,
@@ -375,6 +421,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @return	
+	 * 		The requested expression
 	 */
 	@Override
 	public Expression createEquality(int line, int column, Expression e1,
@@ -398,6 +446,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @return	
+	 * 		The requested expression
 	 */
 	@Override
 	public Expression createInequality(int line, int column, Expression e1,
@@ -427,6 +477,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @return	
+	 * 		The requested expression
 	 */
 	@Override
 	public Expression createAdd(int line, int column, Expression e1,
@@ -443,6 +495,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @return	
+	 * 		The requested expression
 	 */
 	@Override
 	public Expression createSubtraction(int line, int column, Expression e1,
@@ -459,6 +513,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @return	
+	 * 		The requested expression
 	 */
 	@Override
 	public Expression createMul(int line, int column, Expression e1,
@@ -475,6 +531,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @return	
+	 * 		The requested expression
 	 */
 	@Override
 	public Expression createDivision(int line, int column, Expression e1,
@@ -491,6 +549,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @return	
+	 * 		The requested expression
 	 */
 	@Override
 	public Expression createSqrt(int line, int column, Expression e) {
@@ -506,6 +566,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @return	
+	 * 		The requested expression
 	 */
 	@Override
 	public Expression createSin(int line, int column, Expression e) {
@@ -521,6 +583,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @return	
+	 * 		The requested expression
 	 */
 	@Override
 	public Expression createCos(int line, int column, Expression e) {
@@ -536,6 +600,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @return
+ 	 * 		The requested Statement
 	 */
 	@Override
 	public Statement createTurn(int line, int column, Expression angle) {
@@ -551,6 +617,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @return
+ 	 * 		The requested Statement
 	 */
 	@Override
 	public Statement createMove(int line, int column) {
@@ -566,6 +634,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @return
+ 	 * 		The requested Statement
 	 */
 	@Override
 	public Statement createJump(int line, int column) {
@@ -581,6 +651,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @return
+ 	 * 		The requested Statement
 	 */
 	@Override
 	public Statement createToggleWeap(int line, int column) {
@@ -596,6 +668,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @return
+ 	 * 		The requested Statement
 	 */
 	@Override
 	public Statement createFire(int line, int column, Expression yield) {
@@ -611,6 +685,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @return
+ 	 * 		The requested Statement
 	 */
 	@Override
 	public Statement createSkip(int line, int column) {
@@ -626,6 +702,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @return
+ 	 * 		The requested Statement
 	 */
 	@Override
 	public Statement createAssignment(int line, int column,
@@ -642,6 +720,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @return
+ 	 * 		The requested Statement
 	 */
 	@Override
 	public Statement createIf(int line, int column, Expression condition,
@@ -658,6 +738,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @return
+ 	 * 		The requested Statement
 	 */
 	@Override
 	public Statement createWhile(int line, int column, Expression condition,
@@ -674,6 +756,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @return
+ 	 * 		The requested Statement
 	 */
 	@Override
 	public Statement createForeach(int line, int column,
@@ -691,6 +775,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @return
+ 	 * 		The requested Statement
 	 */
 	@Override
 	public Statement createSequence(int line, int column,
@@ -707,6 +793,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	 * 		The line of the original code that creates the method call through the parser
 	 * @param column
 	 * 		The column of the original code that creates the method call through the parser	
+	 * @return
+ 	 * 		The requested Statement
 	 */
 	@Override
 	public Statement createPrint(int line, int column, Expression e) {
@@ -718,6 +806,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	
 	/**
 	 * Method for creating a double type
+	 * @return
+	 * 		The requested Type
 	 */
 	@Override
 	public Type createDoubleType() {
@@ -726,6 +816,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 
 	/**
 	 * Method for creating a boolean type
+	 * @return
+	 * 		The requested Type
 	 */
 	@Override
 	public Type createBooleanType() {
@@ -734,6 +826,8 @@ public class Factory implements ProgramFactory<Expression, Statement, Type> {
 	
 	/**
 	 * Method for creating an entity type
+	 * @return
+	 * 		The requested Type
 	 */
 	@Override
 	public Type createEntityType() {
